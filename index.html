@@ -239,16 +239,20 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ RECORD ═══ -->
 <div class="pnl" id="pnl-rec">
-  <div class="cbar">
+  <div class="cbar" style="flex-wrap:wrap;gap:6px">
     <span class="clbl" id="i-date2">日期</span>
-    <input type="date" id="rec-date" style="width:155px">
-    <div class="ptog">
+    <button class="btn bg" onclick="navRecDay(-1)" style="padding:5px 10px;font-size:15px" title="前一天">◀</button>
+    <input type="date" id="rec-date" style="width:148px" onchange="loadRecDate()">
+    <button class="btn bg" onclick="navRecDay(1)" style="padding:5px 10px;font-size:15px" title="後一天">▶</button>
+    <div class="ptog" style="margin-left:4px">
       <button class="pbtn on" id="rbam" onclick="setRP('morning')">早上</button>
       <button class="pbtn" id="rbpm" onclick="setRP('afternoon')">下午</button>
     </div>
-    <input type="text" id="rec-note" style="width:180px" placeholder="備註（可選）" id="i-note-ph">
-    <button class="btn bp ml" onclick="saveAllRec()" id="i-saveall">💾 全部儲存</button>
+    <input type="text" id="rec-note" style="width:150px" placeholder="備註（可選）">
+    <button class="btn bp" onclick="saveAllRec()" id="i-saveall">💾 儲存</button>
     <button class="btn bg" onclick="clearRI()" id="i-clear">清除</button>
+    <button class="btn" style="background:#7C3AED;color:#fff" onclick="checkMissing()" title="檢查漏填">⚠️ 漏填</button>
+    <button class="btn" style="background:#0369a1;color:#fff" onclick="printReport()" title="列印報告">🖨️ 列印</button>
   </div>
   <div class="sm-t muted mb8" id="rec-plbl" style="margin-bottom:10px;"></div>
   <div class="rgrid" id="rec-zgrid"></div>
@@ -404,6 +408,18 @@ tbody tr:hover{background:var(--bg);}
     <div>
       <!-- GAS -->
       <div class="card" style="margin-bottom:16px">
+      <!-- 檢查人員設定 -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="chd"><span class="ct">👤 檢查人員 / Inspector</span></div>
+        <div class="cb">
+          <div class="g2" style="margin-bottom:10px">
+            <div class="fg"><label>早上 Morning Inspector</label><input type="text" id="insp-am" placeholder="姓名 / Name" oninput="saveInspectors()"></div>
+            <div class="fg"><label>下午 Afternoon Inspector</label><input type="text" id="insp-pm" placeholder="姓名 / Name" oninput="saveInspectors()"></div>
+          </div>
+          <div class="fg" style="max-width:320px"><label>主管 Supervisor</label><input type="text" id="insp-sup" placeholder="姓名 / Name" oninput="saveInspectors()"></div>
+        </div>
+      </div>
+
         <div class="chd"><span class="ct">☁️ Google Sheets 雲端同步</span></div>
         <div class="cb">
           <div class="fg" style="margin-bottom:10px"><label>GAS Web App URL</label><input type="text" id="gas-url" placeholder="https://script.google.com/macros/s/..." oninput="saveGAScfg()"></div>
@@ -948,9 +964,42 @@ function saveAllRec(){
       t:t!==''&&t!==undefined?parseFloat(t):'',h:h!==''&&h!==undefined?parseFloat(h):'',note,ts:new Date().toISOString()};
     recs.push(rec);newRecs.push(rec);
   });
-  setR(recs);toast(T('saved'),'ok');renderTodayCard(sel);updBadge();
-  // 自動同步到雲端（非阻塞，GAS 會自動發 Telegram 通知）
-  if(newRecs.length>0) gasAutoSync(newRecs);
+  setR(recs);renderTodayCard(sel);updBadge();
+  if(!newRecs.length){toast('沒有填寫任何數值','inf');return;}
+  // 只儲存本機，不自動送 Telegram 或雲端
+  // 儲存後顯示操作選項
+  showSaveActions(sel,newRecs);
+}
+
+function showSaveActions(date,newRecs){
+  toast('✅ 已儲存 '+newRecs.length+' 筆 — 選擇後續動作','ok');
+  // 顯示操作浮層
+  const existing=document.getElementById('save-action-bar');
+  if(existing)existing.remove();
+  const bar=document.createElement('div');
+  bar.id='save-action-bar';
+  bar.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#1E3A8A;color:#fff;border-radius:12px;padding:12px 18px;display:flex;gap:10px;align-items:center;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3);font-size:13px;flex-wrap:wrap;max-width:90vw';
+  bar.innerHTML=`
+    <span>📅 ${date} · ${RP==='morning'?'早上 Morning':'下午 Afternoon'} · ${newRecs.length}筆已儲存</span>
+    <button onclick="doCloudSync(${JSON.stringify(newRecs).replace(/"/g,'&quot;')})" style="background:#10B981;color:#fff;border:none;border-radius:7px;padding:6px 13px;cursor:pointer;font-size:13px">☁️ 同步雲端</button>
+    <button onclick="doSendTG(${JSON.stringify(newRecs).replace(/"/g,'&quot;')})" style="background:#7C3AED;color:#fff;border:none;border-radius:7px;padding:6px 13px;cursor:pointer;font-size:13px">📤 發 Telegram</button>
+    <button onclick="this.parentElement.remove()" style="background:rgba(255,255,255,0.2);color:#fff;border:none;border-radius:7px;padding:6px 10px;cursor:pointer;font-size:13px">✕</button>
+  `;
+  document.body.appendChild(bar);
+  setTimeout(()=>{if(bar.parentElement)bar.remove();},20000);
+}
+
+async function doCloudSync(recs){
+  document.getElementById('save-action-bar')?.remove();
+  await gasAutoSync(recs);
+  toast('☁️ 已同步到雲端','ok');
+}
+
+async function doSendTG(recs){
+  document.getElementById('save-action-bar')?.remove();
+  // 先同步雲端（GAS 會自動發 Telegram 通知）
+  await gasAutoSync(recs);
+  toast('📤 已發送 Telegram 通知','ok');
 }
 
 function renderTodayCard(date){
@@ -1532,6 +1581,164 @@ async function sendTG(){
 }
 
 // ══════════════════════════════════════════
+// 日期導航 ◀ ▶
+// ══════════════════════════════════════════
+function navRecDay(dir){
+  const rd=document.getElementById('rec-date');
+  if(!rd.value){rd.value=today();return;}
+  const d=new Date(rd.value+'T00:00:00');
+  d.setDate(d.getDate()+dir);
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  rd.value=`${y}-${m}-${day}`;
+  loadRecDate();
+}
+
+function loadRecDate(){
+  const sel=document.getElementById('rec-date').value;
+  if(!sel)return;
+  renderRecZones();
+  renderTodayCard(sel);
+  const amCount=getR().filter(r=>r.d===sel&&r.p==='morning').length;
+  const pmCount=getR().filter(r=>r.d===sel&&r.p==='afternoon').length;
+  document.getElementById('rec-plbl').textContent=
+    `📅 ${sel} · ${RP==='morning'?T('am'):T('pm')} · 早上${amCount}筆 / 下午${pmCount}筆`;
+}
+
+// ══════════════════════════════════════════
+// 漏填檢查 Missing Check
+// ══════════════════════════════════════════
+function checkMissing(){
+  const sel=document.getElementById('rec-date').value;
+  if(!sel){toast('請先選擇日期','err');return;}
+  const zones=getZ().filter(z=>z.on);
+  const recs=getR().filter(r=>r.d===sel);
+  const missing=[];
+  zones.forEach(z=>{
+    const znm=z.zh+(z.en?' / '+z.en:'');
+    const am=recs.find(r=>r.p==='morning'&&r.z===z.id);
+    const pm=recs.find(r=>r.p==='afternoon'&&r.z===z.id);
+    if(!am||am.t===''||am.h==='') missing.push(`早上 Morning · ${znm}`);
+    if(!pm||pm.t===''||pm.h==='') missing.push(`下午 Afternoon · ${znm}`);
+  });
+  if(!missing.length){
+    toast('✅ '+sel+' 全部區域已填寫完畢 All zones complete','ok');
+    return;
+  }
+  const msg='⚠️ 以下項目尚未填寫 / Missing:\n\n'+missing.map((m,i)=>`${i+1}. ${m}`).join('\n');
+  alert(msg);
+  toast('⚠️ 有 '+missing.length+' 項未填寫','err');
+}
+
+// ══════════════════════════════════════════
+// 列印報告 Print Report
+// ══════════════════════════════════════════
+function printReport(){
+  const sel=document.getElementById('rec-date').value||today();
+  const recs=getR().filter(r=>r.d===sel);
+  const zones=getZ().filter(z=>z.on);
+  const inspectors=getInspectors();
+
+  const rows=zones.map(z=>{
+    const znm=z.zh+(z.en?' / '+z.en:'');
+    const am=recs.find(r=>r.p==='morning'&&r.z===z.id);
+    const pm=recs.find(r=>r.p==='afternoon'&&r.z===z.id);
+    const tFmt=(v)=>v!==''&&v!==undefined?v+'°C':'—';
+    const hFmt=(v)=>v!==''&&v!==undefined?v+'%':'—';
+    const warn=(t,h)=>{
+      const tn=parseFloat(t),hn=parseFloat(h);
+      let w='';
+      if(tn>=35)w+=' 🔴High';else if(tn>=32)w+=' 🟡Warm';else if(tn<18)w+=' 🔵Low';
+      if(hn>90)w+=' 🔴V.Humid';else if(hn>80)w+=' 🟠Humid';else if(hn<40)w+=' 🟡Dry';
+      return w;
+    };
+    return `<tr>
+      <td style="padding:6px 10px;border:1px solid #ddd">${znm}</td>
+      <td style="padding:6px 10px;border:1px solid #ddd;text-align:center">${am?tFmt(am.t):'—'}</td>
+      <td style="padding:6px 10px;border:1px solid #ddd;text-align:center">${am?hFmt(am.h):'—'}</td>
+      <td style="padding:6px 10px;border:1px solid #ddd;font-size:11px;color:#dc2626">${am?warn(am.t,am.h):''}</td>
+      <td style="padding:6px 10px;border:1px solid #ddd;text-align:center">${pm?tFmt(pm.t):'—'}</td>
+      <td style="padding:6px 10px;border:1px solid #ddd;text-align:center">${pm?hFmt(pm.h):'—'}</td>
+      <td style="padding:6px 10px;border:1px solid #ddd;font-size:11px;color:#dc2626">${pm?warn(pm.t,pm.h):''}</td>
+      <td style="padding:6px 10px;border:1px solid #ddd;font-size:11px;color:#6b7280">${am&&am.note?am.note:pm&&pm.note?pm.note:''}</td>
+    </tr>`;
+  }).join('');
+
+  const anomCount=recs.filter(r=>{
+    const t=parseFloat(r.t),h=parseFloat(r.h);
+    return(!isNaN(t)&&(t>=35||t<18))||(!isNaN(h)&&(h>90||h<40));
+  }).length;
+
+  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
+  <title>VRT Temperature Report ${sel}</title>
+  <style>
+    body{font-family:Arial,sans-serif;margin:20px;font-size:13px;color:#1a1a1a}
+    h2{color:#1E3A8A;margin-bottom:4px}
+    .meta{font-size:12px;color:#6b7280;margin-bottom:16px}
+    table{width:100%;border-collapse:collapse;margin-bottom:20px}
+    th{background:#1E3A8A;color:#fff;padding:7px 10px;border:1px solid #1E3A8A;font-size:12px;text-align:center}
+    .sign{margin-top:30px;display:flex;gap:60px}
+    .sign-box{border-top:1px solid #666;padding-top:6px;min-width:160px;font-size:12px;color:#374151}
+    .summary{background:#f0f4ff;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px}
+    @media print{body{margin:10px}}
+  </style>
+  </head><body>
+  <h2>🌡️ VRT Temperature & Humidity Daily Report / 溫濕度日報</h2>
+  <div class="meta">Date / 日期：<b>${sel}</b> &nbsp;|&nbsp; Printed / 列印：${new Date().toLocaleString()}</div>
+  <div class="summary">
+    📋 Records / 記錄：<b>${recs.length}</b> 筆 &nbsp;|&nbsp;
+    ⚠️ Anomaly / 異常：<b>${anomCount}</b> 筆 &nbsp;|&nbsp;
+    🏭 Zones / 區域：<b>${zones.length}</b> 個
+  </div>
+  <table>
+    <thead><tr>
+      <th rowspan="2" style="text-align:left;min-width:120px">Zone / 區域</th>
+      <th colspan="3" style="background:#1d4ed8">🌅 Morning / 早上 (08:00~09:00)</th>
+      <th colspan="3" style="background:#2563eb">🌇 Afternoon / 下午 (15:30~16:30)</th>
+      <th rowspan="2">Note / 備註</th>
+    </tr><tr>
+      <th>Temp / 溫度</th><th>Hum / 濕度</th><th>Status</th>
+      <th>Temp / 溫度</th><th>Hum / 濕度</th><th>Status</th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>
+  <div class="sign">
+    <div class="sign-box">Morning Inspector / 早上檢查<br><b>${inspectors.am||'_______________'}</b></div>
+    <div class="sign-box">Afternoon Inspector / 下午檢查<br><b>${inspectors.pm||'_______________'}</b></div>
+    <div class="sign-box">Supervisor / 主管<br><b>${inspectors.sup||'_______________'}</b></div>
+  </div>
+  </body></html>`;
+
+  const w=window.open('','_blank');
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  setTimeout(()=>w.print(),400);
+}
+
+// ══════════════════════════════════════════
+// 檢查人員 Inspector storage
+// ══════════════════════════════════════════
+const LS_INSP='vrt_th_inspectors';
+function getInspectors(){try{return JSON.parse(localStorage.getItem(LS_INSP)||'{}');}catch{return {};}}
+function saveInspectors(){
+  const d={
+    am:document.getElementById('insp-am')?.value||'',
+    pm:document.getElementById('insp-pm')?.value||'',
+    sup:document.getElementById('insp-sup')?.value||''
+  };
+  localStorage.setItem(LS_INSP,JSON.stringify(d));
+}
+function loadInspectors(){
+  const d=getInspectors();
+  const am=document.getElementById('insp-am');
+  const pm=document.getElementById('insp-pm');
+  const sup=document.getElementById('insp-sup');
+  if(am)am.value=d.am||'';
+  if(pm)pm.value=d.pm||'';
+  if(sup)sup.value=d.sup||'';
+}
+
+// ══════════════════════════════════════════
 // GAS CLOUD SYNC (v3 — POST-only)
 // ══════════════════════════════════════════
 
@@ -1705,7 +1912,7 @@ async function gasPullOnInit(){
       document.getElementById('sstatus').textContent='✅ 已連接';
     }
   }catch(ex){
-    console.warn('gasPullOnInit failed:',ex.message);
+    // 靜默失敗：本機資料照常使用
   }
 }
 
@@ -1780,6 +1987,9 @@ function init(){
   setInterval(tick,1000);tick();
   // 啟動時靜默從雲端拉取最新資料
   setTimeout(gasPullOnInit, 800);
+  loadInspectors();
+  // 初始化時設定今天的日期
+  const rdInit=document.getElementById('rec-date');if(rdInit&&!rdInit.value){rdInit.value=today();loadRecDate();}
 }
 window.addEventListener('load',init);
 </script></body></html>
