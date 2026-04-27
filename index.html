@@ -308,18 +308,21 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ ANALYSIS ═══ -->
 <div class="pnl" id="pnl-anal">
-  <div class="cbar">
+  <div class="cbar" style="flex-wrap:wrap;gap:6px">
     <span class="clbl" id="i-filter2">篩選</span>
-    <select id="azone" onchange="renderAnal()" style="width:155px"><option value="all">全部區域</option></select>
+    <select id="azone" onchange="renderAnal()" style="width:140px"><option value="all">全部區域</option></select>
     <div class="ptog">
-      <button class="pbtn on" id="avd" onclick="setAV('day')">日</button>
-      <button class="pbtn" id="avw" onclick="setAV('week')">週</button>
-      <button class="pbtn" id="avm" onclick="setAV('month')">月</button>
-      <button class="pbtn" id="avy" onclick="setAV('year')">年</button>
+      <button class="pbtn on" id="avd" onclick="setAV('day')">日 D</button>
+      <button class="pbtn" id="avw" onclick="setAV('week')">週 W</button>
+      <button class="pbtn" id="avm" onclick="setAV('month')">月 M</button>
+      <button class="pbtn" id="avy" onclick="setAV('year')">年 Y</button>
     </div>
-    <input type="date" id="afrom" onchange="renderAnal()" style="width:135px">
+    <button class="btn bg" onclick="navAnal(-1)" style="padding:5px 10px;font-size:15px" title="前一期">◀</button>
+    <input type="date" id="afrom" onchange="renderAnal()" style="width:128px">
     <span class="muted">→</span>
-    <input type="date" id="ato" onchange="renderAnal()" style="width:135px">
+    <input type="date" id="ato" onchange="renderAnal()" style="width:128px">
+    <button class="btn bg" onclick="navAnal(1)" style="padding:5px 10px;font-size:15px" title="後一期">▶</button>
+    <span id="anal-lbl" style="font-size:12px;color:#6B7280;margin-left:4px"></span>
   </div>
   <div class="sgrid" id="anal-stats" style="margin-bottom:16px"></div>
   <div class="cgrid">
@@ -342,17 +345,20 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ ALERTS ═══ -->
 <div class="pnl" id="pnl-alert">
-  <div class="cbar">
+  <div class="cbar" style="flex-wrap:wrap;gap:6px">
     <span class="clbl" id="i-filter3">篩選</span>
-    <select id="alzone" onchange="renderAlert()" style="width:155px"><option value="all">全部區域</option></select>
-    <input type="date" id="alfrom" onchange="renderAlert()" style="width:135px">
-    <span class="muted">→</span>
-    <input type="date" id="alto" onchange="renderAlert()" style="width:135px">
-    <select id="alsev" onchange="renderAlert()" style="width:120px">
+    <select id="alzone" onchange="renderAlert()" style="width:140px"><option value="all">全部區域</option></select>
+    <select id="alsev" onchange="renderAlert()" style="width:110px">
       <option value="all" id="i-allsev">全部等級</option>
       <option value="crit" id="i-crit">嚴重</option>
       <option value="warn" id="i-warn">警告</option>
     </select>
+    <button class="btn bg" onclick="navAlert(-1)" style="padding:5px 10px;font-size:15px" title="前一月">◀</button>
+    <input type="date" id="alfrom" onchange="renderAlert()" style="width:128px">
+    <span class="muted">→</span>
+    <input type="date" id="alto" onchange="renderAlert()" style="width:128px">
+    <button class="btn bg" onclick="navAlert(1)" style="padding:5px 10px;font-size:15px" title="後一月">▶</button>
+    <span id="alert-lbl" style="font-size:12px;color:#6B7280;margin-left:4px"></span>
   </div>
   <div id="alert-list"></div>
 </div>
@@ -572,7 +578,7 @@ zh:{
 },
 en:{
   'app-title':'VRT Temp & Humidity Monitor','app-sub':'Vantage River Textiles Co., Ltd.',
-  'tab-dash':'Dashboard','tab-rec':'Record','tab-hist':'History','tab-anal':'Analysis','tab-zones':'Zones','tab-alert':'Alerts','tab-set':'Settings',
+  'tab-dash':'Dashboard','tab-rec':'Record','tab-hist':'History','tab-anal':'Analysis','tab-zones':'Zones','tab-alert':'Anomaly','tab-set':'Settings',
   am:'Morning 08:00~09:00',pm:'Afternoon 15:30~16:30',all:'All Day',
   cold:'Cold',cool:'Cool',ok:'Normal',warm:'Warm',hot:'Hot',dry:'Dry',humid:'Humid',vhum:'Very Humid',
   date:'Date',zone:'Zone',per:'Period',note:'Notes',act:'Actions',
@@ -645,6 +651,8 @@ km:{
 let LANG='zh', DP='morning', RP='morning', HV='month', AV='month', HP=1;
 const PER_PAGE=30;
 let editZID=null, cfCB=null;
+const TG_DEFAULT_TOKEN='8673221735:AAH0KoC89DPLNu4D70inRfkY2xwedLkXjnw';
+const TG_DEFAULT_CHAT='-717190406';
 const GAS_DEFAULT_URL='https://script.google.com/macros/s/AKfycbyRmex6EmpUKGEzrswyFwO_aySAFg2d7tJuUaFBKtlAuOEwVc2TRerP7zbFilitVvZ8Sg/exec';
 const LSZ='vrt_th_z', LSR='vrt_th_r', LSTH='vrt_th_th', LSTG='vrt_th_tg', LSGAS='vrt_th_gas';
 
@@ -662,7 +670,7 @@ const getR=()=>{try{const d=localStorage.getItem(LSR);return d?JSON.parse(d):[];
 const setR=r=>localStorage.setItem(LSR,JSON.stringify(r));
 const getTH=()=>{try{const d=localStorage.getItem(LSTH);return d?JSON.parse(d):JSON.parse(JSON.stringify(DTH));}catch{return JSON.parse(JSON.stringify(DTH));}};
 const setTH=t=>localStorage.setItem(LSTH,JSON.stringify(t));
-const getTG=()=>{try{const d=localStorage.getItem(LSTG);return d?JSON.parse(d):{tok:'',chat:''};}catch{return {tok:'',chat:''};}}
+const getTG=()=>{try{const d=localStorage.getItem(LSTG);const p=d?JSON.parse(d):{};return {tok:p.tok||TG_DEFAULT_TOKEN,chat:p.chat||TG_DEFAULT_CHAT};}catch{return {tok:TG_DEFAULT_TOKEN,chat:TG_DEFAULT_CHAT};}}
 const setTG=c=>localStorage.setItem(LSTG,JSON.stringify(c));
 const getGAS=()=>{try{const d=localStorage.getItem(LSGAS);const p=d?JSON.parse(d):{url:''};return (p&&p.url)?p:{url:GAS_DEFAULT_URL};}catch{return {url:GAS_DEFAULT_URL};}}
 const setGAS=c=>localStorage.setItem(LSGAS,JSON.stringify(c));
@@ -1164,6 +1172,37 @@ function renderPagi(total,elId,cb){
 let chT=null,chH=null,chA=null;
 function setAV(v){AV=v;['day','week','month','year'].forEach(x=>document.getElementById('av'+x[0]).classList.toggle('on',x===v));renderAnal();}
 
+function navAnal(dir){
+  const f=document.getElementById('afrom'),t=document.getElementById('ato');
+  if(!f.value||!t.value)return;
+  const df=new Date(f.value+'T00:00:00'), dt=new Date(t.value+'T00:00:00');
+  const n=dir;
+  if(AV==='day'){df.setDate(df.getDate()+n);dt.setDate(dt.getDate()+n);}
+  else if(AV==='week'){df.setDate(df.getDate()+n*7);dt.setDate(dt.getDate()+n*7);}
+  else if(AV==='month'){df.setMonth(df.getMonth()+n);dt.setMonth(dt.getMonth()+n);}
+  else if(AV==='year'){df.setFullYear(df.getFullYear()+n);dt.setFullYear(dt.getFullYear()+n);}
+  f.value=fmtDate(df);t.value=fmtDate(dt);
+  renderAnal();
+  const lbl=document.getElementById('anal-lbl');
+  if(lbl)lbl.textContent=f.value+' → '+t.value;
+}
+
+function navAlert(dir){
+  const f=document.getElementById('alfrom'),t=document.getElementById('alto');
+  if(!f.value||!t.value)return;
+  const df=new Date(f.value+'T00:00:00'), dt=new Date(t.value+'T00:00:00');
+  df.setMonth(df.getMonth()+dir);dt.setMonth(dt.getMonth()+dir);
+  f.value=fmtDate(df);t.value=fmtDate(dt);
+  renderAlert();
+  const lbl=document.getElementById('alert-lbl');
+  if(lbl)lbl.textContent=f.value+' → '+t.value;
+}
+
+function fmtDate(d){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+}
+
 function renderAnal(){
   const zf=document.getElementById('azone').value;
   const af=document.getElementById('afrom').value,at2=document.getElementById('ato').value;
@@ -1322,7 +1361,7 @@ function renderSet(){
   setSlider('th-tw',th.t.warm,'°C');setSlider('th-th',th.t.hot,'°C');
   setSlider('th-hd',th.h.dry,'%');setSlider('th-hh',th.h.humid,'%');setSlider('th-hv',th.h.vhum,'%');
   renderThLegend();
-  const tg=getTG();document.getElementById('tg-tok').value=tg.tok||'';document.getElementById('tg-chat').value=tg.chat||'';
+  const tg=getTG();document.getElementById('tg-tok').value=tg.tok||TG_DEFAULT_TOKEN;document.getElementById('tg-chat').value=tg.chat||TG_DEFAULT_CHAT;
   document.getElementById('tg-date').value=today();
   document.getElementById('gas-url').value=getGAS().url||GAS_DEFAULT_URL||'';
   const recs=getR();const dates=recs.map(r=>r.d).sort();
