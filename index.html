@@ -240,7 +240,7 @@ tbody tr:hover{background:var(--bg);}
 <!-- ═══ RECORD ═══ -->
 <div class="pnl" id="pnl-rec">
   <div class="cbar" style="flex-wrap:wrap;gap:6px">
-    <span class="clbl" id="i-date2">日期</span>
+    <span class="clbl" id="i-date2">日期 Date</span>
     <button class="btn bg" onclick="navRecDay(-1)" style="padding:5px 10px;font-size:15px" title="前一天">◀</button>
     <input type="date" id="rec-date" style="width:148px" onchange="loadRecDate()">
     <button class="btn bg" onclick="navRecDay(1)" style="padding:5px 10px;font-size:15px" title="後一天">▶</button>
@@ -251,8 +251,8 @@ tbody tr:hover{background:var(--bg);}
     <input type="text" id="rec-note" style="width:150px" placeholder="備註（可選）">
     <button class="btn bp" onclick="saveAllRec()" id="i-saveall">💾 儲存</button>
     <button class="btn bg" onclick="clearRI()" id="i-clear">清除</button>
-    <button class="btn" style="background:#7C3AED;color:#fff" onclick="checkMissing()" title="檢查漏填">⚠️ 漏填</button>
-    <button class="btn" style="background:#0369a1;color:#fff" onclick="printReport()" title="列印報告">🖨️ 列印</button>
+    <button class="btn" id="btn-missing" style="background:#7C3AED;color:#fff" onclick="checkMissing()" title="Check missing">⚠️ <span id="i-missing">漏填</span></button>
+    <button class="btn" id="btn-print" style="background:#0369a1;color:#fff" onclick="printReport()" title="Print report">🖨️ <span id="i-print">列印</span></button>
   </div>
   <div class="sm-t muted mb8" id="rec-plbl" style="margin-bottom:10px;"></div>
   <div class="rgrid" id="rec-zgrid"></div>
@@ -308,7 +308,8 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ ANALYSIS ═══ -->
 <div class="pnl" id="pnl-anal">
-  <div class="cbar" style="flex-wrap:wrap;gap:6px">
+  <!-- Analysis top filter bar -->
+  <div class="cbar" style="flex-wrap:wrap;gap:6px;margin-bottom:8px">
     <span class="clbl" id="i-filter2">篩選</span>
     <select id="azone" onchange="renderAnal()" style="width:140px"><option value="all">全部區域</option></select>
     <div class="ptog">
@@ -317,12 +318,20 @@ tbody tr:hover{background:var(--bg);}
       <button class="pbtn" id="avm" onclick="setAV('month')">月 M</button>
       <button class="pbtn" id="avy" onclick="setAV('year')">年 Y</button>
     </div>
-    <button class="btn bg" onclick="navAnal(-1)" style="padding:5px 10px;font-size:15px" title="前一期">◀</button>
-    <input type="date" id="afrom" onchange="renderAnal()" style="width:128px">
-    <span class="muted">→</span>
-    <input type="date" id="ato" onchange="renderAnal()" style="width:128px">
-    <button class="btn bg" onclick="navAnal(1)" style="padding:5px 10px;font-size:15px" title="後一期">▶</button>
-    <span id="anal-lbl" style="font-size:12px;color:#6B7280;margin-left:4px"></span>
+  </div>
+  <!-- Analysis navigation bar — same style as History -->
+  <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:var(--r);padding:10px 16px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--border);">
+    <div style="width:120px"></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="btn bg sm" onclick="navAnal(-1)" style="padding:6px 14px;font-size:16px;font-weight:700">‹</button>
+      <div id="a-nav-label" style="font-size:14px;font-weight:700;color:var(--text);min-width:160px;text-align:center;">--</div>
+      <button class="btn bg sm" onclick="navAnal(1)" style="padding:6px 14px;font-size:16px;font-weight:700">›</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)">
+      <input type="date" id="afrom" onchange="renderAnal()" style="width:110px;font-size:11px">
+      <span class="muted">→</span>
+      <input type="date" id="ato" onchange="renderAnal()" style="width:110px;font-size:11px">
+    </div>
   </div>
   <div class="sgrid" id="anal-stats" style="margin-bottom:16px"></div>
   <div class="cgrid">
@@ -345,7 +354,8 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ ALERTS ═══ -->
 <div class="pnl" id="pnl-alert">
-  <div class="cbar" style="flex-wrap:wrap;gap:6px">
+  <!-- Anomaly top filter bar -->
+  <div class="cbar" style="flex-wrap:wrap;gap:6px;margin-bottom:8px">
     <span class="clbl" id="i-filter3">篩選</span>
     <select id="alzone" onchange="renderAlert()" style="width:140px"><option value="all">全部區域</option></select>
     <select id="alsev" onchange="renderAlert()" style="width:110px">
@@ -353,12 +363,20 @@ tbody tr:hover{background:var(--bg);}
       <option value="crit" id="i-crit">嚴重</option>
       <option value="warn" id="i-warn">警告</option>
     </select>
-    <button class="btn bg" onclick="navAlert(-1)" style="padding:5px 10px;font-size:15px" title="前一月">◀</button>
-    <input type="date" id="alfrom" onchange="renderAlert()" style="width:128px">
-    <span class="muted">→</span>
-    <input type="date" id="alto" onchange="renderAlert()" style="width:128px">
-    <button class="btn bg" onclick="navAlert(1)" style="padding:5px 10px;font-size:15px" title="後一月">▶</button>
-    <span id="alert-lbl" style="font-size:12px;color:#6B7280;margin-left:4px"></span>
+  </div>
+  <!-- Anomaly navigation bar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:var(--r);padding:10px 16px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--border);">
+    <div style="width:120px"></div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="btn bg sm" onclick="navAlert(-1)" style="padding:6px 14px;font-size:16px;font-weight:700">‹</button>
+      <div id="al-nav-label" style="font-size:14px;font-weight:700;color:var(--text);min-width:160px;text-align:center;">--</div>
+      <button class="btn bg sm" onclick="navAlert(1)" style="padding:6px 14px;font-size:16px;font-weight:700">›</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)">
+      <input type="date" id="alfrom" onchange="renderAlert()" style="width:110px;font-size:11px">
+      <span class="muted">→</span>
+      <input type="date" id="alto" onchange="renderAlert()" style="width:110px;font-size:11px">
+    </div>
   </div>
   <div id="alert-list"></div>
 </div>
@@ -579,6 +597,8 @@ zh:{
 en:{
   'app-title':'VRT Temp & Humidity Monitor','app-sub':'Vantage River Textiles Co., Ltd.',
   'tab-dash':'Dashboard','tab-rec':'Record','tab-hist':'History','tab-anal':'Analysis','tab-zones':'Zones','tab-alert':'Anomaly','tab-set':'Settings',
+  months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    missing:'Missing',print:'Print',
   am:'Morning 08:00~09:00',pm:'Afternoon 15:30~16:30',all:'All Day',
   cold:'Cold',cool:'Cool',ok:'Normal',warm:'Warm',hot:'Hot',dry:'Dry',humid:'Humid',vhum:'Very Humid',
   date:'Date',zone:'Zone',per:'Period',note:'Notes',act:'Actions',
@@ -1176,15 +1196,35 @@ function navAnal(dir){
   const f=document.getElementById('afrom'),t=document.getElementById('ato');
   if(!f.value||!t.value)return;
   const df=new Date(f.value+'T00:00:00'), dt=new Date(t.value+'T00:00:00');
-  const n=dir;
-  if(AV==='day'){df.setDate(df.getDate()+n);dt.setDate(dt.getDate()+n);}
-  else if(AV==='week'){df.setDate(df.getDate()+n*7);dt.setDate(dt.getDate()+n*7);}
-  else if(AV==='month'){df.setMonth(df.getMonth()+n);dt.setMonth(dt.getMonth()+n);}
-  else if(AV==='year'){df.setFullYear(df.getFullYear()+n);dt.setFullYear(dt.getFullYear()+n);}
+  if(AV==='day'){df.setDate(df.getDate()+dir);dt.setDate(dt.getDate()+dir);}
+  else if(AV==='week'){df.setDate(df.getDate()+dir*7);dt.setDate(dt.getDate()+dir*7);}
+  else if(AV==='month'){df.setMonth(df.getMonth()+dir);dt.setMonth(dt.getMonth()+dir);}
+  else if(AV==='year'){df.setFullYear(df.getFullYear()+dir);dt.setFullYear(dt.getFullYear()+dir);}
   f.value=fmtDate(df);t.value=fmtDate(dt);
-  renderAnal();
-  const lbl=document.getElementById('anal-lbl');
-  if(lbl)lbl.textContent=f.value+' → '+t.value;
+  renderAnal();renderANavLabel();
+}
+
+function renderANavLabel(){
+  const f=document.getElementById('afrom')?.value;
+  const t=document.getElementById('ato')?.value;
+  const el=document.getElementById('a-nav-label');if(!el)return;
+  if(!f){el.textContent='--';return;}
+  const mns=T('months')||['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  if(AV==='day'){
+    el.textContent=f===t?f:(f+' → '+t);
+  } else if(AV==='week'){
+    el.textContent=(f?f.slice(0,7):'')+(t&&t!==f?' → '+t.slice(0,7):'');
+  } else if(AV==='month'){
+    const fd=new Date(f),td=new Date(t);
+    if(fd.getFullYear()===td.getFullYear()&&fd.getMonth()===td.getMonth()){
+      el.textContent=mns[fd.getMonth()]+' '+fd.getFullYear();
+    } else {
+      el.textContent=mns[fd.getMonth()]+' '+fd.getFullYear()+' → '+mns[td.getMonth()]+' '+td.getFullYear();
+    }
+  } else if(AV==='year'){
+    const fy=f.slice(0,4),ty=t.slice(0,4);
+    el.textContent=fy===ty?fy:(fy+' → '+ty);
+  }
 }
 
 function navAlert(dir){
@@ -1193,9 +1233,21 @@ function navAlert(dir){
   const df=new Date(f.value+'T00:00:00'), dt=new Date(t.value+'T00:00:00');
   df.setMonth(df.getMonth()+dir);dt.setMonth(dt.getMonth()+dir);
   f.value=fmtDate(df);t.value=fmtDate(dt);
-  renderAlert();
-  const lbl=document.getElementById('alert-lbl');
-  if(lbl)lbl.textContent=f.value+' → '+t.value;
+  renderAlert();renderAlNavLabel();
+}
+
+function renderAlNavLabel(){
+  const f=document.getElementById('alfrom')?.value;
+  const t=document.getElementById('alto')?.value;
+  const el=document.getElementById('al-nav-label');if(!el)return;
+  if(!f){el.textContent='--';return;}
+  const mns=T('months')||['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const fd=new Date(f),td=new Date(t||f);
+  if(fd.getFullYear()===td.getFullYear()&&fd.getMonth()===td.getMonth()){
+    el.textContent=mns[fd.getMonth()]+' '+fd.getFullYear();
+  } else {
+    el.textContent=mns[fd.getMonth()]+' '+fd.getFullYear()+' → '+mns[td.getMonth()]+' '+td.getFullYear();
+  }
 }
 
 function fmtDate(d){
@@ -1204,6 +1256,7 @@ function fmtDate(d){
 }
 
 function renderAnal(){
+  renderANavLabel();
   const zf=document.getElementById('azone').value;
   const af=document.getElementById('afrom').value,at2=document.getElementById('ato').value;
   let recs=getR();
@@ -1327,6 +1380,7 @@ function resetZones(){confirmAction(T('crstzone'),()=>{setZ(JSON.parse(JSON.stri
 // ALERTS
 // ══════════════════════════════════════════
 function renderAlert(){
+  renderAlNavLabel();
   const zf=document.getElementById('alzone').value,sf=document.getElementById('alsev').value;
   const af=document.getElementById('alfrom').value,at2=document.getElementById('alto').value;
   let recs=getR().filter(r=>isAnom(r));
@@ -2029,6 +2083,8 @@ function init(){
   loadInspectors();
   // 初始化時設定今天的日期
   const rdInit=document.getElementById('rec-date');if(rdInit&&!rdInit.value){rdInit.value=today();loadRecDate();}
+  // 初始化 nav labels
+  setTimeout(()=>{renderANavLabel();renderAlNavLabel();},200);
 }
 window.addEventListener('load',init);
 </script></body></html>
