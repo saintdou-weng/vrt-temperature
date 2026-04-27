@@ -292,9 +292,9 @@ tbody tr:hover{background:var(--bg);}
       </select>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <button class="btn bg sm" onclick="navHist(-1)" style="padding:6px 14px;font-size:16px;font-weight:700">‹</button>
+      <button class="btn bg sm" id="h-prev-btn" onclick="navHist(-1)" style="padding:6px 14px;font-weight:700">◀ 前月</button>
       <div id="h-nav-label" style="font-size:14px;font-weight:700;color:var(--text);min-width:140px;text-align:center;">--</div>
-      <button class="btn bg sm" onclick="navHist(1)" style="padding:6px 14px;font-size:16px;font-weight:700">›</button>
+      <button class="btn bg sm" id="h-next-btn" onclick="navHist(1)" style="padding:6px 14px;font-weight:700">後月 ▶</button>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <input type="date" id="hfrom" onchange="renderHist()" style="width:130px">
@@ -308,8 +308,7 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ ANALYSIS ═══ -->
 <div class="pnl" id="pnl-anal">
-  <!-- Analysis top filter bar -->
-  <div class="cbar" style="flex-wrap:wrap;gap:6px;margin-bottom:8px">
+  <div class="cbar" style="flex-wrap:wrap;gap:8px;align-items:center">
     <span class="clbl" id="i-filter2">篩選</span>
     <select id="azone" onchange="renderAnal()" style="width:140px"><option value="all">全部區域</option></select>
     <div class="ptog">
@@ -318,21 +317,13 @@ tbody tr:hover{background:var(--bg);}
       <button class="pbtn" id="avm" onclick="setAV('month')">月 M</button>
       <button class="pbtn" id="avy" onclick="setAV('year')">年 Y</button>
     </div>
+    <input type="date" id="a-anchor" onchange="onAnalAnchorChange()" style="width:140px">
+    <button class="btn bg sm" id="a-prev-btn" onclick="navAnal(-1)" style="font-weight:700">◀ 前日</button>
+    <button class="btn bg sm" id="a-next-btn" onclick="navAnal(1)" style="font-weight:700">後日 ▶</button>
+    <span id="a-nav-label" style="font-size:12px;color:var(--text2);margin-left:4px"></span>
   </div>
-  <!-- Analysis navigation bar — same style as History -->
-  <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:var(--r);padding:10px 16px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--border);">
-    <div style="width:120px"></div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <button class="btn bg sm" onclick="navAnal(-1)" style="padding:6px 14px;font-size:16px;font-weight:700">‹</button>
-      <div id="a-nav-label" style="font-size:14px;font-weight:700;color:var(--text);min-width:160px;text-align:center;">--</div>
-      <button class="btn bg sm" onclick="navAnal(1)" style="padding:6px 14px;font-size:16px;font-weight:700">›</button>
-    </div>
-    <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)">
-      <input type="date" id="afrom" onchange="renderAnal()" style="width:110px;font-size:11px">
-      <span class="muted">→</span>
-      <input type="date" id="ato" onchange="renderAnal()" style="width:110px;font-size:11px">
-    </div>
-  </div>
+  <!-- hidden inputs kept for renderAnal() compatibility -->
+  <input type="hidden" id="afrom"><input type="hidden" id="ato">
   <div class="sgrid" id="anal-stats" style="margin-bottom:16px"></div>
   <div class="cgrid">
     <div class="card"><div class="chd"><span class="ct" id="i-cht">🌡️ 溫度趨勢</span></div><div class="cb"><div class="chc"><canvas id="ctmp"></canvas></div></div></div>
@@ -354,8 +345,7 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ ALERTS ═══ -->
 <div class="pnl" id="pnl-alert">
-  <!-- Anomaly top filter bar -->
-  <div class="cbar" style="flex-wrap:wrap;gap:6px;margin-bottom:8px">
+  <div class="cbar" style="flex-wrap:wrap;gap:8px;align-items:center">
     <span class="clbl" id="i-filter3">篩選</span>
     <select id="alzone" onchange="renderAlert()" style="width:140px"><option value="all">全部區域</option></select>
     <select id="alsev" onchange="renderAlert()" style="width:110px">
@@ -363,21 +353,12 @@ tbody tr:hover{background:var(--bg);}
       <option value="crit" id="i-crit">嚴重</option>
       <option value="warn" id="i-warn">警告</option>
     </select>
+    <input type="month" id="al-anchor" onchange="onAlertAnchorChange()" style="width:140px">
+    <button class="btn bg sm" onclick="navAlert(-1)" style="font-weight:700">◀ 上月</button>
+    <button class="btn bg sm" onclick="navAlert(1)" style="font-weight:700">下月 ▶</button>
+    <span id="al-nav-label" style="font-size:12px;color:var(--text2);margin-left:4px"></span>
   </div>
-  <!-- Anomaly navigation bar -->
-  <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:var(--r);padding:10px 16px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--border);">
-    <div style="width:120px"></div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <button class="btn bg sm" onclick="navAlert(-1)" style="padding:6px 14px;font-size:16px;font-weight:700">‹</button>
-      <div id="al-nav-label" style="font-size:14px;font-weight:700;color:var(--text);min-width:160px;text-align:center;">--</div>
-      <button class="btn bg sm" onclick="navAlert(1)" style="padding:6px 14px;font-size:16px;font-weight:700">›</button>
-    </div>
-    <div style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text2)">
-      <input type="date" id="alfrom" onchange="renderAlert()" style="width:110px;font-size:11px">
-      <span class="muted">→</span>
-      <input type="date" id="alto" onchange="renderAlert()" style="width:110px;font-size:11px">
-    </div>
-  </div>
+  <input type="hidden" id="alfrom"><input type="hidden" id="alto">
   <div id="alert-list"></div>
 </div>
 
@@ -1056,7 +1037,7 @@ function openREfromDash(zid,date){const r=getR().filter(r=>r.z===zid&&r.d===date
 function setHV(v){
   HV=v;HP=1;
   const sel=document.getElementById('hview');if(sel)sel.value=v;
-  renderHNavLabel();renderHist();
+  updateHistBtnLabel();renderHNavLabel();renderHist();
 }
 
 function syncZoneFilter(){
@@ -1190,70 +1171,9 @@ function renderPagi(total,elId,cb){
 // ANALYSIS
 // ══════════════════════════════════════════
 let chT=null,chH=null,chA=null;
-function setAV(v){AV=v;['day','week','month','year'].forEach(x=>document.getElementById('av'+x[0]).classList.toggle('on',x===v));renderAnal();}
+function setAV(v){AV=v;['day','week','month','year'].forEach(x=>document.getElementById('av'+x[0]).classList.toggle('on',x===v));updateAnalBtnLabel();updateAnalRange();renderAnal();}
 
-function navAnal(dir){
-  const f=document.getElementById('afrom'),t=document.getElementById('ato');
-  if(!f.value||!t.value)return;
-  const df=new Date(f.value+'T00:00:00'), dt=new Date(t.value+'T00:00:00');
-  if(AV==='day'){df.setDate(df.getDate()+dir);dt.setDate(dt.getDate()+dir);}
-  else if(AV==='week'){df.setDate(df.getDate()+dir*7);dt.setDate(dt.getDate()+dir*7);}
-  else if(AV==='month'){df.setMonth(df.getMonth()+dir);dt.setMonth(dt.getMonth()+dir);}
-  else if(AV==='year'){df.setFullYear(df.getFullYear()+dir);dt.setFullYear(dt.getFullYear()+dir);}
-  f.value=fmtDate(df);t.value=fmtDate(dt);
-  renderAnal();renderANavLabel();
-}
 
-function renderANavLabel(){
-  const f=document.getElementById('afrom')?.value;
-  const t=document.getElementById('ato')?.value;
-  const el=document.getElementById('a-nav-label');if(!el)return;
-  if(!f){el.textContent='--';return;}
-  const mns=T('months')||['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  if(AV==='day'){
-    el.textContent=f===t?f:(f+' → '+t);
-  } else if(AV==='week'){
-    el.textContent=(f?f.slice(0,7):'')+(t&&t!==f?' → '+t.slice(0,7):'');
-  } else if(AV==='month'){
-    const fd=new Date(f),td=new Date(t);
-    if(fd.getFullYear()===td.getFullYear()&&fd.getMonth()===td.getMonth()){
-      el.textContent=mns[fd.getMonth()]+' '+fd.getFullYear();
-    } else {
-      el.textContent=mns[fd.getMonth()]+' '+fd.getFullYear()+' → '+mns[td.getMonth()]+' '+td.getFullYear();
-    }
-  } else if(AV==='year'){
-    const fy=f.slice(0,4),ty=t.slice(0,4);
-    el.textContent=fy===ty?fy:(fy+' → '+ty);
-  }
-}
-
-function navAlert(dir){
-  const f=document.getElementById('alfrom'),t=document.getElementById('alto');
-  if(!f.value||!t.value)return;
-  const df=new Date(f.value+'T00:00:00'), dt=new Date(t.value+'T00:00:00');
-  df.setMonth(df.getMonth()+dir);dt.setMonth(dt.getMonth()+dir);
-  f.value=fmtDate(df);t.value=fmtDate(dt);
-  renderAlert();renderAlNavLabel();
-}
-
-function renderAlNavLabel(){
-  const f=document.getElementById('alfrom')?.value;
-  const t=document.getElementById('alto')?.value;
-  const el=document.getElementById('al-nav-label');if(!el)return;
-  if(!f){el.textContent='--';return;}
-  const mns=T('months')||['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const fd=new Date(f),td=new Date(t||f);
-  if(fd.getFullYear()===td.getFullYear()&&fd.getMonth()===td.getMonth()){
-    el.textContent=mns[fd.getMonth()]+' '+fd.getFullYear();
-  } else {
-    el.textContent=mns[fd.getMonth()]+' '+fd.getFullYear()+' → '+mns[td.getMonth()]+' '+td.getFullYear();
-  }
-}
-
-function fmtDate(d){
-  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
-  return y+'-'+m+'-'+day;
-}
 
 function renderAnal(){
   renderANavLabel();
@@ -1832,6 +1752,146 @@ function loadInspectors(){
 }
 
 // ══════════════════════════════════════════
+// DATE NAV — Cutting style: anchor + [◀ 前X] [後X ▶]
+// ══════════════════════════════════════════
+
+function fmtDate(d){
+  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
+  return y+'-'+m+'-'+day;
+}
+
+// ── ANALYSIS anchor logic ──────────────────
+// One anchor date → compute from/to based on AV, update hidden inputs, render
+
+function getAnalAnchor(){
+  const el=document.getElementById('a-anchor');
+  if(!el||!el.value) return new Date();
+  return new Date(el.value+'T00:00:00');
+}
+
+function setAnalAnchor(d){
+  const el=document.getElementById('a-anchor');
+  if(el) el.value=fmtDate(d);
+  updateAnalRange();
+}
+
+function onAnalAnchorChange(){
+  updateAnalRange();
+  renderAnal();
+}
+
+function updateAnalRange(){
+  const anchor=getAnalAnchor();
+  let from=new Date(anchor), to=new Date(anchor);
+  if(AV==='day'){
+    // from=to=anchor
+  } else if(AV==='week'){
+    const dow=anchor.getDay()||7; // Mon=1
+    from.setDate(anchor.getDate()-(dow-1));
+    to.setDate(from.getDate()+6);
+  } else if(AV==='month'){
+    from=new Date(anchor.getFullYear(),anchor.getMonth(),1);
+    to=new Date(anchor.getFullYear(),anchor.getMonth()+1,0);
+  } else if(AV==='year'){
+    from=new Date(anchor.getFullYear(),0,1);
+    to=new Date(anchor.getFullYear(),11,31);
+  }
+  const fi=document.getElementById('afrom'),ti=document.getElementById('ato');
+  if(fi)fi.value=fmtDate(from);
+  if(ti)ti.value=fmtDate(to);
+  updateAnalBtnLabel();
+  renderANavLabel();
+}
+
+function updateAnalBtnLabel(){
+  const prev=document.getElementById('a-prev-btn'), next=document.getElementById('a-next-btn');
+  const labels={day:['◀ 前日','後日 ▶'],week:['◀ 上週','下週 ▶'],month:['◀ 上月','下月 ▶'],year:['◀ 上年','下年 ▶']};
+  const l=labels[AV]||['◀','▶'];
+  if(prev)prev.textContent=l[0];
+  if(next)next.textContent=l[1];
+}
+
+function navAnal(dir){
+  const anchor=getAnalAnchor();
+  if(AV==='day')   anchor.setDate(anchor.getDate()+dir);
+  else if(AV==='week')  anchor.setDate(anchor.getDate()+dir*7);
+  else if(AV==='month') anchor.setMonth(anchor.getMonth()+dir);
+  else if(AV==='year')  anchor.setFullYear(anchor.getFullYear()+dir);
+  setAnalAnchor(anchor);
+  renderAnal();
+}
+
+function renderANavLabel(){
+  const f=document.getElementById('afrom')?.value;
+  const t=document.getElementById('ato')?.value;
+  const el=document.getElementById('a-nav-label');if(!el)return;
+  if(!f){el.textContent='';return;}
+  const mns=T('months')||['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  if(AV==='day'){
+    el.textContent=f;
+  } else if(AV==='week'){
+    el.textContent=f+' → '+t;
+  } else if(AV==='month'){
+    const fd=new Date(f);
+    el.textContent=mns[fd.getMonth()]+' '+fd.getFullYear();
+  } else if(AV==='year'){
+    el.textContent=f.slice(0,4);
+  }
+}
+
+// ── ANOMALY anchor logic ───────────────────
+
+function getAlertAnchor(){
+  const el=document.getElementById('al-anchor');
+  if(!el||!el.value) return new Date();
+  const parts=el.value.split('-');
+  return new Date(parseInt(parts[0]),parseInt(parts[1])-1,1);
+}
+
+function setAlertAnchor(d){
+  const el=document.getElementById('al-anchor');
+  if(el) el.value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+  updateAlertRange();
+}
+
+function onAlertAnchorChange(){
+  updateAlertRange();
+  renderAlert();
+}
+
+function updateAlertRange(){
+  const d=getAlertAnchor();
+  const from=new Date(d.getFullYear(),d.getMonth(),1);
+  const to=new Date(d.getFullYear(),d.getMonth()+1,0);
+  const fi=document.getElementById('alfrom'),ti=document.getElementById('alto');
+  if(fi)fi.value=fmtDate(from);
+  if(ti)ti.value=fmtDate(to);
+  renderAlNavLabel();
+}
+
+function navAlert(dir){
+  const d=getAlertAnchor();
+  d.setMonth(d.getMonth()+dir);
+  setAlertAnchor(d);
+  renderAlert();
+}
+
+function renderAlNavLabel(){
+  const el=document.getElementById('al-nav-label');if(!el)return;
+  const d=getAlertAnchor();
+  const mns=T('months')||['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  el.textContent=mns[d.getMonth()]+' '+d.getFullYear();
+}
+
+// ── HISTORY button label update when HV changes ─
+function updateHistBtnLabel(){
+  const labels={day:['◀ 前日','後日 ▶'],week:['◀ 上週','下週 ▶'],month:['◀ 上月','下月 ▶'],year:['◀ 上年','下年 ▶']};
+  const l=labels[HV]||['◀ 前月','後月 ▶'];
+  const p=document.getElementById('h-prev-btn'),n=document.getElementById('h-next-btn');
+  if(p)p.textContent=l[0];if(n)n.textContent=l[1];
+}
+
+// ══════════════════════════════════════════
 // GAS CLOUD SYNC (v3 — POST-only)
 // ══════════════════════════════════════════
 
@@ -2083,8 +2143,21 @@ function init(){
   loadInspectors();
   // 初始化時設定今天的日期
   const rdInit=document.getElementById('rec-date');if(rdInit&&!rdInit.value){rdInit.value=today();loadRecDate();}
-  // 初始化 nav labels
-  setTimeout(()=>{renderANavLabel();renderAlNavLabel();},200);
+  // 初始化 nav anchors
+  setTimeout(()=>{
+    // Analysis anchor: 今天
+    const aAnchor=document.getElementById('a-anchor');
+    if(aAnchor&&!aAnchor.value){aAnchor.value=today();}
+    updateAnalBtnLabel();updateAnalRange();
+    // Anomaly anchor: 今月
+    const alAnchor=document.getElementById('al-anchor');
+    if(alAnchor&&!alAnchor.value){
+      const n=new Date();
+      alAnchor.value=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0');
+    }
+    updateAlertRange();
+    updateHistBtnLabel();renderHNavLabel();
+  },200);
 }
 window.addEventListener('load',init);
 </script></body></html>
