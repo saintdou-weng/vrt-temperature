@@ -42,10 +42,10 @@ body{font-family:'DM Sans','Noto Sans KH',sans-serif;background:var(--bg);color:
 .modal{background:#fff;border-radius:14px;padding:22px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
 .mt{font-size:17px;font-weight:700;margin-bottom:18px;}
 .mf{display:flex;gap:9px;justify-content:flex-end;margin-top:18px;}
-.pv{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:400;display:none;align-items:center;justify-content:center;}
-.pv.open{display:flex;}
-.pv img{max-width:90vw;max-height:90vh;border-radius:8px;}
-.pv-c{position:absolute;top:18px;right:22px;color:#fff;font-size:26px;cursor:pointer;background:none;border:none;}
+
+
+
+
 .wrap{max-width:1000px;margin:0 auto;padding:16px 14px;}
 .card{background:var(--card);border-radius:13px;box-shadow:var(--shadow);padding:18px;margin-bottom:14px;}
 .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
@@ -118,13 +118,27 @@ tr:hover td{background:#F9FCF9;}
 .sct{font-size:13px;font-weight:700;color:var(--teal);margin-bottom:10px;}
 .pg{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:3px;}
 .pf{height:100%;background:var(--mint);border-radius:3px;transition:width .4s;}
-.pu{border:2px dashed var(--border);border-radius:11px;padding:18px;text-align:center;cursor:pointer;transition:all .2s;}
-.pu:hover{border-color:var(--mint);background:var(--mint-l);}
-.pu input{display:none;}
-.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:7px;margin-top:9px;}
-.pthumb{position:relative;aspect-ratio:1;border-radius:7px;overflow:hidden;}
-.pthumb img{width:100%;height:100%;object-fit:cover;}
-.pdel{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:50%;width:17px;height:17px;font-size:10px;cursor:pointer;}
+
+
+
+
+
+
+
+/* PHOTO */
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:7px;margin-top:9px;}
+.pthumb{position:relative;aspect-ratio:1;border-radius:7px;overflow:hidden;border:1.5px solid var(--border);}
+.pthumb img{width:100%;height:100%;object-fit:cover;cursor:pointer;}
+.pdel{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.photo-add{aspect-ratio:1;border-radius:7px;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:20px;color:var(--soft);transition:all .2s;background:#fff;}
+.photo-add:hover{border-color:var(--mint);color:var(--mint);background:var(--mint-l);}
+.photo-add input{display:none;}
+.photo-limit{font-size:10px;color:var(--soft);margin-top:4px;text-align:center;}
+/* PHOTO VIEWER */
+.pv{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:400;display:none;align-items:center;justify-content:center;}
+.pv.open{display:flex;}
+.pv img{max-width:92vw;max-height:92vh;border-radius:8px;}
+.pv-c{position:absolute;top:18px;right:22px;color:#fff;font-size:28px;cursor:pointer;background:none;border:none;}
 /* CLOUD STATUS BAR */
 .cloud-bar{display:none;padding:11px 16px;border-radius:9px;font-size:12px;font-weight:600;margin-bottom:12px;align-items:center;gap:10px;animation:fadeIn .3s;}
 .cloud-bar.show{display:flex;}
@@ -179,6 +193,7 @@ tr:hover td{background:#F9FCF9;}
 </div>
 
 <div class="pv" id="photoViewer" onclick="closePV()"><button class="pv-c">✕</button><img id="pvImg" src="" alt=""></div>
+<input type="file" id="globalPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhotoAdd(event)">
 
 <div class="mbg" id="addLocModal">
   <div class="modal">
@@ -200,15 +215,7 @@ tr:hover td{background:#F9FCF9;}
     <div class="fg"><label class="fl" id="importDateLabel">Date</label><input class="fi" type="date" id="importDate"></div>
     <div class="fg mt8"><label class="fl" id="importLocLabel">Location</label><select class="fsel" id="importLoc"></select></div>
     <div class="fg mt8"><label class="fl" id="importNoteLabel">Note</label><input class="fi" id="importNote" placeholder="Description..."></div>
-    <div class="fg mt8">
-      <label class="fl" id="importPhotoLabel">Photos</label>
-      <div class="pu" onclick="document.getElementById('importPhotoInput').click()">
-        <div style="font-size:26px">📷</div>
-        <div id="importPhotoText" style="font-size:12px;color:var(--soft);margin-top:5px">Click to upload</div>
-        <input type="file" id="importPhotoInput" multiple accept="image/*" onchange="previewIPh(event)">
-      </div>
-      <div class="pgrid" id="importPhotoGrid"></div>
-    </div>
+    
     <div class="mf"><button class="btn bs" onclick="closeImport()">Cancel</button><button class="btn bp" onclick="saveImport()" id="saveImportBtn">Save</button></div>
   </div>
 </div>
@@ -266,14 +273,12 @@ tr:hover td{background:#F9FCF9;}
     <div class="cg" id="checkItems"></div>
     <div class="sep"></div>
     <div class="fg"><label class="fl" id="recNoteLabel">Note / Remarks</label><textarea class="fta" id="recNote" placeholder="Anomaly, issue..."></textarea></div>
+    
     <div class="sep"></div>
-    <div class="ct" id="recPhotoLabel" style="margin-bottom:9px">Photos</div>
-    <div class="pu" onclick="document.getElementById('recPhotoInput').click()">
-      <div style="font-size:26px">📷</div>
-      <div id="recPhotoText" style="font-size:12px;color:var(--soft);margin-top:5px">Click to upload photos</div>
-      <input type="file" id="recPhotoInput" multiple accept="image/*" onchange="previewRPh(event)">
+    <div class="fl2 aic jb" style="margin-bottom:9px">
+      <div class="ct">📷 Photos <span id="photoCountLabel" style="font-size:11px;color:var(--soft);font-weight:400">（最多 2 張 / Max 2）</span></div>
     </div>
-    <div class="pgrid" id="recPhotoGrid" style="margin-top:9px"></div>
+    <div class="pgrid" id="recPhotoGrid"></div>
     <div class="sep"></div>
     <div class="fl2 g8 jb fw">
       <button class="btn bs" onclick="clearForm()" id="clearBtn">Clear</button>
@@ -456,7 +461,6 @@ let cfgSlots     = JSON.parse(localStorage.getItem('vrt_slots')     || JSON.stri
 // 合併寫死預設值 + localStorage 已儲存的設定（localStorage 優先）
 let cfg = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem('vrt_cfg') || '{}'));
 
-let importPhotos=[], recPhotos=[];
 let dbPeriod='day', histPeriod='day', anaPeriod='week', histOffset=0;
 let curSec='dashboard';
 let selSlots=[], checkState={smell:null,light:null,floor:null,door:null,corner:null,ceiling:null};
@@ -488,13 +492,13 @@ const T = {
     nav:['📊 Dashboard','✏️ New Record','📋 History','⭐ 6S Check','📈 Analysis','📍 Locations','⚙️ Settings'],
     dbTitle:'Dashboard',dbDate:'',dbCompTitle:'Completion by Location',dbTrendTitle:'7-Day Trend',dbRecentTitle:'Recent Records',
     recTitle:'New Cleaning Record',recDateLabel:'Date',recLocLabel:'Location',recCleanerLabel:'Cleaned By',recCheckerLabel:'Checked By',
-    recSlotsTitle:'Time Slots',recItemsTitle:'Check Items',recNoteLabel:'Note / Remarks',recPhotoLabel:'Photos',recPhotoText:'Click to upload photos',clearBtn:'Clear',saveBtn:'💾 Save Record',
+    recSlotsTitle:'Time Slots',recItemsTitle:'Check Items',recNoteLabel:'Note / Remarks',clearBtn:'Clear',saveBtn:'💾 Save Record',
     histTitle:'History Records',importBtn:'📎 Import',
     sixsTitle:'6S Workplace Diagnostic',sixsObsLabel:'Observer',sixsScoreLabel:'Total Score',sixsResetBtn:'Reset',sixsSaveBtn:'💾 Save 6S',sixsHistLabel:'6S History',
     anaTitle:'Analysis',anaPassTitle:'Pass Rate by Item',anaLocTitle:'Records by Location',anaAnomalyTitle:'Anomaly Summary',anaSixsTitle:'6S Score Trend',
     locTitle:'Manage Locations',addLocBtn:'+ Add',
     addLocTitle:'Add Location',locNameLabel:'Location Name',locTypeLabel:'Type',cancelBtn:'Cancel',confirmAddBtn:'Add',
-    importTitle:'Import Historical Record',importDateLabel:'Date',importLocLabel:'Location',importNoteLabel:'Note',importPhotoLabel:'Photos',importPhotoText:'Click to upload',saveImportBtn:'Save',
+    importTitle:'Import Historical Record',importDateLabel:'Date',importLocLabel:'Location',importNoteLabel:'Note',saveImportBtn:'Save',
     ptDay:'Day',ptWeek:'Week',ptMonth:'Month',ptYear:'Year',apTitle:'Anomaly Alerts',
     checkItems:{smell:'Smell',light:'Light',floor:'Floor',door:'Door',corner:'Corner',ceiling:'Ceiling'},
     checkIcons:{smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'},
@@ -518,13 +522,13 @@ const T = {
     nav:['📊 儀表板','✏️ 新增記錄','📋 歷史記錄','⭐ 6S檢查','📈 分析','📍 地點管理','⚙️ 設定'],
     dbTitle:'儀表板',dbDate:'',dbCompTitle:'各地點完成率',dbTrendTitle:'7天趨勢',dbRecentTitle:'最近記錄',
     recTitle:'新增清潔記錄',recDateLabel:'日期',recLocLabel:'地點',recCleanerLabel:'清潔員',recCheckerLabel:'檢查員',
-    recSlotsTitle:'清潔時段',recItemsTitle:'檢查項目',recNoteLabel:'備注/異常',recPhotoLabel:'照片',recPhotoText:'點擊上傳照片',clearBtn:'清除',saveBtn:'💾 儲存記錄',
+    recSlotsTitle:'清潔時段',recItemsTitle:'檢查項目',recNoteLabel:'備注/異常',clearBtn:'清除',saveBtn:'💾 儲存記錄',
     histTitle:'歷史記錄',importBtn:'📎 匯入',
     sixsTitle:'6S工作場所診斷',sixsObsLabel:'觀察員',sixsScoreLabel:'總分',sixsResetBtn:'重置',sixsSaveBtn:'💾 儲存6S',sixsHistLabel:'6S歷史',
     anaTitle:'數據分析',anaPassTitle:'各項目通過率',anaLocTitle:'各地點記錄數',anaAnomalyTitle:'異常匯總',anaSixsTitle:'6S分數趨勢',
     locTitle:'地點管理',addLocBtn:'+ 新增',
     addLocTitle:'新增地點',locNameLabel:'地點名稱',locTypeLabel:'類型',cancelBtn:'取消',confirmAddBtn:'新增',
-    importTitle:'匯入歷史記錄',importDateLabel:'日期',importLocLabel:'地點',importNoteLabel:'備注',importPhotoLabel:'照片',importPhotoText:'點擊上傳',saveImportBtn:'儲存',
+    importTitle:'匯入歷史記錄',importDateLabel:'日期',importLocLabel:'地點',importNoteLabel:'備注',saveImportBtn:'儲存',
     ptDay:'日',ptWeek:'週',ptMonth:'月',ptYear:'年',apTitle:'異常警報',
     checkItems:{smell:'氣味',light:'燈光',floor:'地板',door:'門',corner:'角落',ceiling:'天花'},
     checkIcons:{smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'},
@@ -548,13 +552,13 @@ const T = {
     nav:['📊 ផ្ទាំង','✏️ បន្ថែម','📋 ប្រវត្តិ','⭐ 6S','📈 វិភាគ','📍 ទីតាំង','⚙️ ការកំណត់'],
     dbTitle:'ផ្ទាំងគ្រប់គ្រង',dbDate:'',dbCompTitle:'ការបញ្ចប់',dbTrendTitle:'7ថ្ងៃ',dbRecentTitle:'ថ្មីៗ',
     recTitle:'កំណត់ត្រាសំអាត',recDateLabel:'កាលបរិច្ឆេទ',recLocLabel:'ទីតាំង',recCleanerLabel:'អ្នកសំអាត',recCheckerLabel:'អ្នកត្រួតពិនិត្យ',
-    recSlotsTitle:'ម៉ោងសំអាត',recItemsTitle:'ធាតុពិនិត្យ',recNoteLabel:'ចំណាំ',recPhotoLabel:'រូបភាព',recPhotoText:'ចុចផ្ទុក',clearBtn:'លុប',saveBtn:'💾 រក្សាទុក',
+    recSlotsTitle:'ម៉ោងសំអាត',recItemsTitle:'ធាតុពិនិត្យ',recNoteLabel:'ចំណាំ',clearBtn:'លុប',saveBtn:'💾 រក្សាទុក',
     histTitle:'ប្រវត្តិ',importBtn:'📎 នាំចូល',
     sixsTitle:'6S',sixsObsLabel:'អ្នកត្រួតពិនិត្យ',sixsScoreLabel:'ពិន្ទុ',sixsResetBtn:'កំណត់ឡើងវិញ',sixsSaveBtn:'💾 រក្សា 6S',sixsHistLabel:'ប្រវត្តិ 6S',
     anaTitle:'វិភាគ',anaPassTitle:'អត្រាជាប់',anaLocTitle:'តាមទីតាំង',anaAnomalyTitle:'មិនប្រក្រតី',anaSixsTitle:'6S',
     locTitle:'ទីតាំង',addLocBtn:'+ បន្ថែម',
     addLocTitle:'បន្ថែម',locNameLabel:'ឈ្មោះ',locTypeLabel:'ប្រភេទ',cancelBtn:'បោះបង់',confirmAddBtn:'បន្ថែម',
-    importTitle:'នាំចូល',importDateLabel:'កាលបរិច្ឆេទ',importLocLabel:'ទីតាំង',importNoteLabel:'ចំណាំ',importPhotoLabel:'រូបភាព',importPhotoText:'ចុចផ្ទុក',saveImportBtn:'រក្សាទុក',
+    importTitle:'នាំចូល',importDateLabel:'កាលបរិច្ឆេទ',importLocLabel:'ទីតាំង',importNoteLabel:'ចំណាំ',saveImportBtn:'រក្សាទុក',
     ptDay:'ថ្ងៃ',ptWeek:'សប្តាហ៍',ptMonth:'ខែ',ptYear:'ឆ្នាំ',apTitle:'ការជូនដំណឹង',
     checkItems:{smell:'ក្លិន',light:'អំពូល',floor:'ជាន់',door:'ទ្វារ',corner:'ជ្រុង',ceiling:'ពិដាន'},
     checkIcons:{smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'},
@@ -607,7 +611,7 @@ function setLang(l,e){
   localStorage.setItem('vrt_lang',lang);
 }
 function applyLang(){
-  const ks=['hTitle','dbTitle','dbCompTitle','dbTrendTitle','dbRecentTitle','recTitle','recDateLabel','recLocLabel','recCleanerLabel','recCheckerLabel','recSlotsTitle','recItemsTitle','recNoteLabel','recPhotoLabel','recPhotoText','clearBtn','saveBtn','histTitle','importBtn','sixsTitle','sixsObsLabel','sixsScoreLabel','sixsResetBtn','sixsSaveBtn','sixsHistLabel','anaTitle','anaPassTitle','anaLocTitle','anaAnomalyTitle','anaSixsTitle','locTitle','addLocBtn','addLocTitle','locNameLabel','locTypeLabel','cancelBtn','confirmAddBtn','importTitle','importDateLabel','importLocLabel','importNoteLabel','importPhotoLabel','importPhotoText','saveImportBtn','ptDay','ptWeek','ptMonth','ptYear','apTitle'];
+  const ks=['hTitle','dbTitle','dbCompTitle','dbTrendTitle','dbRecentTitle','recTitle','recDateLabel','recLocLabel','recCleanerLabel','recCheckerLabel','recSlotsTitle','recItemsTitle','recNoteLabel','clearBtn','saveBtn','histTitle','importBtn','sixsTitle','sixsObsLabel','sixsScoreLabel','sixsResetBtn','sixsSaveBtn','sixsHistLabel','anaTitle','anaPassTitle','anaLocTitle','anaAnomalyTitle','anaSixsTitle','locTitle','addLocBtn','addLocTitle','locNameLabel','locTypeLabel','cancelBtn','confirmAddBtn','importTitle','importDateLabel','importLocLabel','importNoteLabel','saveImportBtn','ptDay','ptWeek','ptMonth','ptYear','apTitle'];
   ks.forEach(k=>{const el=document.getElementById(k);if(el)el.textContent=t(k);});
   ['nav-dashboard','nav-record','nav-history','nav-sixs','nav-analysis','nav-locations','nav-settings'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=t('nav')[i];});
   document.getElementById('dbDate').textContent=new Date().toLocaleDateString(lang==='zh'?'zh-TW':lang==='kh'?'km-KH':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
@@ -653,6 +657,7 @@ function initForm(){
   renderSlots();
   renderCheckItems();
   render6SChecklist();
+  renderPhotoGrid();
 }
 
 function populateLocSelects(){
@@ -724,23 +729,6 @@ function allReset(){Object.keys(checkState).forEach(k=>checkState[k]=null);rende
 // ════════════════════════════════════
 //  PHOTOS
 // ════════════════════════════════════
-function previewRPh(e){
-  const grid=document.getElementById('recPhotoGrid');
-  Array.from(e.target.files).forEach(f=>{
-    const r=new FileReader();r.onload=ev=>{
-      recPhotos.push(ev.target.result);const idx=recPhotos.length-1;
-      const d=document.createElement('div');d.className='pthumb';
-      d.innerHTML=`<img src="${ev.target.result}" onclick="showPV('${ev.target.result}')"><button class="pdel" onclick="delRP(${idx})">✕</button>`;
-      grid.appendChild(d);};r.readAsDataURL(f);});
-}
-function delRP(i){recPhotos.splice(i,1);const g=document.getElementById('recPhotoGrid');g.innerHTML='';recPhotos.forEach((p,idx)=>{const d=document.createElement('div');d.className='pthumb';d.innerHTML=`<img src="${p}" onclick="showPV('${p}')"><button class="pdel" onclick="delRP(${idx})">✕</button>`;g.appendChild(d);});}
-function previewIPh(e){
-  const grid=document.getElementById('importPhotoGrid');
-  Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=ev=>{importPhotos.push(ev.target.result);const idx=importPhotos.length-1;const d=document.createElement('div');d.className='pthumb';d.innerHTML=`<img src="${ev.target.result}" onclick="showPV('${ev.target.result}')"><button class="pdel" onclick="delIP(${idx})">✕</button>`;grid.appendChild(d);};r.readAsDataURL(f);});
-}
-function delIP(i){importPhotos.splice(i,1);const g=document.getElementById('importPhotoGrid');g.innerHTML='';importPhotos.forEach((p,idx)=>{const d=document.createElement('div');d.className='pthumb';d.innerHTML=`<img src="${p}" onclick="showPV('${p}')"><button class="pdel" onclick="delIP(${idx})">✕</button>`;g.appendChild(d);});}
-function showPV(src){document.getElementById('pvImg').src=src;document.getElementById('photoViewer').classList.add('open');}
-function closePV(){document.getElementById('photoViewer').classList.remove('open');}
 
 // ════════════════════════════════════
 //  SAVE RECORD
@@ -761,25 +749,51 @@ function saveRecord(){
   const rec=buildRec();if(!rec)return;
   records.unshift(rec);saveAll();clearForm();checkAnomalies();
   toast('✅ Record saved! / 記錄已儲存！','success');
-  if(cfg.tgOnSave)sendTg(recMsg(rec));
+  if(cfg.tgOnSave) sendTgReport(rec);   // 文字 + 照片一起發
   showSec('dashboard');renderAll();
 }
+
 async function saveAndUpload(){
   const rec=buildRec();if(!rec)return;
+  const photos=[...rec.photos]; // 儲存前先拿到照片
   records.unshift(rec);saveAll();clearForm();checkAnomalies();
-  toast('⏳ Uploading...','info',5000);
+
+  // 1. 上傳文字記錄到 Sheets
+  toast('⏳ Uploading record...','info',6000);
   const ok=await uploadToGas(rec);
-  if(ok){rec.synced=true;saveAll();toast('☁️ Saved & uploaded! / 已上傳！','success');}
-  if(cfg.tgOnSave)sendTg(recMsg(rec));
+  if(ok){ rec.synced=true; saveAll(); }
+
+  // 2. 上傳照片到 Google Drive
+  const driveUrls=[];
+  if(photos.length && cfg.gasUrl){
+    showCloud(`⏳ 上傳照片到 Drive... 0/${photos.length}`,'info');
+    for(let i=0;i<photos.length;i++){
+      const url=await uploadPhotoToDrive(photos[i], rec.id, i);
+      if(url) driveUrls.push(url);
+      showCloud(`⏳ 上傳照片 ${i+1}/${photos.length} 到 Drive...`,'info');
+      await new Promise(x=>setTimeout(x,300));
+    }
+    if(driveUrls.length){
+      rec.driveUrls=driveUrls; saveAll();
+      showCloud(`✅ ${driveUrls.length} 張照片已存至 Google Drive`,'success',5000);
+    }
+  }
+
+  // 3. Telegram：文字 + 照片
+  if(cfg.tgOnSave){
+    await sendTgReport(rec, driveUrls);
+  }
+
+  toast(ok?'☁️ 全部上傳完成！':'⚠️ 文字已儲存，雲端上傳失敗',ok?'success':'',3000);
   showSec('dashboard');renderAll();
 }
+
 function clearForm(){
   checkState={smell:null,light:null,floor:null,door:null,corner:null,ceiling:null};
   selSlots=[];recPhotos=[];
-  ['recNote'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  const rn=document.getElementById('recNote');if(rn)rn.value='';
   ['recCleaner','recChecker'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  document.getElementById('recPhotoGrid').innerHTML='';
-  renderCheckItems();renderSlots();
+  renderCheckItems();renderSlots();renderPhotoGrid();
 }
 
 // ════════════════════════════════════
@@ -787,9 +801,43 @@ function clearForm(){
 // ════════════════════════════════════
 async function uploadToGas(rec){
   if(!cfg.gasUrl){toast('❌ GAS URL not set in Settings','error');return false;}
-  const payload={action:'saveCleaning',date:rec.date,location:getLocName(rec.locId),cleaner:rec.cleaner,checker:rec.checker,slots:rec.slots.join(', '),checks:Object.entries(rec.checks).filter(([,v])=>v!==null).map(([k,v])=>k+(v?'✓':'✗')).join(', '),hasFail:Object.values(rec.checks).some(v=>v===false)?'YES':'NO',note:rec.note||'',recId:rec.id};
-  try{await fetch(cfg.gasUrl,{method:'POST',body:JSON.stringify(payload),mode:'no-cors'});return true;}
-  catch(e){toast('❌ Upload failed: '+e.message,'error');return false;}
+  const payload={
+    action:'saveCleaning', date:rec.date, location:getLocName(rec.locId),
+    cleaner:rec.cleaner, checker:rec.checker,
+    slots:rec.slots.join(', '),
+    checks:Object.entries(rec.checks).filter(([,v])=>v!==null).map(([k,v])=>k+(v?'✓':'✗')).join(', '),
+    hasFail:Object.values(rec.checks).some(v=>v===false)?'YES':'NO',
+    note:rec.note||'', recId:rec.id,
+    photoCount:rec.photos?rec.photos.length:0
+  };
+  try{
+    await fetch(cfg.gasUrl,{method:'POST',body:JSON.stringify(payload),mode:'no-cors'});
+    return true;
+  }catch(e){toast('❌ Upload failed: '+e.message,'error');return false;}
+}
+
+// 上傳單張照片到 Google Drive（透過 GAS）
+async function uploadPhotoToDrive(base64, recId, idx){
+  if(!cfg.gasUrl)return null;
+  // 把 base64 header 去掉只送純資料，減少傳輸量
+  const pureB64=base64.replace(/^data:image\/\w+;base64,/,'');
+  const payload={action:'uploadPhoto', base64:pureB64, recId, idx};
+  try{
+    // Drive 上傳需要讀回 URL，用 cors mode（GAS 支援）
+    const res=await fetch(cfg.gasUrl,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    const data=await res.json();
+    return data.url||null;
+  }catch(e){
+    // cors 失敗改 no-cors（Drive 備份但拿不到 URL）
+    try{
+      await fetch(cfg.gasUrl,{method:'POST',body:JSON.stringify(payload),mode:'no-cors'});
+    }catch(e2){}
+    return null;
+  }
 }
 
 async function uploadAllUnsynced(){
@@ -813,8 +861,8 @@ async function uploadAllUnsynced(){
 }
 
 async function downloadFromCloud(){
-  if(!cfg.gasUrl){showCloud('❌ GAS URL 未設定，請到 Settings 填入 GAS URL not set','error',5000);return;}
-  showCloud('⏳ 從雲端下載中，請稍候 Downloading from cloud...','info');
+  if(!cfg.gasUrl){showCloud('❌ GAS URL 未設定 GAS URL not set','error',5000);return;}
+  showCloud('⏳ 從雲端下載中 Downloading from cloud...','info');
   try{
     const res=await fetch(cfg.gasUrl+'?action=getCleaning');
     if(!res.ok)throw new Error('HTTP '+res.status);
@@ -823,13 +871,13 @@ async function downloadFromCloud(){
       const ids=new Set(records.map(r=>r.id));let added=0;
       data.records.forEach(r=>{if(!ids.has(r.id)){records.push({...r,synced:true});added++;}});
       saveAll();renderHistory();
-      showCloud(`✅ 下載完成！新增 ${added} 筆記錄（雲端共 ${data.records.length} 筆）Download complete: ${added} new records added`,'success',6000);
+      showCloud(`✅ 下載完成！新增 ${added} 筆記錄 Downloaded ${added} new records`,'success',6000);
       toast(`⬇️ Downloaded ${added} new records`,'success');
     } else {
-      showCloud('ℹ️ 雲端無新記錄（所有記錄已是最新）No new records from cloud','info',5000);
+      showCloud('ℹ️ 雲端無新記錄 No new records from cloud','info',5000);
     }
   }catch(e){
-    showCloud('❌ 下載失敗，請確認 GAS URL 是否正確及已部署 Download failed: '+e.message,'error',6000);
+    showCloud('❌ 下載失敗 Download failed: '+e.message,'error',6000);
   }
 }
 
@@ -843,16 +891,57 @@ async function testGas(){
 // ════════════════════════════════════
 //  TELEGRAM
 // ════════════════════════════════════
-function recMsg(rec){
+function recMsg(rec, driveUrls=[]){
   const checks=Object.entries(rec.checks).filter(([,v])=>v!==null).map(([k,v])=>`${t('checkIcons')[k]}${v?'✓':'✗'}`).join(' ');
   const fail=Object.values(rec.checks).some(v=>v===false);
-  return `${fail?'⚠️':'✅'} *VRT Cleaning Record*\n━━━━━━━━━━━━━━━━━\n📅 ${rec.date}  📍 ${getLocName(rec.locId)}\n👷 ${rec.cleaner}  🔍 ${rec.checker}\n⏰ ${rec.slots.join(', ')||'—'}\n${fail?'❌':'✅'} ${checks||'—'}\n${rec.note?'📝 '+rec.note+'\n':''}━━━━━━━━━━━━━━━━━`;
+  const photoLine=rec.photos&&rec.photos.length?`📷 ${rec.photos.length} 張照片 photo(s)${driveUrls.length?' — '+driveUrls.join(' '):'（本地）'}\n`:'';
+  return `${fail?'⚠️':'✅'} *VRT Cleaning Record*\n━━━━━━━━━━━━━━━━━\n📅 ${rec.date}  📍 ${getLocName(rec.locId)}\n👷 ${rec.cleaner}  🔍 ${rec.checker}\n⏰ ${rec.slots.join(', ')||'—'}\n${fail?'❌':'✅'} ${checks||'—'}\n${rec.note?'📝 '+rec.note+'\n':''}${photoLine}━━━━━━━━━━━━━━━━━`;
 }
+
 async function sendTg(msg){
   if(!cfg.botToken||!cfg.chatId)return;
-  try{await fetch(`https://api.telegram.org/bot${cfg.botToken}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:cfg.chatId,text:msg,parse_mode:'Markdown'})});}
-  catch(e){console.warn('TG failed',e);}
+  try{
+    await fetch(`https://api.telegram.org/bot${cfg.botToken}/sendMessage`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({chat_id:cfg.chatId,text:msg,parse_mode:'Markdown'})
+    });
+  }catch(e){console.warn('TG msg failed',e);}
 }
+
+// 發送單張照片到 Telegram
+async function sendTgPhoto(base64, caption=''){
+  if(!cfg.botToken||!cfg.chatId)return;
+  try{
+    // Base64 → Blob
+    const arr=base64.split(',');
+    const mime=arr[0].match(/:(.*?);/)[1];
+    const bstr=atob(arr[1]);
+    const u8=new Uint8Array(bstr.length);
+    for(let i=0;i<bstr.length;i++) u8[i]=bstr.charCodeAt(i);
+    const blob=new Blob([u8],{type:mime});
+
+    const form=new FormData();
+    form.append('chat_id',cfg.chatId);
+    form.append('photo',blob,'photo.jpg');
+    if(caption) form.append('caption',caption);
+
+    await fetch(`https://api.telegram.org/bot${cfg.botToken}/sendPhoto`,{method:'POST',body:form});
+  }catch(e){console.warn('TG photo failed',e);}
+}
+
+// 統一發送：文字訊息 + 所有照片
+async function sendTgReport(rec, driveUrls=[]){
+  await sendTg(recMsg(rec,driveUrls));
+  // 有照片就逐張發（照片直接從 base64 發，不需要 Drive URL）
+  if(rec.photos&&rec.photos.length){
+    for(let i=0;i<rec.photos.length;i++){
+      const caption=i===0?`📷 ${getLocName(rec.locId)} — ${rec.date}`:'';
+      await sendTgPhoto(rec.photos[i],caption);
+      await new Promise(x=>setTimeout(x,300));
+    }
+  }
+}
+
 async function testTg(){
   toast('📨 Sending test...','info');
   await sendTg(`🧹 *VRT Cleaning Record*\n✅ Telegram test OK!\n${new Date().toLocaleString()}`);
@@ -862,12 +951,12 @@ async function testTg(){
 // ════════════════════════════════════
 //  IMPORT MODAL
 // ════════════════════════════════════
-function openImport(){importPhotos=[];document.getElementById('importPhotoGrid').innerHTML='';document.getElementById('importPhotoInput').value='';document.getElementById('importModal').classList.add('open');}
-function closeImport(){document.getElementById('importModal').classList.remove('open');importPhotos=[];}
+function openImport(){importPhotos=[];document.getElementById('importModal').classList.add('open');}
+function closeImport(){document.getElementById('importModal').classList.remove('open');}
 function saveImport(){
   const date=document.getElementById('importDate').value,locId=document.getElementById('importLoc').value,note=document.getElementById('importNote').value;
   if(!date||!locId){toast('❌ Fill date and location','error');return;}
-  records.unshift({id:'r'+Date.now(),date,locId,cleaner:'—',checker:'—',note,slots:[],checks:{smell:null,light:null,floor:null,door:null,corner:null,ceiling:null},photos:[...importPhotos],isImport:true,synced:false,ts:Date.now()});
+  records.unshift({id:'r'+Date.now(),date,locId,cleaner:'—',checker:'—',note,slots:[],checks:{smell:null,light:null,floor:null,door:null,corner:null,ceiling:null},photos:[],isImport:true,synced:false,ts:Date.now()});
   saveAll();closeImport();renderHistory();toast('✅ Imported','success');
 }
 function deleteRecord(id){if(!confirm('Delete?'))return;records=records.filter(r=>r.id!==id);saveAll();renderAll();}
@@ -1024,9 +1113,11 @@ function renderDashboard(){
   document.getElementById('recentBody').innerHTML=recent.length?recent.map(r=>recRow(r)).join(''):`<tr><td colspan="10" class="empty">${t('noRecords')}</td></tr>`;
 }
 function recRow(r){
-  const checks=Object.entries(r.checks),hf=checks.some(([,v])=>v===false),pc=checks.filter(([,v])=>v===true).length,ph=r.photos||[];
+  const checks=Object.entries(r.checks),hf=checks.some(([,v])=>v===false),pc=checks.filter(([,v])=>v===true).length;
+  const ph=r.photos||[];
   const sb=r.synced?'<span class="badge bb2" style="font-size:9px">☁️</span>':'<span class="badge bw2" style="font-size:9px">📱</span>';
-  return`<tr><td>${r.date}</td><td>${getLocName(r.locId)}</td><td>${r.cleaner||'—'}</td><td>${r.checker||'—'}</td><td><span class="badge ${hf?'bf2':r.isImport?'bw2':'bp2'}">${r.isImport?'📎':hf?t('fail'):t('pass')}</span></td><td>${pc}/6</td><td>${sb}</td><td style="max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.note||'—'}</td><td>${ph.length?`<span style="cursor:pointer;color:var(--mint)" onclick="showPV('${ph[0]}')">${ph.length}📷</span>`:'—'}</td><td><button class="btn bd bsm" onclick="deleteRecord('${r.id}')">🗑</button></td></tr>`;
+  const phCell=ph.length?ph.map(p=>`<img src="${p}" onclick="showPV('${p}')" style="width:28px;height:28px;object-fit:cover;border-radius:4px;cursor:pointer;border:1px solid var(--border)">`).join(' '):'—';
+  return`<tr><td>${r.date}</td><td>${getLocName(r.locId)}</td><td>${r.cleaner||'—'}</td><td>${r.checker||'—'}</td><td><span class="badge ${hf?'bf2':r.isImport?'bw2':'bp2'}">${r.isImport?'📎':hf?t('fail'):t('pass')}</span></td><td>${pc}/6</td><td>${sb}</td><td style="max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.note||'—'}</td><td style="white-space:nowrap">${phCell}</td><td><button class="btn bd bsm" onclick="deleteRecord('${r.id}')">🗑</button></td></tr>`;
 }
 
 // ════════════════════════════════════
@@ -1104,6 +1195,97 @@ function renderAnalysis(){
 // ════════════════════════════════════
 //  INIT
 // ════════════════════════════════════
+// ════════════════════════════════════
+//  PHOTO — 壓縮限制版
+//  每筆最多 2 張，每天合計最多 5 張
+//  自動壓縮：最長邊 600px / JPEG 60%
+// ════════════════════════════════════
+const MAX_PER_REC = 2;   // 每筆最多
+const MAX_PER_DAY = 5;   // 每天合計最多
+const PHOTO_MAX_PX = 600; // 最長邊 px
+const PHOTO_QUALITY = 0.6; // JPEG 品質
+
+let recPhotos = [];
+
+function countTodayPhotos(){
+  const today=new Date().toISOString().slice(0,10);
+  return records.filter(r=>r.date===today).reduce((sum,r)=>sum+(r.photos||[]).length,0);
+}
+
+function compressImage(file){
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onerror=()=>reject(new Error('Read failed'));
+    reader.onload=ev=>{
+      const img=new Image();
+      img.onerror=()=>reject(new Error('Load failed'));
+      img.onload=()=>{
+        let w=img.width, h=img.height;
+        if(w>h && w>PHOTO_MAX_PX){ h=Math.round(h*PHOTO_MAX_PX/w); w=PHOTO_MAX_PX; }
+        else if(h>PHOTO_MAX_PX){ w=Math.round(w*PHOTO_MAX_PX/h); h=PHOTO_MAX_PX; }
+        const canvas=document.createElement('canvas');
+        canvas.width=w; canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        resolve(canvas.toDataURL('image/jpeg',PHOTO_QUALITY));
+      };
+      img.src=ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// 統一入口：點「+ 新增照片」時呼叫
+function triggerPhoto(){
+  const dayCount=countTodayPhotos()+recPhotos.length;
+  if(recPhotos.length>=MAX_PER_REC){toast(`❌ 每筆最多 ${MAX_PER_REC} 張 / Max ${MAX_PER_REC} per record`,'error');return;}
+  if(dayCount>=MAX_PER_DAY){toast(`❌ 今日已達上限 ${MAX_PER_DAY} 張 / Daily limit reached`,'error');return;}
+  document.getElementById('globalPhotoInput').value='';
+  document.getElementById('globalPhotoInput').click();
+}
+
+async function handlePhotoAdd(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const dayCount=countTodayPhotos()+recPhotos.length;
+  if(recPhotos.length>=MAX_PER_REC){toast(`❌ 每筆最多 ${MAX_PER_REC} 張`,'error');return;}
+  if(dayCount>=MAX_PER_DAY){toast(`❌ 今日已達上限 ${MAX_PER_DAY} 張`,'error');return;}
+  try{
+    toast('⏳ 壓縮中...','info',2000);
+    const b64=await compressImage(file);
+    const kb=Math.round(b64.length*0.75/1024);
+    recPhotos.push(b64);
+    renderPhotoGrid();
+    toast(`✅ 照片已加入 (${kb}KB)`,'success');
+  }catch(err){toast('❌ 照片處理失敗: '+err.message,'error');}
+}
+
+function renderPhotoGrid(){
+  const grid=document.getElementById('recPhotoGrid');
+  if(!grid)return;
+  grid.innerHTML='';
+  recPhotos.forEach((b64,i)=>{
+    const d=document.createElement('div');d.className='pthumb';
+    d.innerHTML=`<img src="${b64}" onclick="showPV('${b64}')"><button class="pdel" onclick="delRP(${i})">✕</button>`;
+    grid.appendChild(d);
+  });
+  // 加號格子
+  if(recPhotos.length<MAX_PER_REC){
+    const dayCount=countTodayPhotos()+recPhotos.length;
+    if(dayCount<MAX_PER_DAY){
+      const add=document.createElement('div');add.className='photo-add';
+      add.innerHTML=`<div>📷</div><div class="photo-limit">${recPhotos.length}/${MAX_PER_REC}</div>`;
+      add.onclick=triggerPhoto;
+      grid.appendChild(add);
+    }
+  }
+}
+function delRP(i){
+  recPhotos.splice(i,1);
+  renderPhotoGrid();
+}
+function showPV(src){document.getElementById('pvImg').src=src;document.getElementById('photoViewer').classList.add('open');}
+function closePV(){document.getElementById('photoViewer').classList.remove('open');}
+
 window.onload=()=>{
   applyLang();
   initForm();
