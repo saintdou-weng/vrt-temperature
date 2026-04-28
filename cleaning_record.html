@@ -6,773 +6,625 @@
 <title>VRT Clean Record | 清潔記錄 | កំណត់ត្រាសំអាត</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+KH:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --mint: #4CAF8A;
-    --mint-light: #E8F5EF;
-    --mint-mid: #C3E8D5;
-    --teal: #2A7A5E;
-    --amber: #F5A623;
-    --amber-light: #FEF3DC;
-    --red: #E05252;
-    --red-light: #FDE8E8;
-    --blue: #4A90D9;
-    --blue-light: #EBF4FF;
-    --bg: #F4F7F5;
-    --card: #FFFFFF;
-    --border: #DDE8E3;
-    --text: #1C2E26;
-    --text-mid: #4A6358;
-    --text-soft: #8FA99B;
-    --shadow: 0 2px 12px rgba(44,120,90,0.08);
-    --shadow-hover: 0 6px 24px rgba(44,120,90,0.14);
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: 'DM Sans', 'Noto Sans KH', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-  /* HEADER */
-  .header {
-    background: linear-gradient(135deg, #2A7A5E 0%, #3BAA7E 60%, #4CAF8A 100%);
-    padding: 0 24px;
-    display: flex; align-items: center; justify-content: space-between;
-    height: 62px; box-shadow: 0 2px 16px rgba(0,0,0,0.12); position: sticky; top: 0; z-index: 100;
-  }
-  .header-left { display: flex; align-items: center; gap: 12px; }
-  .logo { width: 36px; height: 36px; background: rgba(255,255,255,0.2); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-  .header-title { color: #fff; font-size: 17px; font-weight: 700; letter-spacing: 0.3px; }
-  .header-sub { color: rgba(255,255,255,0.75); font-size: 11px; font-weight: 400; }
-  .header-right { display: flex; align-items: center; gap: 8px; }
-  .lang-btn { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 5px 10px; border-radius: 20px; font-size: 12px; cursor: pointer; font-family: inherit; transition: all 0.2s; }
-  .lang-btn.active, .lang-btn:hover { background: rgba(255,255,255,0.3); }
-  .alert-bell { background: rgba(255,255,255,0.15); border: none; color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; position: relative; }
-  .alert-badge { position: absolute; top: -2px; right: -2px; background: var(--amber); color: #fff; font-size: 10px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; }
-
-  /* NAV */
-  .nav { background: var(--card); border-bottom: 1px solid var(--border); display: flex; overflow-x: auto; padding: 0 12px; }
-  .nav::-webkit-scrollbar { height: 0; }
-  .nav-item { padding: 14px 16px; font-size: 13px; font-weight: 500; color: var(--text-soft); cursor: pointer; border-bottom: 2.5px solid transparent; white-space: nowrap; transition: all 0.2s; }
-  .nav-item.active { color: var(--mint); border-bottom-color: var(--mint); }
-  .nav-item:hover { color: var(--teal); }
-
-  /* LAYOUT */
-  .container { max-width: 1200px; margin: 0 auto; padding: 20px 16px; }
-
-  /* CARDS */
-  .card { background: var(--card); border-radius: 14px; box-shadow: var(--shadow); padding: 20px; margin-bottom: 16px; }
-  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .card-title { font-size: 15px; font-weight: 600; color: var(--text); }
-  .card-badge { background: var(--mint-light); color: var(--teal); font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
-
-  /* STATS ROW */
-  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 16px; }
-  .stat-card { background: var(--card); border-radius: 12px; padding: 16px; box-shadow: var(--shadow); border-left: 4px solid var(--mint); }
-  .stat-card.amber { border-left-color: var(--amber); }
-  .stat-card.red { border-left-color: var(--red); }
-  .stat-card.blue { border-left-color: var(--blue); }
-  .stat-num { font-size: 26px; font-weight: 700; color: var(--text); }
-  .stat-label { font-size: 11px; color: var(--text-soft); margin-top: 2px; }
-
-  /* BUTTONS */
-  .btn { padding: 9px 18px; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: all 0.2s; display: inline-flex; align-items: center; gap: 6px; }
-  .btn-primary { background: var(--mint); color: #fff; }
-  .btn-primary:hover { background: var(--teal); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(76,175,138,0.35); }
-  .btn-secondary { background: var(--mint-light); color: var(--teal); }
-  .btn-secondary:hover { background: var(--mint-mid); }
-  .btn-danger { background: var(--red-light); color: var(--red); }
-  .btn-danger:hover { background: #fcd0d0; }
-  .btn-sm { padding: 5px 12px; font-size: 11px; border-radius: 7px; }
-  .btn-amber { background: var(--amber-light); color: #c47d0a; }
-  .btn-blue { background: var(--blue-light); color: var(--blue); }
-  .flex-wrap { flex-wrap: wrap; }
-
-  /* LOCATION TABS */
-  .loc-tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
-  .loc-tab { padding: 7px 16px; border-radius: 22px; font-size: 12px; font-weight: 600; cursor: pointer; border: 1.5px solid var(--border); background: var(--card); color: var(--text-mid); transition: all 0.2s; }
-  .loc-tab.active { background: var(--mint); color: #fff; border-color: var(--mint); }
-  .loc-tab:hover:not(.active) { border-color: var(--mint); color: var(--mint); }
-
-  /* FORM */
-  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; }
-  .form-group { display: flex; flex-direction: column; gap: 5px; }
-  .form-label { font-size: 12px; font-weight: 600; color: var(--text-mid); }
-  .form-input, .form-select, .form-textarea { padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 9px; font-size: 13px; font-family: inherit; background: #fff; color: var(--text); transition: border 0.2s; width: 100%; }
-  .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--mint); box-shadow: 0 0 0 3px rgba(76,175,138,0.12); }
-  .form-textarea { min-height: 72px; resize: vertical; }
-
-  /* CHECK GRID */
-  .check-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 8px; }
-  .check-item { border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 8px; text-align: center; cursor: pointer; transition: all 0.2s; }
-  .check-item:hover { border-color: var(--mint); }
-  .check-item.pass { border-color: var(--mint); background: var(--mint-light); }
-  .check-item.fail { border-color: var(--red); background: var(--red-light); }
-  .check-item .icon { font-size: 22px; }
-  .check-item .name { font-size: 11px; font-weight: 600; color: var(--text-mid); margin-top: 4px; }
-  .check-item .status { font-size: 10px; margin-top: 2px; }
-  .check-item.pass .status { color: var(--mint); }
-  .check-item.fail .status { color: var(--red); }
-
-  /* TIME SLOTS */
-  .time-slots { display: flex; flex-wrap: wrap; gap: 6px; }
-  .time-slot { padding: 5px 12px; border-radius: 16px; font-size: 11px; font-weight: 600; border: 1.5px solid var(--border); cursor: pointer; transition: all 0.2s; }
-  .time-slot.done { background: var(--mint-light); border-color: var(--mint); color: var(--teal); }
-  .time-slot.pending { background: #fff; color: var(--text-soft); }
-  .time-slot.missed { background: var(--red-light); border-color: var(--red); color: var(--red); }
-
-  /* TABLE */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { background: var(--mint-light); color: var(--teal); font-weight: 600; padding: 10px 12px; text-align: left; font-size: 12px; }
-  td { padding: 10px 12px; border-bottom: 1px solid var(--border); color: var(--text); }
-  tr:hover td { background: #F9FCF9; }
-  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 12px; font-size: 11px; font-weight: 600; }
-  .badge-pass { background: var(--mint-light); color: var(--teal); }
-  .badge-fail { background: var(--red-light); color: var(--red); }
-  .badge-warn { background: var(--amber-light); color: #b8780a; }
-
-  /* CHART BARS */
-  .chart-bar-wrap { display: flex; align-items: flex-end; gap: 6px; height: 120px; padding: 8px 0; }
-  .chart-bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px; height: 100%; }
-  .chart-bar { width: 100%; border-radius: 6px 6px 0 0; background: var(--mint); min-height: 4px; transition: height 0.5s; }
-  .chart-bar.low { background: var(--red); }
-  .chart-bar.mid { background: var(--amber); }
-  .chart-label { font-size: 10px; color: var(--text-soft); text-align: center; }
-  .chart-val { font-size: 10px; font-weight: 700; color: var(--text-mid); }
-
-  /* ALERT PANEL */
-  .alert-panel { background: #fff; position: fixed; top: 62px; right: 0; width: 320px; height: calc(100vh - 62px); box-shadow: -4px 0 24px rgba(0,0,0,0.1); z-index: 200; transform: translateX(100%); transition: transform 0.3s; overflow-y: auto; }
-  .alert-panel.open { transform: translateX(0); }
-  .alert-panel-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-  .alert-item { padding: 12px 20px; border-bottom: 1px solid var(--border); }
-  .alert-item.critical { border-left: 3px solid var(--red); }
-  .alert-item.warning { border-left: 3px solid var(--amber); }
-  .alert-msg { font-size: 13px; color: var(--text); }
-  .alert-time { font-size: 11px; color: var(--text-soft); margin-top: 3px; }
-
-  /* MODAL */
-  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 300; display: none; align-items: center; justify-content: center; padding: 16px; }
-  .modal-bg.open { display: flex; }
-  .modal { background: #fff; border-radius: 16px; padding: 24px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.2); }
-  .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; color: var(--text); }
-  .modal-footer { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
-
-  /* PHOTO UPLOAD */
-  .photo-upload { border: 2px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; cursor: pointer; transition: all 0.2s; }
-  .photo-upload:hover { border-color: var(--mint); background: var(--mint-light); }
-  .photo-upload input { display: none; }
-  .photo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-top: 10px; }
-  .photo-thumb { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; }
-  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
-  .photo-del { position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.5); color: #fff; border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-  /* PERIOD SELECTOR */
-  .period-tabs { display: flex; gap: 4px; background: var(--mint-light); border-radius: 10px; padding: 4px; }
-  .period-tab { padding: 6px 14px; border-radius: 7px; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-soft); transition: all 0.2s; }
-  .period-tab.active { background: #fff; color: var(--mint); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-
-  /* 6S CHECKLIST */
-  .sixs-category { background: var(--mint-light); border-radius: 10px; padding: 10px 14px; margin-bottom: 8px; }
-  .sixs-cat-title { font-size: 13px; font-weight: 700; color: var(--teal); margin-bottom: 8px; }
-  .sixs-item { display: flex; align-items: center; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid rgba(76,175,138,0.15); font-size: 12px; }
-  .sixs-item:last-child { border-bottom: none; }
-  .sixs-score-btns { display: flex; gap: 4px; }
-  .score-btn { width: 26px; height: 26px; border-radius: 6px; border: 1.5px solid var(--border); background: #fff; cursor: pointer; font-size: 11px; font-weight: 700; transition: all 0.15s; }
-  .score-btn.sel-0 { background: var(--red); color: #fff; border-color: var(--red); }
-  .score-btn.sel-1 { background: #f5923a; color: #fff; border-color: #f5923a; }
-  .score-btn.sel-2 { background: var(--amber); color: #fff; border-color: var(--amber); }
-  .score-btn.sel-3 { background: #8bc34a; color: #fff; border-color: #8bc34a; }
-  .score-btn.sel-4 { background: var(--mint); color: #fff; border-color: var(--mint); }
-
-  /* PERIOD NAV */
-  .period-nav { display: flex; align-items: center; gap: 12px; }
-  .period-nav button { background: var(--mint-light); border: none; color: var(--teal); width: 30px; height: 30px; border-radius: 8px; cursor: pointer; font-size: 16px; }
-  .period-nav span { font-size: 14px; font-weight: 600; color: var(--text); min-width: 140px; text-align: center; }
-
-  /* SECTION */
-  .section { display: none; }
-  .section.active { display: block; }
-
-  /* PHOTO VIEWER */
-  .photo-viewer { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 400; display: none; align-items: center; justify-content: center; }
-  .photo-viewer.open { display: flex; }
-  .photo-viewer img { max-width: 90vw; max-height: 90vh; border-radius: 8px; }
-  .photo-viewer-close { position: absolute; top: 20px; right: 24px; color: #fff; font-size: 28px; cursor: pointer; background: none; border: none; }
-
-  .sep { height: 1px; background: var(--border); margin: 16px 0; }
-  .flex { display: flex; } .gap-8 { gap: 8px; } .gap-12 { gap: 12px; } .flex-wrap { flex-wrap: wrap; }
-  .items-center { align-items: center; } .justify-between { justify-content: space-between; } .ml-auto { margin-left: auto; }
-  .text-soft { color: var(--text-soft); font-size: 12px; }
-  .text-teal { color: var(--teal); } .font-bold { font-weight: 700; }
-  .mt-8 { margin-top: 8px; } .mt-12 { margin-top: 12px; } .mt-16 { margin-top: 16px; }
-  .empty { text-align: center; padding: 40px 20px; color: var(--text-soft); }
-  .empty-icon { font-size: 40px; margin-bottom: 8px; }
-
-  @media print {
-    .header,.nav,.alert-panel,.btn,#sToast { display:none!important; }
-    .section { display:block!important; }
-    .section:not(#section-history) { display:none!important; }
-    body { background:#fff; }
-  }
+:root{
+  --mint:#4CAF8A;--mint-l:#E8F5EF;--mint-m:#C3E8D5;--teal:#2A7A5E;
+  --amber:#F5A623;--amber-l:#FEF3DC;--red:#E05252;--red-l:#FDE8E8;
+  --blue:#4A90D9;--blue-l:#EBF4FF;
+  --bg:#F4F7F5;--card:#FFF;--border:#DDE8E3;
+  --text:#1C2E26;--mid:#4A6358;--soft:#8FA99B;
+  --shadow:0 2px 12px rgba(44,120,90,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'DM Sans','Noto Sans KH',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.hdr{background:linear-gradient(135deg,#2A7A5E,#3BAA7E 60%,#4CAF8A);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:60px;box-shadow:0 2px 16px rgba(0,0,0,.12);position:sticky;top:0;z-index:100;}
+.hdr-l{display:flex;align-items:center;gap:10px;}
+.logo{width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;}
+.hdr-t{color:#fff;font-size:16px;font-weight:700;}
+.hdr-s{color:rgba(255,255,255,.75);font-size:10px;}
+.hdr-r{display:flex;align-items:center;gap:7px;}
+.lbtn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 9px;border-radius:18px;font-size:11px;cursor:pointer;font-family:inherit;}
+.lbtn.active{background:rgba(255,255,255,.3);}
+.bell{background:rgba(255,255,255,.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;position:relative;}
+.bell-b{position:absolute;top:-2px;right:-2px;background:var(--amber);color:#fff;font-size:9px;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;}
+.nav{background:var(--card);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 10px;}
+.nav::-webkit-scrollbar{height:0;}
+.ni{padding:13px 14px;font-size:12px;font-weight:500;color:var(--soft);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:all .2s;}
+.ni.active{color:var(--mint);border-bottom-color:var(--mint);}
+.ni:hover{color:var(--teal);}
+.ap{background:#fff;position:fixed;top:60px;right:0;width:300px;height:calc(100vh - 60px);box-shadow:-4px 0 24px rgba(0,0,0,.1);z-index:200;transform:translateX(100%);transition:transform .3s;overflow-y:auto;}
+.ap.open{transform:translateX(0);}
+.ap-h{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-weight:700;}
+.ai{padding:11px 18px;border-bottom:1px solid var(--border);}
+.ai.critical{border-left:3px solid var(--red);}
+.ai.warning{border-left:3px solid var(--amber);}
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:300;display:none;align-items:center;justify-content:center;padding:14px;}
+.mbg.open{display:flex;}
+.modal{background:#fff;border-radius:14px;padding:22px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
+.mt{font-size:17px;font-weight:700;margin-bottom:18px;}
+.mf{display:flex;gap:9px;justify-content:flex-end;margin-top:18px;}
+.pv{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:400;display:none;align-items:center;justify-content:center;}
+.pv.open{display:flex;}
+.pv img{max-width:90vw;max-height:90vh;border-radius:8px;}
+.pv-c{position:absolute;top:18px;right:22px;color:#fff;font-size:26px;cursor:pointer;background:none;border:none;}
+.wrap{max-width:1000px;margin:0 auto;padding:16px 14px;}
+.card{background:var(--card);border-radius:13px;box-shadow:var(--shadow);padding:18px;margin-bottom:14px;}
+.ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.ct{font-size:14px;font-weight:600;}
+.cb{background:var(--mint-l);color:var(--teal);font-size:10px;font-weight:600;padding:2px 9px;border-radius:18px;}
+.sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px;}
+.sc{background:var(--card);border-radius:11px;padding:14px;box-shadow:var(--shadow);border-left:4px solid var(--mint);}
+.sc.a{border-left-color:var(--amber);}.sc.r{border-left-color:var(--red);}.sc.b{border-left-color:var(--blue);}
+.sn{font-size:24px;font-weight:700;}.sl{font-size:10px;color:var(--soft);margin-top:2px;}
+.btn{padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;border:none;font-family:inherit;transition:all .2s;display:inline-flex;align-items:center;gap:5px;}
+.bp{background:var(--mint);color:#fff;}.bp:hover{background:var(--teal);}
+.bp:disabled{background:#aaa;cursor:not-allowed;}
+.bs{background:var(--mint-l);color:var(--teal);}.bs:hover{background:var(--mint-m);}
+.bd{background:var(--red-l);color:var(--red);}.bd:hover{background:#fcd0d0;}
+.ba{background:var(--amber-l);color:#c47d0a;}
+.bb{background:var(--blue-l);color:var(--blue);}.bb:hover{background:#d6e9ff;}
+.bsm{padding:4px 10px;font-size:10px;border-radius:6px;}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.fl{font-size:11px;font-weight:600;color:var(--mid);}
+.fi,.fsel,.fta{padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;background:#fff;color:var(--text);width:100%;transition:border .2s;}
+.fi:focus,.fsel:focus,.fta:focus{outline:none;border-color:var(--mint);box-shadow:0 0 0 3px rgba(76,175,138,.12);}
+.fta{min-height:68px;resize:vertical;}
+.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;}
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:7px;}
+.ci{border:1.5px solid var(--border);border-radius:9px;padding:9px 7px;text-align:center;cursor:pointer;transition:all .2s;}
+.ci:hover{border-color:var(--mint);}
+.ci.pass{border-color:var(--mint);background:var(--mint-l);}
+.ci.fail{border-color:var(--red);background:var(--red-l);}
+.ci-ic{font-size:20px;}.ci-n{font-size:10px;font-weight:600;color:var(--mid);margin-top:3px;}.ci-s{font-size:9px;margin-top:2px;}
+.ci.pass .ci-s{color:var(--mint);}.ci.fail .ci-s{color:var(--red);}
+.tslots{display:flex;flex-wrap:wrap;gap:5px;}
+.ts{padding:4px 11px;border-radius:14px;font-size:10px;font-weight:600;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;}
+.ts.done{background:var(--mint-l);border-color:var(--mint);color:var(--teal);}
+.ts.pending{background:#fff;color:var(--soft);}
+.tw{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{background:var(--mint-l);color:var(--teal);font-weight:600;padding:9px 11px;text-align:left;font-size:11px;}
+td{padding:9px 11px;border-bottom:1px solid var(--border);}
+tr:hover td{background:#F9FCF9;}
+.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:11px;font-size:10px;font-weight:600;}
+.bp2{background:var(--mint-l);color:var(--teal);}
+.bf2{background:var(--red-l);color:var(--red);}
+.bw2{background:var(--amber-l);color:#b8780a;}
+.bb2{background:var(--blue-l);color:var(--blue);}
+.cw{display:flex;align-items:flex-end;gap:5px;height:110px;padding:7px 0;}
+.cc{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;}
+.cb2{width:100%;border-radius:5px 5px 0 0;background:var(--mint);min-height:4px;transition:height .5s;}
+.cl{font-size:9px;color:var(--soft);text-align:center;}.cv{font-size:9px;font-weight:700;color:var(--mid);}
+.sixc{background:var(--mint-l);border-radius:9px;padding:9px 12px;margin-bottom:7px;}
+.sixct{font-size:12px;font-weight:700;color:var(--teal);margin-bottom:7px;}
+.sixi{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(76,175,138,.15);font-size:11px;}
+.sixi:last-child{border-bottom:none;}
+.sbs{display:flex;gap:3px;}
+.sbtn{width:24px;height:24px;border-radius:5px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:10px;font-weight:700;}
+.sbtn.s0{background:var(--red);color:#fff;border-color:var(--red);}
+.sbtn.s1{background:#f5923a;color:#fff;border-color:#f5923a;}
+.sbtn.s2{background:var(--amber);color:#fff;border-color:var(--amber);}
+.sbtn.s3{background:#8bc34a;color:#fff;border-color:#8bc34a;}
+.sbtn.s4{background:var(--mint);color:#fff;border-color:var(--mint);}
+.ptabs{display:flex;gap:3px;background:var(--mint-l);border-radius:9px;padding:3px;}
+.ptab{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;color:var(--soft);transition:all .2s;}
+.ptab.active{background:#fff;color:var(--mint);box-shadow:0 1px 4px rgba(0,0,0,.1);}
+.pnav{display:flex;align-items:center;gap:10px;}
+.pnav button{background:var(--mint-l);border:none;color:var(--teal);width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:15px;}
+.pnav span{font-size:13px;font-weight:600;min-width:130px;text-align:center;}
+.stags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:9px;min-height:30px;}
+.stag{background:var(--mint-l);color:var(--teal);border-radius:18px;padding:4px 11px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;}
+.stag .del{cursor:pointer;opacity:.6;font-size:11px;}.stag .del:hover{opacity:1;}
+.ar{display:flex;gap:7px;}.ar .fi{flex:1;}
+.sct{font-size:13px;font-weight:700;color:var(--teal);margin-bottom:10px;}
+.pg{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:3px;}
+.pf{height:100%;background:var(--mint);border-radius:3px;transition:width .4s;}
+.pu{border:2px dashed var(--border);border-radius:11px;padding:18px;text-align:center;cursor:pointer;transition:all .2s;}
+.pu:hover{border-color:var(--mint);background:var(--mint-l);}
+.pu input{display:none;}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(76px,1fr));gap:7px;margin-top:9px;}
+.pthumb{position:relative;aspect-ratio:1;border-radius:7px;overflow:hidden;}
+.pthumb img{width:100%;height:100%;object-fit:cover;}
+.pdel{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.5);color:#fff;border:none;border-radius:50%;width:17px;height:17px;font-size:10px;cursor:pointer;}
+/* CLOUD STATUS BAR */
+.cloud-bar{display:none;padding:11px 16px;border-radius:9px;font-size:12px;font-weight:600;margin-bottom:12px;align-items:center;gap:10px;animation:fadeIn .3s;}
+.cloud-bar.show{display:flex;}
+.cloud-bar.info{background:var(--blue-l);color:var(--blue);border:1.5px solid var(--blue);}
+.cloud-bar.success{background:var(--mint-l);color:var(--teal);border:1.5px solid var(--mint);}
+.cloud-bar.error{background:var(--red-l);color:var(--red);border:1.5px solid var(--red);}
+.cloud-bar.warning{background:var(--amber-l);color:#b8780a;border:1.5px solid var(--amber);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+/* TOAST */
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);padding:11px 22px;border-radius:9px;font-size:12px;font-weight:600;color:#fff;background:var(--teal);box-shadow:0 6px 24px rgba(0,0,0,.2);z-index:9999;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;white-space:nowrap;max-width:92vw;text-align:center;}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(-4px);}
+#toast.success{background:var(--mint);}#toast.error{background:var(--red);}#toast.info{background:var(--blue);}
+.section{display:none;}.section.active{display:block;}
+.sep{height:1px;background:var(--border);margin:14px 0;}
+.fl2{display:flex;}.g8{gap:8px;}.fw{flex-wrap:wrap;}.aic{align-items:center;}.jb{justify-content:space-between;}.mla{margin-left:auto;}
+.ts-soft{color:var(--soft);font-size:11px;}
+.mt8{margin-top:8px;}.mt12{margin-top:12px;}
+.empty{text-align:center;padding:36px 18px;color:var(--soft);}
+.empty-i{font-size:38px;margin-bottom:7px;}
+@media(max-width:560px){.hdr-t{font-size:13px;}.sr{grid-template-columns:repeat(2,1fr);}.fgrid{grid-template-columns:1fr;}.cg{grid-template-columns:repeat(3,1fr);}}
+@media print{.hdr,.nav,.ap,#toast,.btn{display:none!important;}.section{display:block!important;}.section:not(#sec-history){display:none!important;}body{background:#fff;}}
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="header-left">
+<div class="hdr">
+  <div class="hdr-l">
     <div class="logo">🧹</div>
-    <div>
-      <div class="header-title" id="hTitle">VRT Clean Record</div>
-      <div class="header-sub">VANTAGE RIVER TEXTILES</div>
-    </div>
+    <div><div class="hdr-t" id="hTitle">VRT Clean Record</div><div class="hdr-s">VANTAGE RIVER TEXTILES</div></div>
   </div>
-  <div class="header-right">
-    <button class="lang-btn active" onclick="setLang('en')">EN</button>
-    <button class="lang-btn" onclick="setLang('zh')">中</button>
-    <button class="lang-btn" onclick="setLang('kh')">ខ្មែរ</button>
-    <button class="alert-bell" onclick="toggleAlertPanel()">🔔<span class="alert-badge" id="alertCount">0</span></button>
+  <div class="hdr-r">
+    <button class="lbtn active" onclick="setLang('en',event)">EN</button>
+    <button class="lbtn" onclick="setLang('zh',event)">中</button>
+    <button class="lbtn" onclick="setLang('kh',event)">ខ្មែរ</button>
+    <button class="bell" onclick="toggleAP()">🔔<span class="bell-b" id="alertCount">0</span></button>
   </div>
 </div>
 
-<!-- ALERT PANEL -->
-<div class="alert-panel" id="alertPanel">
-  <div class="alert-panel-header">
-    <span style="font-weight:700;font-size:15px" id="apTitle">Anomaly Alerts</span>
-    <button onclick="toggleAlertPanel()" style="background:none;border:none;font-size:20px;cursor:pointer">✕</button>
-  </div>
+<div class="ap" id="alertPanel">
+  <div class="ap-h"><span id="apTitle">Anomaly Alerts</span><button onclick="toggleAP()" style="background:none;border:none;font-size:19px;cursor:pointer">✕</button></div>
   <div id="alertList"></div>
 </div>
 
-<!-- NAV -->
 <div class="nav">
-  <div class="nav-item active" onclick="showSection('dashboard')" id="nav-dashboard">📊 Dashboard</div>
-  <div class="nav-item" onclick="showSection('record')" id="nav-record">✏️ New Record</div>
-  <div class="nav-item" onclick="showSection('history')" id="nav-history">📋 History</div>
-  <div class="nav-item" onclick="showSection('sixs')" id="nav-sixs">⭐ 6S Check</div>
-  <div class="nav-item" onclick="showSection('analysis')" id="nav-analysis">📈 Analysis</div>
-  <div class="nav-item" onclick="showSection('locations')" id="nav-locations">📍 Locations</div>
-  <div class="nav-item" onclick="showSection('settings')" id="nav-settings">⚙️ Settings</div>
+  <div class="ni active" onclick="showSec('dashboard')" id="nav-dashboard">📊 Dashboard</div>
+  <div class="ni" onclick="showSec('record')" id="nav-record">✏️ New Record</div>
+  <div class="ni" onclick="showSec('history')" id="nav-history">📋 History</div>
+  <div class="ni" onclick="showSec('sixs')" id="nav-sixs">⭐ 6S Check</div>
+  <div class="ni" onclick="showSec('analysis')" id="nav-analysis">📈 Analysis</div>
+  <div class="ni" onclick="showSec('locations')" id="nav-locations">📍 Locations</div>
+  <div class="ni" onclick="showSec('settings')" id="nav-settings">⚙️ Settings</div>
 </div>
 
-<!-- PHOTO VIEWER -->
-<div class="photo-viewer" id="photoViewer" onclick="closePhotoViewer()">
-  <button class="photo-viewer-close" onclick="closePhotoViewer()">✕</button>
-  <img id="photoViewerImg" src="" alt="">
-</div>
+<div class="pv" id="photoViewer" onclick="closePV()"><button class="pv-c">✕</button><img id="pvImg" src="" alt=""></div>
 
-<!-- ADD LOCATION MODAL -->
-<div class="modal-bg" id="addLocModal">
+<div class="mbg" id="addLocModal">
   <div class="modal">
-    <div class="modal-title" id="addLocTitle">Add Location</div>
-    <div class="form-group">
-      <label class="form-label" id="locNameLabel">Location Name</label>
-      <input class="form-input" id="newLocName" placeholder="e.g. Toilet A">
-    </div>
-    <div class="form-group mt-8">
-      <label class="form-label" id="locTypeLabel">Type</label>
-      <select class="form-select" id="newLocType">
-        <option value="toilet">🚻 Toilet</option>
-        <option value="factory">🏭 Factory Floor</option>
-        <option value="office">🏢 Office</option>
-        <option value="canteen">🍽️ Canteen</option>
-        <option value="warehouse">📦 Warehouse</option>
-        <option value="entrance">🚪 Entrance</option>
-        <option value="other">📌 Other</option>
-      </select>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeAddLocModal()" id="cancelBtn">Cancel</button>
-      <button class="btn btn-primary" onclick="addLocation()" id="confirmAddBtn">Add</button>
-    </div>
+    <div class="mt" id="addLocTitle">Add Location</div>
+    <div class="fg"><label class="fl" id="locNameLabel">Location Name</label><input class="fi" id="newLocName" placeholder="e.g. Toilet A"></div>
+    <div class="fg mt8"><label class="fl" id="locTypeLabel">Type</label>
+      <select class="fsel" id="newLocType">
+        <option value="toilet">🚻 Toilet</option><option value="factory">🏭 Factory</option>
+        <option value="office">🏢 Office</option><option value="canteen">🍽️ Canteen</option>
+        <option value="warehouse">📦 Warehouse</option><option value="entrance">🚪 Entrance</option><option value="other">📌 Other</option>
+      </select></div>
+    <div class="mf"><button class="btn bs" onclick="closeAddLoc()" id="cancelBtn">Cancel</button><button class="btn bp" onclick="addLocation()" id="confirmAddBtn">Add</button></div>
   </div>
 </div>
 
-<!-- ADD RECORD MODAL (from history import) -->
-<div class="modal-bg" id="importModal">
+<div class="mbg" id="importModal">
   <div class="modal">
-    <div class="modal-title" id="importTitle">Import Historical Photo Record</div>
-    <div class="form-group">
-      <label class="form-label" id="importDateLabel">Date</label>
-      <input class="form-input" type="date" id="importDate">
-    </div>
-    <div class="form-group mt-8">
-      <label class="form-label" id="importLocLabel">Location</label>
-      <select class="form-select" id="importLoc"></select>
-    </div>
-    <div class="form-group mt-8">
-      <label class="form-label" id="importNoteLabel">Note</label>
-      <input class="form-input" id="importNote" placeholder="Description...">
-    </div>
-    <div class="form-group mt-8">
-      <label class="form-label" id="importPhotoLabel">Photos</label>
-      <div class="photo-upload" onclick="document.getElementById('importPhotoInput').click()">
-        <div style="font-size:28px">📷</div>
-        <div id="importPhotoText" style="font-size:13px;color:var(--text-soft);margin-top:6px">Click to upload photos</div>
-        <input type="file" id="importPhotoInput" multiple accept="image/*" onchange="previewImportPhotos(event)">
+    <div class="mt" id="importTitle">Import Historical Record</div>
+    <div class="fg"><label class="fl" id="importDateLabel">Date</label><input class="fi" type="date" id="importDate"></div>
+    <div class="fg mt8"><label class="fl" id="importLocLabel">Location</label><select class="fsel" id="importLoc"></select></div>
+    <div class="fg mt8"><label class="fl" id="importNoteLabel">Note</label><input class="fi" id="importNote" placeholder="Description..."></div>
+    <div class="fg mt8">
+      <label class="fl" id="importPhotoLabel">Photos</label>
+      <div class="pu" onclick="document.getElementById('importPhotoInput').click()">
+        <div style="font-size:26px">📷</div>
+        <div id="importPhotoText" style="font-size:12px;color:var(--soft);margin-top:5px">Click to upload</div>
+        <input type="file" id="importPhotoInput" multiple accept="image/*" onchange="previewIPh(event)">
       </div>
-      <div class="photo-grid" id="importPhotoGrid"></div>
+      <div class="pgrid" id="importPhotoGrid"></div>
     </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeImportModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveImportRecord()" id="saveImportBtn">Save</button>
-    </div>
+    <div class="mf"><button class="btn bs" onclick="closeImport()">Cancel</button><button class="btn bp" onclick="saveImport()" id="saveImportBtn">Save</button></div>
   </div>
 </div>
 
-<div class="container">
+<div id="toast"></div>
+
+<div class="wrap">
 
 <!-- DASHBOARD -->
-<div class="section active" id="section-dashboard">
-  <div class="flex items-center justify-between" style="margin-bottom:16px">
-    <div>
-      <div style="font-size:20px;font-weight:700" id="dbTitle">Dashboard</div>
-      <div class="text-soft" id="dbDate"></div>
-    </div>
-    <div class="period-tabs">
-      <div class="period-tab active" onclick="setDbPeriod('day',this)" id="ptDay">Day</div>
-      <div class="period-tab" onclick="setDbPeriod('week',this)" id="ptWeek">Week</div>
-      <div class="period-tab" onclick="setDbPeriod('month',this)" id="ptMonth">Month</div>
-      <div class="period-tab" onclick="setDbPeriod('year',this)" id="ptYear">Year</div>
+<div class="section active" id="sec-dashboard">
+  <div class="fl2 aic jb" style="margin-bottom:14px">
+    <div><div style="font-size:19px;font-weight:700" id="dbTitle">Dashboard</div><div class="ts-soft" id="dbDate"></div></div>
+    <div class="ptabs">
+      <div class="ptab active" onclick="setDbP('day',this)" id="ptDay">Day</div>
+      <div class="ptab" onclick="setDbP('week',this)" id="ptWeek">Week</div>
+      <div class="ptab" onclick="setDbP('month',this)" id="ptMonth">Month</div>
+      <div class="ptab" onclick="setDbP('year',this)" id="ptYear">Year</div>
     </div>
   </div>
-  <div class="stats-row" id="statsRow"></div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-    <div class="card">
-      <div class="card-header"><span class="card-title" id="dbCompTitle">Completion by Location</span></div>
-      <div id="locCompChart"></div>
-    </div>
-    <div class="card">
-      <div class="card-header"><span class="card-title" id="dbTrendTitle">Check Trend</span></div>
-      <div id="trendChart" class="chart-bar-wrap"></div>
-    </div>
+  <div class="sr" id="statsRow"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="card"><div class="ch"><span class="ct" id="dbCompTitle">Completion</span></div><div id="locCompChart"></div></div>
+    <div class="card"><div class="ch"><span class="ct" id="dbTrendTitle">Trend</span></div><div id="trendChart" class="cw"></div></div>
   </div>
-  <div class="card mt-12">
-    <div class="card-header"><span class="card-title" id="dbRecentTitle">Recent Records</span></div>
-    <div class="table-wrap"><table id="recentTable"><thead><tr id="recentThead"></tr></thead><tbody id="recentBody"></tbody></table></div>
+  <div class="card mt12"><div class="ch"><span class="ct" id="dbRecentTitle">Recent Records</span></div>
+    <div class="tw"><table><thead><tr id="recentThead"></tr></thead><tbody id="recentBody"></tbody></table></div>
   </div>
 </div>
 
 <!-- NEW RECORD -->
-<div class="section" id="section-record">
+<div class="section" id="sec-record">
   <div class="card">
-    <div class="card-header">
-      <span class="card-title" id="recTitle">New Cleaning Record</span>
+    <div class="ch"><span class="ct" id="recTitle">New Cleaning Record</span><span class="cb" id="recBadge">Local</span></div>
+    <div class="fgrid">
+      <div class="fg"><label class="fl" id="recDateLabel">Date</label><input class="fi" type="date" id="recDate"></div>
+      <div class="fg"><label class="fl" id="recLocLabel">Location</label><select class="fsel" id="recLoc"></select></div>
+      <div class="fg"><label class="fl" id="recCleanerLabel">Cleaned By</label><select class="fsel" id="recCleaner"><option value="">-- Select --</option></select></div>
+      <div class="fg"><label class="fl" id="recCheckerLabel">Checked By</label><select class="fsel" id="recChecker"><option value="">-- Select --</option></select></div>
     </div>
-    <div class="form-grid">
-      <div class="form-group">
-        <label class="form-label" id="recDateLabel">Date</label>
-        <input class="form-input" type="date" id="recDate">
-      </div>
-      <div class="form-group">
-        <label class="form-label" id="recLocLabel">Location</label>
-        <select class="form-select" id="recLoc"></select>
-      </div>
-      <div class="form-group">
-        <label class="form-label" id="recCleanerLabel">Cleaned By</label>
-        <select class="form-select" id="recCleaner"><option value="">-- Select / 選擇 --</option></select>
-      </div>
-      <div class="form-group">
-        <label class="form-label" id="recCheckerLabel">Checked By</label>
-        <select class="form-select" id="recChecker"><option value="">-- Select / 選擇 --</option></select>
-      </div>
-    </div>
-
     <div class="sep"></div>
-    <div class="flex items-center justify-between" style="margin-bottom:10px">
-      <div class="card-title" id="recSlotsTitle">Cleaning Time Slots</div>
-      <div class="flex gap-8">
-        <button class="btn btn-secondary btn-sm" onclick="selectAllSlots()">✅ All Slots</button>
-        <button class="btn btn-danger btn-sm" onclick="clearSlots()">✕ Clear</button>
+    <div class="fl2 aic jb" style="margin-bottom:9px">
+      <div class="ct" id="recSlotsTitle">Time Slots</div>
+      <div class="fl2 g8"><button class="btn bs bsm" onclick="allSlots()">✅ All</button><button class="btn bd bsm" onclick="noSlots()">✕ Clear</button></div>
+    </div>
+    <div class="tslots" id="timeSlots"></div>
+    <div class="sep"></div>
+    <div class="fl2 aic jb" style="margin-bottom:9px">
+      <div class="ct" id="recItemsTitle">Check Items</div>
+      <div class="fl2 g8">
+        <button class="btn bs bsm" onclick="allPass()">✅ All Pass</button>
+        <button class="btn bd bsm" onclick="allFail()">✕ All Fail</button>
+        <button class="btn ba bsm" onclick="allReset()">— Reset</button>
       </div>
     </div>
-    <div class="time-slots" id="timeSlots"></div>
-
+    <div class="cg" id="checkItems"></div>
     <div class="sep"></div>
-    <div class="flex items-center justify-between" style="margin-bottom:10px">
-      <div class="card-title" id="recItemsTitle">Check Items</div>
-      <div class="flex gap-8">
-        <button class="btn btn-secondary btn-sm" onclick="allPass()">✅ All Pass</button>
-        <button class="btn btn-danger btn-sm" onclick="allFail()">✕ All Fail</button>
-        <button class="btn btn-amber btn-sm" onclick="allClearCheck()">— Reset</button>
-      </div>
+    <div class="fg"><label class="fl" id="recNoteLabel">Note / Remarks</label><textarea class="fta" id="recNote" placeholder="Anomaly, issue..."></textarea></div>
+    <div class="sep"></div>
+    <div class="ct" id="recPhotoLabel" style="margin-bottom:9px">Photos</div>
+    <div class="pu" onclick="document.getElementById('recPhotoInput').click()">
+      <div style="font-size:26px">📷</div>
+      <div id="recPhotoText" style="font-size:12px;color:var(--soft);margin-top:5px">Click to upload photos</div>
+      <input type="file" id="recPhotoInput" multiple accept="image/*" onchange="previewRPh(event)">
     </div>
-    <div class="check-grid" id="checkItems"></div>
-
+    <div class="pgrid" id="recPhotoGrid" style="margin-top:9px"></div>
     <div class="sep"></div>
-    <div class="form-group">
-      <label class="form-label" id="recNoteLabel">Comment / Note</label>
-      <textarea class="form-textarea" id="recNote" placeholder="Any anomaly or notes..."></textarea>
-    </div>
-
-    <div class="sep"></div>
-    <div class="card-title" id="recPhotoLabel" style="margin-bottom:10px">Photos</div>
-    <div class="photo-upload" onclick="document.getElementById('recPhotoInput').click()">
-      <div style="font-size:28px">📷</div>
-      <div id="recPhotoText" style="font-size:13px;color:var(--text-soft);margin-top:6px">Click to upload photos</div>
-      <input type="file" id="recPhotoInput" multiple accept="image/*" onchange="previewRecPhotos(event)">
-    </div>
-    <div class="photo-grid" id="recPhotoGrid" style="margin-top:10px"></div>
-
-    <div class="sep"></div>
-    <div class="flex gap-8 justify-between flex-wrap">
-      <button class="btn btn-secondary" onclick="clearForm()" id="clearBtn">Clear</button>
-      <div class="flex gap-8 flex-wrap">
-        <button class="btn btn-primary" onclick="saveRecord()" id="saveBtn">💾 Save Record</button>
-        <button class="btn btn-blue" onclick="saveAndUpload()" style="background:var(--blue-light);color:var(--blue)">☁️ Save + Upload</button>
+    <div class="fl2 g8 jb fw">
+      <button class="btn bs" onclick="clearForm()" id="clearBtn">Clear</button>
+      <div class="fl2 g8 fw">
+        <button class="btn bp" onclick="saveRecord()" id="saveBtn">💾 Save Record</button>
+        <button class="btn bb" onclick="saveAndUpload()">☁️ Save + Upload</button>
       </div>
     </div>
   </div>
 </div>
 
 <!-- HISTORY -->
-<div class="section" id="section-history">
+<div class="section" id="sec-history">
   <div class="card">
-    <div class="flex items-center justify-between" style="margin-bottom:16px">
-      <div style="font-weight:700;font-size:16px" id="histTitle">History Records</div>
-      <div class="flex gap-8 items-center flex-wrap">
-        <button class="btn btn-secondary btn-sm" onclick="openImportModal()" id="importBtn">📎 Import Historical</button>
-        <button class="btn btn-secondary btn-sm" onclick="uploadAllUnsynced()" style="background:var(--blue-light);color:var(--blue)">☁️ Upload Unsynced</button>
-        <button class="btn btn-secondary btn-sm" onclick="downloadFromCloud()">⬇️ Download Cloud</button>
-        <button class="btn btn-amber btn-sm" onclick="exportCSV()">📊 CSV</button>
-        <button class="btn btn-secondary btn-sm" onclick="window.print()">🖨️ Print</button>
+    <div class="fl2 aic jb fw g8" style="margin-bottom:14px">
+      <div style="font-weight:700;font-size:15px" id="histTitle">History Records</div>
+      <div class="fl2 g8 fw">
+        <button class="btn bs bsm" onclick="openImport()" id="importBtn">📎 Import</button>
+        <button class="btn bb bsm" onclick="uploadAllUnsynced()">☁️ Upload Unsynced</button>
+        <button class="btn bs bsm" onclick="downloadFromCloud()">⬇️ Download Cloud</button>
+        <button class="btn ba bsm" onclick="exportCSV()">📊 CSV</button>
+        <button class="btn bs bsm" onclick="window.print()">🖨️ Print</button>
       </div>
     </div>
-    <div class="flex gap-8 flex-wrap items-center" style="margin-bottom:14px">
-      <div class="period-tabs">
-        <div class="period-tab active" onclick="setHistPeriod('day',this)">Day</div>
-        <div class="period-tab" onclick="setHistPeriod('week',this)">Week</div>
-        <div class="period-tab" onclick="setHistPeriod('month',this)">Month</div>
-        <div class="period-tab" onclick="setHistPeriod('year',this)">Year</div>
+    <!-- CLOUD STATUS BAR -->
+    <div class="cloud-bar" id="cloudBar"></div>
+    <div class="fl2 g8 fw aic" style="margin-bottom:12px">
+      <div class="ptabs">
+        <div class="ptab active" onclick="setHistP('day',this)">Day</div>
+        <div class="ptab" onclick="setHistP('week',this)">Week</div>
+        <div class="ptab" onclick="setHistP('month',this)">Month</div>
+        <div class="ptab" onclick="setHistP('year',this)">Year</div>
       </div>
-      <div class="period-nav">
-        <button onclick="shiftPeriod(-1)">‹</button>
-        <span id="periodLabel"></span>
-        <button onclick="shiftPeriod(1)">›</button>
-      </div>
-      <select class="form-select" style="width:140px" id="histLocFilter" onchange="renderHistory()">
-        <option value="all">All Locations</option>
-      </select>
+      <div class="pnav"><button onclick="shiftP(-1)">‹</button><span id="periodLabel"></span><button onclick="shiftP(1)">›</button></div>
+      <select class="fsel" style="width:130px" id="histLocFilter" onchange="renderHistory()"><option value="all">All Locations</option></select>
     </div>
-    <div class="table-wrap"><table id="histTable"><thead><tr id="histThead"></tr></thead><tbody id="histBody"></tbody></table></div>
+    <div class="tw"><table><thead><tr id="histThead"></tr></thead><tbody id="histBody"></tbody></table></div>
   </div>
 </div>
 
-<!-- 6S CHECK -->
-<div class="section" id="section-sixs">
+<!-- 6S -->
+<div class="section" id="sec-sixs">
   <div class="card">
-    <div class="flex items-center justify-between" style="margin-bottom:16px">
-      <div style="font-weight:700;font-size:16px" id="sixsTitle">6S Workplace Diagnostic</div>
-      <div class="flex gap-8">
-        <input type="date" class="form-input" id="sixsDate" style="width:140px">
-        <select class="form-select" id="sixsLoc" style="width:140px"></select>
-      </div>
+    <div class="fl2 aic jb" style="margin-bottom:14px">
+      <div style="font-weight:700;font-size:15px" id="sixsTitle">6S Workplace Diagnostic</div>
+      <div class="fl2 g8"><input type="date" class="fi" id="sixsDate" style="width:130px"><select class="fsel" id="sixsLoc" style="width:130px"></select></div>
     </div>
-    <div class="flex gap-8 items-center" style="margin-bottom:16px">
-      <div id="sixsObserver" class="form-group" style="flex:1">
-        <label class="form-label" id="sixsObsLabel">Observer</label>
-        <select class="form-select" id="sixsObsInput"><option value="">-- Select Observer --</option></select>
-      </div>
-      <div style="background:var(--mint-light);border-radius:10px;padding:12px 20px;text-align:center">
-        <div id="sixsScoreLabel" style="font-size:11px;color:var(--text-soft)">Total Score</div>
-        <div id="sixsScore" style="font-size:28px;font-weight:700;color:var(--mint)">0</div>
-        <div id="sixsLevel" style="font-size:11px;color:var(--text-mid)">Level -</div>
+    <div class="fl2 g8 aic" style="margin-bottom:14px">
+      <div class="fg" style="flex:1"><label class="fl" id="sixsObsLabel">Observer</label><select class="fsel" id="sixsObsInput"><option value="">-- Select --</option></select></div>
+      <div style="background:var(--mint-l);border-radius:9px;padding:11px 18px;text-align:center">
+        <div id="sixsScoreLabel" style="font-size:10px;color:var(--soft)">Total Score</div>
+        <div id="sixsScore" style="font-size:26px;font-weight:700;color:var(--mint)">0</div>
+        <div id="sixsLevel" style="font-size:10px;color:var(--mid)">Level -</div>
       </div>
     </div>
     <div id="sixsChecklist"></div>
     <div class="sep"></div>
-    <div class="flex justify-between">
-      <button class="btn btn-secondary" onclick="reset6S()" id="sixsResetBtn">Reset</button>
-      <button class="btn btn-primary" onclick="save6S()" id="sixsSaveBtn">💾 Save 6S Record</button>
+    <div class="fl2 jb">
+      <button class="btn bs" onclick="reset6S()" id="sixsResetBtn">Reset</button>
+      <button class="btn bp" onclick="save6S()" id="sixsSaveBtn">💾 Save 6S</button>
     </div>
     <div class="sep"></div>
-    <div style="font-weight:600;margin-bottom:10px" id="sixsHistLabel">6S History</div>
-    <div class="table-wrap"><table id="sixsHistTable"><thead id="sixsHistThead"></thead><tbody id="sixsHistBody"></tbody></table></div>
+    <div style="font-weight:600;margin-bottom:9px" id="sixsHistLabel">6S History</div>
+    <div class="tw"><table><thead id="sixsHistThead"></thead><tbody id="sixsHistBody"></tbody></table></div>
   </div>
 </div>
 
 <!-- ANALYSIS -->
-<div class="section" id="section-analysis">
-  <div class="flex gap-8 items-center" style="margin-bottom:16px">
-    <div style="font-weight:700;font-size:16px" id="anaTitle">Analysis</div>
-    <div class="period-tabs ml-auto">
-      <div class="period-tab active" onclick="setAnaPeriod('week',this)">Week</div>
-      <div class="period-tab" onclick="setAnaPeriod('month',this)">Month</div>
-      <div class="period-tab" onclick="setAnaPeriod('year',this)">Year</div>
-    </div>
+<div class="section" id="sec-analysis">
+  <div class="fl2 g8 aic" style="margin-bottom:14px">
+    <div style="font-weight:700;font-size:15px" id="anaTitle">Analysis</div>
+    <div class="ptabs mla"><div class="ptab active" onclick="setAnaP('week',this)">Week</div><div class="ptab" onclick="setAnaP('month',this)">Month</div><div class="ptab" onclick="setAnaP('year',this)">Year</div></div>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
-    <div class="card">
-      <div class="card-header"><span class="card-title" id="anaPassTitle">Pass Rate by Item</span></div>
-      <div id="passRateChart"></div>
-    </div>
-    <div class="card">
-      <div class="card-header"><span class="card-title" id="anaLocTitle">Records by Location</span></div>
-      <div id="locPieChart"></div>
-    </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+    <div class="card"><div class="ch"><span class="ct" id="anaPassTitle">Pass Rate</span></div><div id="passRateChart"></div></div>
+    <div class="card"><div class="ch"><span class="ct" id="anaLocTitle">By Location</span></div><div id="locPieChart"></div></div>
   </div>
-  <div class="card mt-12">
-    <div class="card-header"><span class="card-title" id="anaAnomalyTitle">Anomaly Summary</span></div>
-    <div id="anomalySummary"></div>
-  </div>
-  <div class="card mt-12">
-    <div class="card-header"><span class="card-title" id="anaSixsTitle">6S Score Trend</span></div>
-    <div id="sixsTrendChart" class="chart-bar-wrap"></div>
-  </div>
+  <div class="card mt12"><div class="ch"><span class="ct" id="anaAnomalyTitle">Anomaly Summary</span></div><div id="anomalySummary"></div></div>
+  <div class="card mt12"><div class="ch"><span class="ct" id="anaSixsTitle">6S Trend</span></div><div id="sixsTrendChart" class="cw"></div></div>
 </div>
 
 <!-- LOCATIONS -->
-<div class="section" id="section-locations">
+<div class="section" id="sec-locations">
   <div class="card">
-    <div class="flex items-center justify-between" style="margin-bottom:16px">
-      <div style="font-weight:700;font-size:16px" id="locTitle">Manage Locations</div>
-      <button class="btn btn-primary btn-sm" onclick="openAddLocModal()" id="addLocBtn">+ Add Location</button>
+    <div class="fl2 aic jb" style="margin-bottom:14px">
+      <div style="font-weight:700;font-size:15px" id="locTitle">Manage Locations</div>
+      <button class="btn bp bsm" onclick="openAddLoc()" id="addLocBtn">+ Add</button>
     </div>
     <div id="locList"></div>
   </div>
 </div>
 
 <!-- SETTINGS -->
-<div class="section" id="section-settings">
-  <div style="font-weight:700;font-size:16px;margin-bottom:16px">⚙️ Settings / 設定</div>
+<div class="section" id="sec-settings">
+  <div style="font-weight:700;font-size:15px;margin-bottom:14px">⚙️ Settings / 設定</div>
 
   <div class="card">
-    <div style="font-size:14px;font-weight:700;color:var(--teal);margin-bottom:12px">👷 Cleaners / 清潔人員</div>
-    <div id="cleanerTags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;min-height:32px"></div>
-    <div style="display:flex;gap:8px"><input class="form-input" id="newCleanerName" placeholder="Name..."><button class="btn btn-primary btn-sm" onclick="addStaff('cleaner')">➕ Add</button></div>
+    <div class="sct">👷 Cleaners / 清潔人員</div>
+    <div class="stags" id="cleanerTags"></div>
+    <div class="ar"><input class="fi" id="newCleanerName" placeholder="Name..."><button class="btn bp bsm" onclick="addStaff('cleaner')">➕ Add</button></div>
   </div>
 
   <div class="card">
-    <div style="font-size:14px;font-weight:700;color:var(--teal);margin-bottom:12px">🔍 Checkers / 檢查員</div>
-    <div id="checkerTags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;min-height:32px"></div>
-    <div style="display:flex;gap:8px"><input class="form-input" id="newCheckerName" placeholder="Name..."><button class="btn btn-primary btn-sm" onclick="addStaff('checker')">➕ Add</button></div>
+    <div class="sct">🔍 Checkers / 檢查員</div>
+    <div class="stags" id="checkerTags"></div>
+    <div class="ar"><input class="fi" id="newCheckerName" placeholder="Name..."><button class="btn bp bsm" onclick="addStaff('checker')">➕ Add</button></div>
   </div>
 
   <div class="card">
-    <div style="font-size:14px;font-weight:700;color:var(--teal);margin-bottom:12px">👁️ 6S Observers / 6S觀察員</div>
-    <div id="observerTags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;min-height:32px"></div>
-    <div style="display:flex;gap:8px"><input class="form-input" id="newObserverName" placeholder="Name..."><button class="btn btn-primary btn-sm" onclick="addStaff('observer')">➕ Add</button></div>
+    <div class="sct">👁️ 6S Observers / 6S觀察員</div>
+    <div class="stags" id="observerTags"></div>
+    <div class="ar"><input class="fi" id="newObserverName" placeholder="Name..."><button class="btn bp bsm" onclick="addStaff('observer')">➕ Add</button></div>
   </div>
 
   <div class="card">
-    <div style="font-size:14px;font-weight:700;color:var(--teal);margin-bottom:12px">☁️ Cloud / GAS 設定</div>
-    <div class="form-group" style="margin-bottom:10px"><label class="form-label">GAS Web App URL</label><input class="form-input" id="cfgGasUrl" placeholder="https://script.google.com/macros/s/..."></div>
-    <div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm" onclick="saveConfig()">💾 Save</button><button class="btn btn-secondary btn-sm" onclick="testGasConn()" style="background:var(--blue-light);color:var(--blue)">🔌 Test</button></div>
+    <div class="sct">☁️ Cloud Config / GAS 設定</div>
+    <div class="fg" style="margin-bottom:9px"><label class="fl">GAS Web App URL</label><input class="fi" id="cfgGasUrl" placeholder="https://script.google.com/macros/s/..."></div>
+    <div class="fl2 g8"><button class="btn bp bsm" onclick="saveConfig()">💾 Save</button><button class="btn bb bsm" onclick="testGas()">🔌 Test Connection</button></div>
   </div>
 
   <div class="card">
-    <div style="font-size:14px;font-weight:700;color:var(--teal);margin-bottom:12px">📨 Telegram</div>
-    <div class="form-group" style="margin-bottom:10px"><label class="form-label">Bot Token</label><input class="form-input" id="cfgBotToken" type="password" placeholder="1234:AAAA..."></div>
-    <div class="form-group" style="margin-bottom:10px"><label class="form-label">Chat ID</label><input class="form-input" id="cfgChatId" placeholder="-717190406"></div>
-    <label style="display:flex;align-items:center;gap:8px;font-size:13px;cursor:pointer;margin-bottom:10px">
-      <input type="checkbox" id="cfgTgOnSave" style="width:15px;height:15px;accent-color:var(--mint)">
-      Send Telegram when record saved / 儲存時通知
+    <div class="sct">📨 Telegram</div>
+    <div class="fg" style="margin-bottom:9px"><label class="fl">Bot Token</label><input class="fi" id="cfgBotToken" placeholder="已填入預設值 / Default set"></div>
+    <div class="fg" style="margin-bottom:9px"><label class="fl">Chat ID</label><input class="fi" id="cfgChatId" placeholder="已填入預設值 / Default set"></div>
+    <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;margin-bottom:9px">
+      <input type="checkbox" id="cfgTgOnSave" style="width:15px;height:15px;accent-color:var(--mint)"> Send Telegram when record saved / 儲存時通知
     </label>
-    <div style="display:flex;gap:8px"><button class="btn btn-primary btn-sm" onclick="saveConfig()">💾 Save</button><button class="btn btn-secondary btn-sm" onclick="testTelegramMsg()" style="background:var(--blue-light);color:var(--blue)">📨 Test</button></div>
+    <div class="fl2 g8"><button class="btn bp bsm" onclick="saveConfig()">💾 Save</button><button class="btn bb bsm" onclick="testTg()">📨 Test Telegram</button></div>
   </div>
 
   <div class="card">
-    <div style="font-size:14px;font-weight:700;color:var(--teal);margin-bottom:12px">⏰ Time Slots / 時段設定</div>
-    <div id="slotTags" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px;min-height:32px"></div>
-    <div style="display:flex;gap:8px;margin-top:8px">
-      <input class="form-input" id="newSlotTime" placeholder="HH:MM" style="max-width:110px">
-      <button class="btn btn-primary btn-sm" onclick="addSlotConfig()">➕</button>
-      <button class="btn btn-secondary btn-sm" onclick="resetSlotsDefault()">↩️ Default</button>
+    <div class="sct">⏰ Time Slots / 時段設定</div>
+    <div class="stags" id="slotTags"></div>
+    <div class="ar mt8">
+      <input class="fi" id="newSlotTime" placeholder="HH:MM" style="max-width:110px">
+      <button class="btn bp bsm" onclick="addSlot()">➕</button>
+      <button class="btn bs bsm" onclick="resetSlots()">↩️ Default</button>
     </div>
   </div>
 
   <div class="card">
-    <div style="font-size:14px;font-weight:700;color:var(--teal);margin-bottom:12px">🗃️ Data Management</div>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <button class="btn btn-secondary btn-sm" onclick="exportAllData()">📤 Export JSON</button>
-      <button class="btn btn-secondary btn-sm" onclick="document.getElementById('importDataInput').click()">📥 Import JSON
-        <input type="file" id="importDataInput" accept=".json" style="display:none" onchange="importAllData(event)">
-      </button>
-      <button class="btn btn-danger btn-sm" onclick="clearAllData()">🗑️ Clear All Records</button>
+    <div class="sct">🗃️ Data Management</div>
+    <div class="fl2 g8 fw">
+      <button class="btn bs bsm" onclick="exportData()">📤 Export JSON</button>
+      <button class="btn bs bsm" onclick="document.getElementById('importDataInput').click()">📥 Import JSON<input type="file" id="importDataInput" accept=".json" style="display:none" onchange="importData(event)"></button>
+      <button class="btn bd bsm" onclick="clearAll()">🗑️ Clear All Records</button>
     </div>
   </div>
 </div>
 
-</div><!-- /container -->
-
-<div id="sToast" style="position:fixed;bottom:22px;left:50%;transform:translateX(-50%);padding:11px 22px;border-radius:9px;font-size:13px;font-weight:600;color:#fff;background:var(--teal);box-shadow:0 6px 24px rgba(0,0,0,.2);z-index:9999;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;white-space:nowrap;max-width:90vw;text-align:center;"></div>
+</div><!-- /wrap -->
 
 <script>
-// ── Extra state ──
+// ════════════════════════════════════
+//  HARDCODED DEFAULTS（寫死預設值）
+// ════════════════════════════════════
+const DEFAULTS = {
+  gasUrl:   'https://script.google.com/macros/s/AKfycbyRmex6EmpUKGEzrswyFwO_aySAFg2d7tJuUaFBKtlAuOEwVc2TRerP7zbFilitVvZ8Sg/exec',
+  botToken: '8673221735:AAH0KoC89DPLNu4D70inRfkY2xwedLkXjnw',
+  chatId:   '-717190406',
+  tgOnSave: true
+};
+const DEFAULT_SLOTS = ['07:30','08:30','09:30','10:30','12:30','13:30','14:30','15:30','16:30'];
+
+// ════════════════════════════════════
+//  STATE（每次載入從 localStorage 讀回）
+// ════════════════════════════════════
+let lang         = localStorage.getItem('vrt_lang') || 'en';
+let records      = JSON.parse(localStorage.getItem('vrt_records')   || '[]');
+let locations    = JSON.parse(localStorage.getItem('vrt_locations') || JSON.stringify([
+  {id:'loc1',name:'Toilet A',type:'toilet'},{id:'loc2',name:'Toilet B',type:'toilet'},
+  {id:'loc3',name:'Factory Floor',type:'factory'},{id:'loc4',name:'Office',type:'office'},
+  {id:'loc5',name:'Canteen',type:'canteen'},
+]));
+let sixsRecords  = JSON.parse(localStorage.getItem('vrt_sixs')      || '[]');
 let cleanerList  = JSON.parse(localStorage.getItem('vrt_cleaners')  || '[]');
 let checkerList  = JSON.parse(localStorage.getItem('vrt_checkers')  || '[]');
 let observerList = JSON.parse(localStorage.getItem('vrt_observers') || '[]');
-let cfgSlots     = JSON.parse(localStorage.getItem('vrt_slots')     || JSON.stringify(['07:30','08:30','09:30','10:30','12:30','13:30','14:30','15:30','16:30']));
-let appCfg = JSON.parse(localStorage.getItem('vrt_app_cfg') || JSON.stringify({
-  gasUrl:'', botToken:'8673221735:AAH0KoC89DPLNu4D70inRfkY2xwedLkXjnw',
-  chatId:'-717190406', tgOnSave:true
-}));
+let cfgSlots     = JSON.parse(localStorage.getItem('vrt_slots')     || JSON.stringify(DEFAULT_SLOTS));
+// 合併寫死預設值 + localStorage 已儲存的設定（localStorage 優先）
+let cfg = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem('vrt_cfg') || '{}'));
 
-// ── Toast ──
-let toastTimer2;
-function showToast(msg,type='',dur=3000){
-  const el=document.getElementById('sToast');
-  el.textContent=msg;
-  el.style.background=type==='success'?'#4CAF8A':type==='error'?'#E05252':type==='info'?'#4A90D9':'#2A7A5E';
-  el.style.opacity='1';el.style.transform='translateX(-50%) translateY(-4px)';
-  clearTimeout(toastTimer2);
-  toastTimer2=setTimeout(()=>{el.style.opacity='0';el.style.transform='translateX(-50%)';},dur);
-}
+let importPhotos=[], recPhotos=[];
+let dbPeriod='day', histPeriod='day', anaPeriod='week', histOffset=0;
+let curSec='dashboard';
+let selSlots=[], checkState={smell:null,light:null,floor:null,door:null,corner:null,ceiling:null};
+let sixsScores={};
 
-// ── Extra save ──
-const _origSaveData = typeof saveData === 'function' ? saveData : null;
-function saveDataAll(){
-  if(_origSaveData) _origSaveData();
+// ════════════════════════════════════
+//  SAVE ALL（一次儲存全部）
+// ════════════════════════════════════
+function saveAll(){
+  localStorage.setItem('vrt_records',   JSON.stringify(records));
+  localStorage.setItem('vrt_locations', JSON.stringify(locations));
+  localStorage.setItem('vrt_sixs',      JSON.stringify(sixsRecords));
   localStorage.setItem('vrt_cleaners',  JSON.stringify(cleanerList));
   localStorage.setItem('vrt_checkers',  JSON.stringify(checkerList));
   localStorage.setItem('vrt_observers', JSON.stringify(observerList));
-  localStorage.setItem('vrt_app_cfg',   JSON.stringify(appCfg));
   localStorage.setItem('vrt_slots',     JSON.stringify(cfgSlots));
+  localStorage.setItem('vrt_cfg',       JSON.stringify(cfg));
+  localStorage.setItem('vrt_lang',      lang);
+}
+// 向後兼容
+function saveData(){ saveAll(); }
+
+// ════════════════════════════════════
+//  TRANSLATIONS
+// ════════════════════════════════════
+const T = {
+  en:{
+    hTitle:'VRT Clean Record',
+    nav:['📊 Dashboard','✏️ New Record','📋 History','⭐ 6S Check','📈 Analysis','📍 Locations','⚙️ Settings'],
+    dbTitle:'Dashboard',dbDate:'',dbCompTitle:'Completion by Location',dbTrendTitle:'7-Day Trend',dbRecentTitle:'Recent Records',
+    recTitle:'New Cleaning Record',recDateLabel:'Date',recLocLabel:'Location',recCleanerLabel:'Cleaned By',recCheckerLabel:'Checked By',
+    recSlotsTitle:'Time Slots',recItemsTitle:'Check Items',recNoteLabel:'Note / Remarks',recPhotoLabel:'Photos',recPhotoText:'Click to upload photos',clearBtn:'Clear',saveBtn:'💾 Save Record',
+    histTitle:'History Records',importBtn:'📎 Import',
+    sixsTitle:'6S Workplace Diagnostic',sixsObsLabel:'Observer',sixsScoreLabel:'Total Score',sixsResetBtn:'Reset',sixsSaveBtn:'💾 Save 6S',sixsHistLabel:'6S History',
+    anaTitle:'Analysis',anaPassTitle:'Pass Rate by Item',anaLocTitle:'Records by Location',anaAnomalyTitle:'Anomaly Summary',anaSixsTitle:'6S Score Trend',
+    locTitle:'Manage Locations',addLocBtn:'+ Add',
+    addLocTitle:'Add Location',locNameLabel:'Location Name',locTypeLabel:'Type',cancelBtn:'Cancel',confirmAddBtn:'Add',
+    importTitle:'Import Historical Record',importDateLabel:'Date',importLocLabel:'Location',importNoteLabel:'Note',importPhotoLabel:'Photos',importPhotoText:'Click to upload',saveImportBtn:'Save',
+    ptDay:'Day',ptWeek:'Week',ptMonth:'Month',ptYear:'Year',apTitle:'Anomaly Alerts',
+    checkItems:{smell:'Smell',light:'Light',floor:'Floor',door:'Door',corner:'Corner',ceiling:'Ceiling'},
+    checkIcons:{smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'},
+    pass:'✓ Pass',fail:'✗ Fail',
+    thead:['Date','Location','Cleaner','Checker','Status','Items','Sync','Note','📷',''],
+    stat0:'Total',stat1:'Pass Rate',stat2:'Anomalies',stat3:'Locations',
+    locTypes:{toilet:'🚻 Toilet',factory:'🏭 Factory',office:'🏢 Office',canteen:'🍽️ Canteen',warehouse:'📦 Warehouse',entrance:'🚪 Entrance',other:'📌 Other'},
+    allLoc:'All Locations',
+    sixsCats:[
+      {name:'Sort',items:['Bulletin board not cleared','Items in aisles/corners','Safety hazards (water/oil/chemical)']},
+      {name:'Set in Order',items:['Items not in correct places','Items not returned after use','Workstation not marked']},
+      {name:'Shine',items:['Floors/walls not clean','Other cleaning issues','Is place more organized after cleaning?']},
+      {name:'Standardize',items:['Standards not strictly followed','No checklist for cleaning','Cannot find items in 30s']},
+      {name:'Sustain',items:['Workers not 6S trained','6S inspection not done last week','Personal items not tidy']},
+      {name:'Safety',items:['Workers not SOE trained','Injuries this year','Emergency exits not marked','Hazard areas unmarked','SOE actions incomplete']},
+    ],
+    anomalyMsg:(loc,item)=>`Anomaly at ${loc}: ${item} failed`,noRecords:'No records found',
+  },
+  zh:{
+    hTitle:'清潔記錄系統',
+    nav:['📊 儀表板','✏️ 新增記錄','📋 歷史記錄','⭐ 6S檢查','📈 分析','📍 地點管理','⚙️ 設定'],
+    dbTitle:'儀表板',dbDate:'',dbCompTitle:'各地點完成率',dbTrendTitle:'7天趨勢',dbRecentTitle:'最近記錄',
+    recTitle:'新增清潔記錄',recDateLabel:'日期',recLocLabel:'地點',recCleanerLabel:'清潔員',recCheckerLabel:'檢查員',
+    recSlotsTitle:'清潔時段',recItemsTitle:'檢查項目',recNoteLabel:'備注/異常',recPhotoLabel:'照片',recPhotoText:'點擊上傳照片',clearBtn:'清除',saveBtn:'💾 儲存記錄',
+    histTitle:'歷史記錄',importBtn:'📎 匯入',
+    sixsTitle:'6S工作場所診斷',sixsObsLabel:'觀察員',sixsScoreLabel:'總分',sixsResetBtn:'重置',sixsSaveBtn:'💾 儲存6S',sixsHistLabel:'6S歷史',
+    anaTitle:'數據分析',anaPassTitle:'各項目通過率',anaLocTitle:'各地點記錄數',anaAnomalyTitle:'異常匯總',anaSixsTitle:'6S分數趨勢',
+    locTitle:'地點管理',addLocBtn:'+ 新增',
+    addLocTitle:'新增地點',locNameLabel:'地點名稱',locTypeLabel:'類型',cancelBtn:'取消',confirmAddBtn:'新增',
+    importTitle:'匯入歷史記錄',importDateLabel:'日期',importLocLabel:'地點',importNoteLabel:'備注',importPhotoLabel:'照片',importPhotoText:'點擊上傳',saveImportBtn:'儲存',
+    ptDay:'日',ptWeek:'週',ptMonth:'月',ptYear:'年',apTitle:'異常警報',
+    checkItems:{smell:'氣味',light:'燈光',floor:'地板',door:'門',corner:'角落',ceiling:'天花'},
+    checkIcons:{smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'},
+    pass:'✓ 通過',fail:'✗ 不通過',
+    thead:['日期','地點','清潔員','檢查員','狀態','項目','同步','備注','📷',''],
+    stat0:'總記錄',stat1:'通過率',stat2:'異常數',stat3:'地點數',
+    locTypes:{toilet:'🚻 廁所',factory:'🏭 廠房',office:'🏢 辦公室',canteen:'🍽️ 飯堂',warehouse:'📦 倉庫',entrance:'🚪 入口',other:'📌 其他'},
+    allLoc:'所有地點',
+    sixsCats:[
+      {name:'整理',items:['公告欄未清理','走道/角落有雜物','安全隱患（水/油/化學品）']},
+      {name:'整頓',items:['物品未在正確位置','使用後未放回','工作站未標明']},
+      {name:'清潔',items:['地板/牆壁有污垢','其他清潔問題','清潔後是否更整潔？']},
+      {name:'標準化',items:['未嚴格遵守標準','無清潔清單','30秒找不到物品']},
+      {name:'自律',items:['未接受6S培訓','上週未做6S檢查','個人物品未整齊']},
+      {name:'安全',items:['未接受SOE培訓','今年工傷次數','安全出口未標明','危險區域未標示','SOE糾正未完成']},
+    ],
+    anomalyMsg:(loc,item)=>`${loc} 異常：${item} 不合格`,noRecords:'沒有找到記錄',
+  },
+  kh:{
+    hTitle:'កំណត់ត្រាសំអាត VRT',
+    nav:['📊 ផ្ទាំង','✏️ បន្ថែម','📋 ប្រវត្តិ','⭐ 6S','📈 វិភាគ','📍 ទីតាំង','⚙️ ការកំណត់'],
+    dbTitle:'ផ្ទាំងគ្រប់គ្រង',dbDate:'',dbCompTitle:'ការបញ្ចប់',dbTrendTitle:'7ថ្ងៃ',dbRecentTitle:'ថ្មីៗ',
+    recTitle:'កំណត់ត្រាសំអាត',recDateLabel:'កាលបរិច្ឆេទ',recLocLabel:'ទីតាំង',recCleanerLabel:'អ្នកសំអាត',recCheckerLabel:'អ្នកត្រួតពិនិត្យ',
+    recSlotsTitle:'ម៉ោងសំអាត',recItemsTitle:'ធាតុពិនិត្យ',recNoteLabel:'ចំណាំ',recPhotoLabel:'រូបភាព',recPhotoText:'ចុចផ្ទុក',clearBtn:'លុប',saveBtn:'💾 រក្សាទុក',
+    histTitle:'ប្រវត្តិ',importBtn:'📎 នាំចូល',
+    sixsTitle:'6S',sixsObsLabel:'អ្នកត្រួតពិនិត្យ',sixsScoreLabel:'ពិន្ទុ',sixsResetBtn:'កំណត់ឡើងវិញ',sixsSaveBtn:'💾 រក្សា 6S',sixsHistLabel:'ប្រវត្តិ 6S',
+    anaTitle:'វិភាគ',anaPassTitle:'អត្រាជាប់',anaLocTitle:'តាមទីតាំង',anaAnomalyTitle:'មិនប្រក្រតី',anaSixsTitle:'6S',
+    locTitle:'ទីតាំង',addLocBtn:'+ បន្ថែម',
+    addLocTitle:'បន្ថែម',locNameLabel:'ឈ្មោះ',locTypeLabel:'ប្រភេទ',cancelBtn:'បោះបង់',confirmAddBtn:'បន្ថែម',
+    importTitle:'នាំចូល',importDateLabel:'កាលបរិច្ឆេទ',importLocLabel:'ទីតាំង',importNoteLabel:'ចំណាំ',importPhotoLabel:'រូបភាព',importPhotoText:'ចុចផ្ទុក',saveImportBtn:'រក្សាទុក',
+    ptDay:'ថ្ងៃ',ptWeek:'សប្តាហ៍',ptMonth:'ខែ',ptYear:'ឆ្នាំ',apTitle:'ការជូនដំណឹង',
+    checkItems:{smell:'ក្លិន',light:'អំពូល',floor:'ជាន់',door:'ទ្វារ',corner:'ជ្រុង',ceiling:'ពិដាន'},
+    checkIcons:{smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'},
+    pass:'✓ ជាប់',fail:'✗ ធ្លាក់',
+    thead:['កាលបរិច្ឆេទ','ទីតាំង','អ្នកសំអាត','អ្នកត្រួតពិនិត្យ','ស្ថានភាព','ធាតុ','Sync','ចំណាំ','📷',''],
+    stat0:'សរុប',stat1:'អត្រាជាប់',stat2:'មិនប្រក្រតី',stat3:'ទីតាំង',
+    locTypes:{toilet:'🚻 បន្ទប់ទឹក',factory:'🏭 រោងចក្រ',office:'🏢 ការិយាល័យ',canteen:'🍽️ បន្ទប់ញ៉ាំ',warehouse:'📦 ឃ្លាំង',entrance:'🚪 ច្រក',other:'📌 ផ្សេងៗ'},
+    allLoc:'ទីតាំងទាំងអស់',
+    sixsCats:[
+      {name:'ការតម្រៀប',items:['ក្ដារប្រកាសមិនបានសំអាត','ធាតុនៅក្នុងច្រក','គ្រោះថ្នាក់']},
+      {name:'ការដាក់ជាលំដាប់',items:['ធាតុមិននៅទីតាំង','ធាតុមិនបានដាក់ត្រឡប់','ទីតាំងការងារ']},
+      {name:'ចំណោតឆើតឆាយ',items:['ជាន់/ជញ្ជាំងមិនស្អាត','បញ្ហាសំអាត','ប្រសើរជាងមុន?']},
+      {name:'ការបង្រួបបង្រួម',items:['ស្ដង់ដារ','បញ្ជីត្រួតពិនិត្យ','ធាតុ 30 វិ']},
+      {name:'ការរក្សាបន្ត',items:['ការបណ្តុះ 6S','ការត្រួតពិនិត្យ','ទ្រព្យផ្ទាល់ខ្លួន']},
+      {name:'សុវត្ថិភាព',items:['SOE','របួស','ច្រកចេញ','តំបន់គ្រោះថ្នាក់','SOE']},
+    ],
+    anomalyMsg:(loc,item)=>`ភាពមិនប្រក្រតី ${loc}: ${item}`,noRecords:'រកមិនឃើញ',
+  }
+};
+function t(k){return T[lang][k]||T['en'][k]||k;}
+
+// ════════════════════════════════════
+//  TOAST + CLOUD STATUS BAR
+// ════════════════════════════════════
+let toastTimer;
+function toast(msg,type='',dur=3000){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.className=type||'';
+  void el.offsetWidth;el.classList.add('show');
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),dur);
+}
+let cloudBarTimer;
+function showCloud(msg,type='info',dur=0){
+  const bar=document.getElementById('cloudBar');
+  if(!bar)return;
+  bar.textContent=msg;
+  bar.className='cloud-bar '+type+' show';
+  clearTimeout(cloudBarTimer);
+  if(dur>0) cloudBarTimer=setTimeout(()=>{bar.classList.remove('show');},dur);
 }
 
-// ── Populate staff selects ──
-function populateStaffSelects(){
-  const c=document.getElementById('recCleaner');
-  const ch=document.getElementById('recChecker');
-  const ob=document.getElementById('sixsObsInput');
-  if(c){c.innerHTML='<option value="">-- Cleaner / 清潔員 --</option>';cleanerList.forEach(n=>{c.innerHTML+=`<option>${n}</option>`;});}
-  if(ch){ch.innerHTML='<option value="">-- Checker / 檢查員 --</option>';checkerList.forEach(n=>{ch.innerHTML+=`<option>${n}</option>`;});}
-  if(ob){ob.innerHTML='<option value="">-- Observer --</option>';observerList.forEach(n=>{ob.innerHTML+=`<option>${n}</option>`;});}
+// ════════════════════════════════════
+//  LANG
+// ════════════════════════════════════
+function setLang(l,e){
+  lang=l;
+  document.querySelectorAll('.lbtn').forEach(b=>b.classList.remove('active'));
+  if(e&&e.target)e.target.classList.add('active');
+  applyLang();renderAll();
+  localStorage.setItem('vrt_lang',lang);
+}
+function applyLang(){
+  const ks=['hTitle','dbTitle','dbCompTitle','dbTrendTitle','dbRecentTitle','recTitle','recDateLabel','recLocLabel','recCleanerLabel','recCheckerLabel','recSlotsTitle','recItemsTitle','recNoteLabel','recPhotoLabel','recPhotoText','clearBtn','saveBtn','histTitle','importBtn','sixsTitle','sixsObsLabel','sixsScoreLabel','sixsResetBtn','sixsSaveBtn','sixsHistLabel','anaTitle','anaPassTitle','anaLocTitle','anaAnomalyTitle','anaSixsTitle','locTitle','addLocBtn','addLocTitle','locNameLabel','locTypeLabel','cancelBtn','confirmAddBtn','importTitle','importDateLabel','importLocLabel','importNoteLabel','importPhotoLabel','importPhotoText','saveImportBtn','ptDay','ptWeek','ptMonth','ptYear','apTitle'];
+  ks.forEach(k=>{const el=document.getElementById(k);if(el)el.textContent=t(k);});
+  ['nav-dashboard','nav-record','nav-history','nav-sixs','nav-analysis','nav-locations','nav-settings'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=t('nav')[i];});
+  document.getElementById('dbDate').textContent=new Date().toLocaleDateString(lang==='zh'?'zh-TW':lang==='kh'?'km-KH':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  // restore active lang button
+  const langMap={en:0,zh:1,kh:2};
+  document.querySelectorAll('.lbtn').forEach((b,i)=>b.classList.toggle('active',i===langMap[lang]));
 }
 
-// ── Slots quick buttons ──
-function selectAllSlots(){selectedSlots=[...cfgSlots];renderTimeSlots();}
-function clearSlots(){selectedSlots=[];renderTimeSlots();}
-
-// ── Check item quick buttons ──
-function allPass(){Object.keys(checkState).forEach(k=>checkState[k]=true);renderCheckItems();}
-function allFail(){Object.keys(checkState).forEach(k=>checkState[k]=false);renderCheckItems();}
-function allClearCheck(){Object.keys(checkState).forEach(k=>checkState[k]=null);renderCheckItems();}
-
-// ── Save record with toast ──
-const _origSaveRecord = typeof saveRecord === 'function' ? null : null;
-function saveRecord(){
-  const date=document.getElementById('recDate').value;
-  const locId=document.getElementById('recLoc').value;
-  const cleaner=document.getElementById('recCleaner').value;
-  const checker=document.getElementById('recChecker').value;
-  const note=document.getElementById('recNote').value;
-  if(!date){showToast('❌ Please select a date','error');return;}
-  if(!locId){showToast('❌ Please select a location','error');return;}
-  if(!cleaner){showToast('❌ Select cleaner (Settings → Cleaners)','error');return;}
-  if(!checker){showToast('❌ Select checker (Settings → Checkers)','error');return;}
-  const rec={id:'r'+Date.now(),date,locId,cleaner,checker,note,
-    slots:[...selectedSlots],checks:{...checkState},
-    photos:[...recPhotos],isImport:false,synced:false,ts:Date.now()};
-  records.unshift(rec);saveData();clearForm();checkAnomalies();
-  showToast('✅ Record saved! / 記錄已儲存！','success');
-  if(appCfg.tgOnSave) sendTelegramMsg(buildTgMsg(rec));
-  showSection('dashboard');renderAll();
-}
-
-async function saveAndUpload(){
-  const date=document.getElementById('recDate').value,locId=document.getElementById('recLoc').value;
-  const cleaner=document.getElementById('recCleaner').value,checker=document.getElementById('recChecker').value;
-  const note=document.getElementById('recNote').value;
-  if(!date||!locId||!cleaner||!checker){showToast('❌ Fill all required fields','error');return;}
-  const rec={id:'r'+Date.now(),date,locId,cleaner,checker,note,
-    slots:[...selectedSlots],checks:{...checkState},
-    photos:[...recPhotos],isImport:false,synced:false,ts:Date.now()};
-  records.unshift(rec);saveData();clearForm();checkAnomalies();
-  showToast('⏳ Uploading...','info',5000);
-  const ok=await uploadRecGas(rec);
-  if(ok){rec.synced=true;saveData();showToast('☁️ Saved & uploaded!','success');}
-  if(appCfg.tgOnSave) sendTelegramMsg(buildTgMsg(rec));
-  showSection('dashboard');renderAll();
-}
-
-// ── GAS upload ──
-async function uploadRecGas(rec){
-  const gasUrl=appCfg.gasUrl;
-  if(!gasUrl){showToast('❌ GAS URL not set in Settings','error');return false;}
-  const locName=getLocName(rec.locId);
-  const payload={action:'saveCleaning',date:rec.date,location:locName,
-    cleaner:rec.cleaner,checker:rec.checker,
-    slots:rec.slots.join(', '),
-    checks:Object.entries(rec.checks).filter(([,v])=>v!==null).map(([k,v])=>k+(v?'✓':'✗')).join(', '),
-    hasFail:Object.values(rec.checks).some(v=>v===false)?'YES':'NO',
-    note:rec.note||'',recId:rec.id};
-  try{await fetch(gasUrl,{method:'POST',body:JSON.stringify(payload),mode:'no-cors'});return true;}
-  catch(e){showToast('❌ Upload failed: '+e.message,'error');return false;}
-}
-
-async function uploadAllUnsynced(){
-  const un=records.filter(r=>!r.synced&&!r.isImport);
-  if(!un.length){showToast('✅ All synced / 所有記錄已同步','success');return;}
-  showToast(`⏳ Uploading ${un.length}...`,'info',8000);
-  let ok=0;
-  for(const r of un){const s=await uploadRecGas(r);if(s){r.synced=true;ok++;}await new Promise(x=>setTimeout(x,300));}
-  saveData();renderHistory();showToast(`☁️ Uploaded ${ok}/${un.length}`,'success');
-}
-
-async function downloadFromCloud(){
-  if(!appCfg.gasUrl){showToast('❌ GAS URL not set','error');return;}
-  showToast('⏳ Downloading...','info');
-  try{
-    const res=await fetch(appCfg.gasUrl+'?action=getCleaning');
-    const data=await res.json();
-    if(data.records&&data.records.length){
-      const ids=new Set(records.map(r=>r.id));let added=0;
-      data.records.forEach(r=>{if(!ids.has(r.id)){records.push({...r,synced:true});added++;}});
-      saveData();renderHistory();showToast(`⬇️ ${added} new records downloaded`,'success');
-    }else showToast('ℹ️ No new records from cloud','info');
-  }catch(e){showToast('❌ Download failed','error');}
-}
-
-async function testGasConn(){
-  if(!appCfg.gasUrl){showToast('❌ Enter GAS URL first','error');return;}
-  showToast('⏳ Testing...','info');
-  try{await fetch(appCfg.gasUrl+'?action=ping',{mode:'no-cors'});showToast('✅ GAS OK!','success');}
-  catch(e){showToast('❌ Failed: '+e.message,'error');}
-}
-
-// ── Telegram ──
-function buildTgMsg(rec){
-  const checks=Object.entries(rec.checks).filter(([,v])=>v!==null).map(([k,v])=>{
-    const icons={smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'};
-    return icons[k]+(v?'✓':'✗');}).join(' ');
-  const fail=Object.values(rec.checks).some(v=>v===false);
-  return `${fail?'⚠️':'✅'} *VRT Cleaning Record*\n━━━━━━━━━━━━━━━━━\n` +
-    `📅 ${rec.date}  📍 ${getLocName(rec.locId)}\n` +
-    `👷 ${rec.cleaner}  🔍 ${rec.checker}\n` +
-    `⏰ ${rec.slots.join(', ')||'—'}\n` +
-    `${fail?'❌':'✅'} ${checks||'—'}\n` +
-    (rec.note?`📝 ${rec.note}\n`:'') +
-    `━━━━━━━━━━━━━━━━━`;
-}
-async function sendTelegramMsg(msg){
-  if(!appCfg.botToken||!appCfg.chatId)return;
-  try{await fetch(`https://api.telegram.org/bot${appCfg.botToken}/sendMessage`,
-    {method:'POST',headers:{'Content-Type':'application/json'},
-     body:JSON.stringify({chat_id:appCfg.chatId,text:msg,parse_mode:'Markdown'})});}
-  catch(e){console.warn('TG failed',e);}
-}
-async function testTelegramMsg(){
-  showToast('📨 Sending test...','info');
-  await sendTelegramMsg(`🧹 *VRT Cleaning Record*\n✅ Telegram test from VRT Cleaning System.\n${new Date().toLocaleString()}`);
-  showToast('📨 Test sent! Check Telegram.','success');
-}
-
-// ── CSV Export ──
-function exportCSV(){
-  if(!records.length){showToast('No records','error');return;}
-  const h=['Date','Location','Cleaner','Checker','Slots','Smell','Light','Floor','Door','Corner','Ceiling','HasFail','Synced','Note'];
-  const rows=records.map(r=>{const c=r.checks,fv=v=>v===true?'PASS':v===false?'FAIL':'—';return[r.date,getLocName(r.locId),r.cleaner||'',r.checker||'',r.slots.join('|'),fv(c.smell),fv(c.light),fv(c.floor),fv(c.door),fv(c.corner),fv(c.ceiling),Object.values(c).some(v=>v===false)?'YES':'NO',r.synced?'YES':'NO',r.note||''];});
-  const csv=[h,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}));
-  a.download=`VRT_Cleaning_${new Date().toISOString().slice(0,10)}.csv`;a.click();
-  showToast('📊 CSV downloaded','success');
-}
-
-// ── Settings ──
-function showSection(s){
+// ════════════════════════════════════
+//  SECTION
+// ════════════════════════════════════
+function showSec(s){
   document.querySelectorAll('.section').forEach(el=>el.classList.remove('active'));
-  document.getElementById('section-'+s).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('sec-'+s).classList.add('active');
+  document.querySelectorAll('.ni').forEach(el=>el.classList.remove('active'));
   document.getElementById('nav-'+s).classList.add('active');
-  currentSection=s;
+  curSec=s;
   if(s==='dashboard')renderDashboard();
   if(s==='history')renderHistory();
   if(s==='sixs')render6S();
@@ -780,20 +632,294 @@ function showSection(s){
   if(s==='locations')renderLocations();
   if(s==='settings')renderSettings();
 }
-
-function renderSettings(){
-  renderStaffTagsExt('cleanerTags', cleanerList, 'cleaner');
-  renderStaffTagsExt('checkerTags', checkerList, 'checker');
-  renderStaffTagsExt('observerTags', observerList, 'observer');
-  document.getElementById('cfgGasUrl').value   = appCfg.gasUrl    || '';
-  document.getElementById('cfgBotToken').value = appCfg.botToken  || '';
-  document.getElementById('cfgChatId').value   = appCfg.chatId    || '';
-  document.getElementById('cfgTgOnSave').checked = !!appCfg.tgOnSave;
-  renderSlotTagsExt();
+function renderAll(){
+  if(curSec==='dashboard')renderDashboard();
+  if(curSec==='history')renderHistory();
+  if(curSec==='sixs')render6S();
+  if(curSec==='analysis')renderAnalysis();
+  if(curSec==='locations')renderLocations();
+  if(curSec==='settings')renderSettings();
+  checkAnomalies();
 }
-function renderStaffTagsExt(cId, list, type){
+
+// ════════════════════════════════════
+//  INIT FORM
+// ════════════════════════════════════
+function initForm(){
+  const today=new Date().toISOString().slice(0,10);
+  ['recDate','sixsDate','importDate'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=today;});
+  populateLocSelects();
+  populateStaffSelects();
+  renderSlots();
+  renderCheckItems();
+  render6SChecklist();
+}
+
+function populateLocSelects(){
+  ['recLoc','sixsLoc','importLoc','histLocFilter'].forEach(id=>{
+    const sel=document.getElementById(id);if(!sel)return;
+    const isF=id==='histLocFilter';
+    sel.innerHTML=isF?`<option value="all">${t('allLoc')}</option>`:'';
+    locations.forEach(loc=>{const o=document.createElement('option');o.value=loc.id;o.textContent=(t('locTypes')[loc.type]||'📌')+' '+loc.name;sel.appendChild(o);});
+  });
+}
+
+function populateStaffSelects(){
+  const c=document.getElementById('recCleaner');
+  const ch=document.getElementById('recChecker');
+  const ob=document.getElementById('sixsObsInput');
+  if(c){c.innerHTML='<option value="">-- Cleaner / 清潔員 --</option>';cleanerList.forEach(n=>{c.innerHTML+=`<option value="${n}">${n}</option>`;});}
+  if(ch){ch.innerHTML='<option value="">-- Checker / 檢查員 --</option>';checkerList.forEach(n=>{ch.innerHTML+=`<option value="${n}">${n}</option>`;});}
+  if(ob){ob.innerHTML='<option value="">-- Observer --</option>';observerList.forEach(n=>{ob.innerHTML+=`<option value="${n}">${n}</option>`;});}
+}
+
+// ════════════════════════════════════
+//  SLOTS
+// ════════════════════════════════════
+function renderSlots(){
+  const c=document.getElementById('timeSlots');if(!c)return;
+  c.innerHTML='';
+  cfgSlots.forEach(s=>{
+    const done=selSlots.includes(s);
+    const d=document.createElement('div');
+    d.className=`ts ${done?'done':'pending'}`;
+    d.textContent=(done?'✓ ':'')+s;
+    d.onclick=()=>toggleSlot(s,d);
+    c.appendChild(d);
+  });
+}
+function toggleSlot(s,el){
+  selSlots.includes(s)?selSlots=selSlots.filter(x=>x!==s):selSlots.push(s);
+  el.className=`ts ${selSlots.includes(s)?'done':'pending'}`;
+  el.textContent=(selSlots.includes(s)?'✓ ':'')+s;
+}
+function allSlots(){selSlots=[...cfgSlots];renderSlots();}
+function noSlots(){selSlots=[];renderSlots();}
+
+// ════════════════════════════════════
+//  CHECK ITEMS
+// ════════════════════════════════════
+function renderCheckItems(){
+  const items=['smell','light','floor','door','corner','ceiling'];
+  const c=document.getElementById('checkItems');if(!c)return;
+  c.innerHTML='';
+  items.forEach(item=>{
+    const st=checkState[item];
+    const d=document.createElement('div');
+    d.className=`ci ${st===true?'pass':st===false?'fail':''}`;
+    d.innerHTML=`<div class="ci-ic">${t('checkIcons')[item]}</div><div class="ci-n">${t('checkItems')[item]}</div><div class="ci-s">${st===true?t('pass'):st===false?t('fail'):'—'}</div>`;
+    d.onclick=()=>cycleCheck(item);c.appendChild(d);
+  });
+}
+function cycleCheck(item){
+  if(checkState[item]===null)checkState[item]=true;
+  else if(checkState[item]===true)checkState[item]=false;
+  else checkState[item]=null;
+  renderCheckItems();
+}
+function allPass(){Object.keys(checkState).forEach(k=>checkState[k]=true);renderCheckItems();}
+function allFail(){Object.keys(checkState).forEach(k=>checkState[k]=false);renderCheckItems();}
+function allReset(){Object.keys(checkState).forEach(k=>checkState[k]=null);renderCheckItems();}
+
+// ════════════════════════════════════
+//  PHOTOS
+// ════════════════════════════════════
+function previewRPh(e){
+  const grid=document.getElementById('recPhotoGrid');
+  Array.from(e.target.files).forEach(f=>{
+    const r=new FileReader();r.onload=ev=>{
+      recPhotos.push(ev.target.result);const idx=recPhotos.length-1;
+      const d=document.createElement('div');d.className='pthumb';
+      d.innerHTML=`<img src="${ev.target.result}" onclick="showPV('${ev.target.result}')"><button class="pdel" onclick="delRP(${idx})">✕</button>`;
+      grid.appendChild(d);};r.readAsDataURL(f);});
+}
+function delRP(i){recPhotos.splice(i,1);const g=document.getElementById('recPhotoGrid');g.innerHTML='';recPhotos.forEach((p,idx)=>{const d=document.createElement('div');d.className='pthumb';d.innerHTML=`<img src="${p}" onclick="showPV('${p}')"><button class="pdel" onclick="delRP(${idx})">✕</button>`;g.appendChild(d);});}
+function previewIPh(e){
+  const grid=document.getElementById('importPhotoGrid');
+  Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=ev=>{importPhotos.push(ev.target.result);const idx=importPhotos.length-1;const d=document.createElement('div');d.className='pthumb';d.innerHTML=`<img src="${ev.target.result}" onclick="showPV('${ev.target.result}')"><button class="pdel" onclick="delIP(${idx})">✕</button>`;grid.appendChild(d);};r.readAsDataURL(f);});
+}
+function delIP(i){importPhotos.splice(i,1);const g=document.getElementById('importPhotoGrid');g.innerHTML='';importPhotos.forEach((p,idx)=>{const d=document.createElement('div');d.className='pthumb';d.innerHTML=`<img src="${p}" onclick="showPV('${p}')"><button class="pdel" onclick="delIP(${idx})">✕</button>`;g.appendChild(d);});}
+function showPV(src){document.getElementById('pvImg').src=src;document.getElementById('photoViewer').classList.add('open');}
+function closePV(){document.getElementById('photoViewer').classList.remove('open');}
+
+// ════════════════════════════════════
+//  SAVE RECORD
+// ════════════════════════════════════
+function buildRec(){
+  const date=document.getElementById('recDate').value;
+  const locId=document.getElementById('recLoc').value;
+  const cleaner=document.getElementById('recCleaner').value;
+  const checker=document.getElementById('recChecker').value;
+  const note=document.getElementById('recNote').value;
+  if(!date){toast('❌ Please select a date / 請選擇日期','error');return null;}
+  if(!locId){toast('❌ Please select a location / 請選擇地點','error');return null;}
+  if(!cleaner){toast('❌ Select cleaner — Settings → Cleaners','error');return null;}
+  if(!checker){toast('❌ Select checker — Settings → Checkers','error');return null;}
+  return {id:'r'+Date.now(),date,locId,cleaner,checker,note,slots:[...selSlots],checks:{...checkState},photos:[...recPhotos],isImport:false,synced:false,ts:Date.now()};
+}
+function saveRecord(){
+  const rec=buildRec();if(!rec)return;
+  records.unshift(rec);saveAll();clearForm();checkAnomalies();
+  toast('✅ Record saved! / 記錄已儲存！','success');
+  if(cfg.tgOnSave)sendTg(recMsg(rec));
+  showSec('dashboard');renderAll();
+}
+async function saveAndUpload(){
+  const rec=buildRec();if(!rec)return;
+  records.unshift(rec);saveAll();clearForm();checkAnomalies();
+  toast('⏳ Uploading...','info',5000);
+  const ok=await uploadToGas(rec);
+  if(ok){rec.synced=true;saveAll();toast('☁️ Saved & uploaded! / 已上傳！','success');}
+  if(cfg.tgOnSave)sendTg(recMsg(rec));
+  showSec('dashboard');renderAll();
+}
+function clearForm(){
+  checkState={smell:null,light:null,floor:null,door:null,corner:null,ceiling:null};
+  selSlots=[];recPhotos=[];
+  ['recNote'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['recCleaner','recChecker'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('recPhotoGrid').innerHTML='';
+  renderCheckItems();renderSlots();
+}
+
+// ════════════════════════════════════
+//  GAS CLOUD
+// ════════════════════════════════════
+async function uploadToGas(rec){
+  if(!cfg.gasUrl){toast('❌ GAS URL not set in Settings','error');return false;}
+  const payload={action:'saveCleaning',date:rec.date,location:getLocName(rec.locId),cleaner:rec.cleaner,checker:rec.checker,slots:rec.slots.join(', '),checks:Object.entries(rec.checks).filter(([,v])=>v!==null).map(([k,v])=>k+(v?'✓':'✗')).join(', '),hasFail:Object.values(rec.checks).some(v=>v===false)?'YES':'NO',note:rec.note||'',recId:rec.id};
+  try{await fetch(cfg.gasUrl,{method:'POST',body:JSON.stringify(payload),mode:'no-cors'});return true;}
+  catch(e){toast('❌ Upload failed: '+e.message,'error');return false;}
+}
+
+async function uploadAllUnsynced(){
+  const un=records.filter(r=>!r.synced&&!r.isImport);
+  if(!un.length){showCloud('✅ 所有記錄已同步 All records synced','success',5000);toast('✅ All synced','success');return;}
+  showCloud(`⏳ 上傳中 Uploading... 0 / ${un.length} 筆`,'info');
+  let ok=0;
+  for(const r of un){
+    const s=await uploadToGas(r);
+    if(s){r.synced=true;ok++;}
+    showCloud(`⏳ 上傳中 Uploading... ${ok} / ${un.length} 筆`,'info');
+    await new Promise(x=>setTimeout(x,350));
+  }
+  saveAll();renderHistory();
+  if(ok===un.length){
+    showCloud(`✅ 上傳完成！成功同步 ${ok} 筆記錄 Upload complete: ${ok} records synced`,'success',6000);
+    toast(`☁️ Uploaded ${ok} records`,'success');
+  } else {
+    showCloud(`⚠️ 部分失敗：${ok} / ${un.length} 筆成功 Partial: ${ok}/${un.length} uploaded`,'warning',6000);
+  }
+}
+
+async function downloadFromCloud(){
+  if(!cfg.gasUrl){showCloud('❌ GAS URL 未設定，請到 Settings 填入 GAS URL not set','error',5000);return;}
+  showCloud('⏳ 從雲端下載中，請稍候 Downloading from cloud...','info');
+  try{
+    const res=await fetch(cfg.gasUrl+'?action=getCleaning');
+    if(!res.ok)throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    if(data.records&&data.records.length){
+      const ids=new Set(records.map(r=>r.id));let added=0;
+      data.records.forEach(r=>{if(!ids.has(r.id)){records.push({...r,synced:true});added++;}});
+      saveAll();renderHistory();
+      showCloud(`✅ 下載完成！新增 ${added} 筆記錄（雲端共 ${data.records.length} 筆）Download complete: ${added} new records added`,'success',6000);
+      toast(`⬇️ Downloaded ${added} new records`,'success');
+    } else {
+      showCloud('ℹ️ 雲端無新記錄（所有記錄已是最新）No new records from cloud','info',5000);
+    }
+  }catch(e){
+    showCloud('❌ 下載失敗，請確認 GAS URL 是否正確及已部署 Download failed: '+e.message,'error',6000);
+  }
+}
+
+async function testGas(){
+  if(!cfg.gasUrl){toast('❌ Enter GAS URL first','error');return;}
+  toast('⏳ Testing...','info');
+  try{await fetch(cfg.gasUrl+'?action=ping',{mode:'no-cors'});toast('✅ GAS connection OK!','success');}
+  catch(e){toast('❌ Failed: '+e.message,'error');}
+}
+
+// ════════════════════════════════════
+//  TELEGRAM
+// ════════════════════════════════════
+function recMsg(rec){
+  const checks=Object.entries(rec.checks).filter(([,v])=>v!==null).map(([k,v])=>`${t('checkIcons')[k]}${v?'✓':'✗'}`).join(' ');
+  const fail=Object.values(rec.checks).some(v=>v===false);
+  return `${fail?'⚠️':'✅'} *VRT Cleaning Record*\n━━━━━━━━━━━━━━━━━\n📅 ${rec.date}  📍 ${getLocName(rec.locId)}\n👷 ${rec.cleaner}  🔍 ${rec.checker}\n⏰ ${rec.slots.join(', ')||'—'}\n${fail?'❌':'✅'} ${checks||'—'}\n${rec.note?'📝 '+rec.note+'\n':''}━━━━━━━━━━━━━━━━━`;
+}
+async function sendTg(msg){
+  if(!cfg.botToken||!cfg.chatId)return;
+  try{await fetch(`https://api.telegram.org/bot${cfg.botToken}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:cfg.chatId,text:msg,parse_mode:'Markdown'})});}
+  catch(e){console.warn('TG failed',e);}
+}
+async function testTg(){
+  toast('📨 Sending test...','info');
+  await sendTg(`🧹 *VRT Cleaning Record*\n✅ Telegram test OK!\n${new Date().toLocaleString()}`);
+  toast('📨 Test sent! Check Telegram.','success');
+}
+
+// ════════════════════════════════════
+//  IMPORT MODAL
+// ════════════════════════════════════
+function openImport(){importPhotos=[];document.getElementById('importPhotoGrid').innerHTML='';document.getElementById('importPhotoInput').value='';document.getElementById('importModal').classList.add('open');}
+function closeImport(){document.getElementById('importModal').classList.remove('open');importPhotos=[];}
+function saveImport(){
+  const date=document.getElementById('importDate').value,locId=document.getElementById('importLoc').value,note=document.getElementById('importNote').value;
+  if(!date||!locId){toast('❌ Fill date and location','error');return;}
+  records.unshift({id:'r'+Date.now(),date,locId,cleaner:'—',checker:'—',note,slots:[],checks:{smell:null,light:null,floor:null,door:null,corner:null,ceiling:null},photos:[...importPhotos],isImport:true,synced:false,ts:Date.now()});
+  saveAll();closeImport();renderHistory();toast('✅ Imported','success');
+}
+function deleteRecord(id){if(!confirm('Delete?'))return;records=records.filter(r=>r.id!==id);saveAll();renderAll();}
+
+// ════════════════════════════════════
+//  CSV
+// ════════════════════════════════════
+function exportCSV(){
+  if(!records.length){toast('No records','error');return;}
+  const h=['Date','Location','Cleaner','Checker','Slots','Smell','Light','Floor','Door','Corner','Ceiling','HasFail','Synced','Note'];
+  const rows=records.map(r=>{const c=r.checks,fv=v=>v===true?'PASS':v===false?'FAIL':'—';return[r.date,getLocName(r.locId),r.cleaner||'',r.checker||'',r.slots.join('|'),fv(c.smell),fv(c.light),fv(c.floor),fv(c.door),fv(c.corner),fv(c.ceiling),Object.values(c).some(v=>v===false)?'YES':'NO',r.synced?'YES':'NO',r.note||''];});
+  const csv=[h,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}));a.download=`VRT_Cleaning_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+  toast('📊 CSV downloaded','success');
+}
+
+// ════════════════════════════════════
+//  LOCATIONS
+// ════════════════════════════════════
+function openAddLoc(){document.getElementById('addLocModal').classList.add('open');document.getElementById('newLocName').value='';}
+function closeAddLoc(){document.getElementById('addLocModal').classList.remove('open');}
+function addLocation(){
+  const name=document.getElementById('newLocName').value.trim(),type=document.getElementById('newLocType').value;
+  if(!name)return;
+  locations.push({id:'loc'+Date.now(),name,type});saveAll();closeAddLoc();populateLocSelects();renderLocations();
+  toast('📍 Location added','success');
+}
+function deleteLocation(id){if(!confirm('Delete?'))return;locations=locations.filter(l=>l.id!==id);saveAll();populateLocSelects();renderLocations();}
+function getLocName(id){const l=locations.find(x=>x.id===id);return l?l.name:'—';}
+
+function renderLocations(){
+  const c=document.getElementById('locList');
+  if(!locations.length){c.innerHTML=`<div class="empty"><div class="empty-i">📍</div>No locations</div>`;return;}
+  c.innerHTML=locations.map(loc=>{const cnt=records.filter(r=>r.locId===loc.id).length;return`<div style="display:flex;align-items:center;gap:11px;padding:11px;border:1.5px solid var(--border);border-radius:9px;margin-bottom:7px"><div style="font-size:26px">${(t('locTypes')[loc.type]||'📌').split(' ')[0]}</div><div style="flex:1"><div style="font-weight:600;font-size:13px">${loc.name}</div><div class="ts-soft">${t('locTypes')[loc.type]||''} · ${cnt} records</div></div><button class="btn bd bsm" onclick="deleteLocation('${loc.id}')">🗑</button></div>`;}).join('');
+}
+
+// ════════════════════════════════════
+//  SETTINGS
+// ════════════════════════════════════
+function renderSettings(){
+  renderTags('cleanerTags',cleanerList,'cleaner');
+  renderTags('checkerTags',checkerList,'checker');
+  renderTags('observerTags',observerList,'observer');
+  const gu=document.getElementById('cfgGasUrl');if(gu)gu.value=cfg.gasUrl||'';
+  const bt=document.getElementById('cfgBotToken');if(bt)bt.value=cfg.botToken||'';
+  const ci=document.getElementById('cfgChatId');if(ci)ci.value=cfg.chatId||'';
+  const ts=document.getElementById('cfgTgOnSave');if(ts)ts.checked=!!cfg.tgOnSave;
+  renderSlotTags();
+}
+function renderTags(cId,list,type){
   const c=document.getElementById(cId);if(!c)return;
-  c.innerHTML=list.length?list.map((n,i)=>`<div style="background:var(--mint-light);color:var(--teal);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px">${n}<span onclick="removeStaff('${type}',${i})" style="cursor:pointer;opacity:.6;font-size:12px">✕</span></div>`).join(''):'<span style="color:var(--text-soft);font-size:12px">None added yet</span>';
+  c.innerHTML=list.length?list.map((n,i)=>`<div class="stag">${n}<span class="del" onclick="removeStaff('${type}',${i})">✕</span></div>`).join(''):'<span class="ts-soft">None added yet / 尚未新增</span>';
 }
 function addStaff(type){
   const ids={cleaner:'newCleanerName',checker:'newCheckerName',observer:'newObserverName'};
@@ -802,726 +928,194 @@ function addStaff(type){
   if(type==='cleaner')cleanerList.push(name);
   else if(type==='checker')checkerList.push(name);
   else observerList.push(name);
-  saveDataAll();populateStaffSelects();renderSettings();inp.value='';
-  showToast('✅ Added / 已新增','success');
+  saveAll();populateStaffSelects();renderSettings();inp.value='';
+  toast('✅ Added / 已新增','success');
 }
 function removeStaff(type,idx){
   if(type==='cleaner')cleanerList.splice(idx,1);
   else if(type==='checker')checkerList.splice(idx,1);
   else observerList.splice(idx,1);
-  saveDataAll();populateStaffSelects();renderSettings();
+  saveAll();populateStaffSelects();renderSettings();
 }
 function saveConfig(){
-  appCfg.gasUrl   = document.getElementById('cfgGasUrl').value.trim();
-  appCfg.botToken = document.getElementById('cfgBotToken').value.trim();
-  appCfg.chatId   = document.getElementById('cfgChatId').value.trim();
-  appCfg.tgOnSave = document.getElementById('cfgTgOnSave').checked;
-  saveDataAll();showToast('✅ Config saved / 設定已儲存','success');
+  cfg.gasUrl  =document.getElementById('cfgGasUrl').value.trim()||DEFAULTS.gasUrl;
+  cfg.botToken=document.getElementById('cfgBotToken').value.trim()||DEFAULTS.botToken;
+  cfg.chatId  =document.getElementById('cfgChatId').value.trim()||DEFAULTS.chatId;
+  cfg.tgOnSave=document.getElementById('cfgTgOnSave').checked;
+  saveAll();toast('✅ Config saved / 設定已儲存','success');
+  renderSettings();
 }
-function renderSlotTagsExt(){
+function renderSlotTags(){
   const c=document.getElementById('slotTags');if(!c)return;
-  c.innerHTML=cfgSlots.map((s,i)=>`<div style="background:var(--mint-light);color:var(--teal);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:600;display:inline-flex;align-items:center;gap:6px">${s}<span onclick="removeSlotConfig(${i})" style="cursor:pointer;opacity:.6">✕</span></div>`).join('');
+  c.innerHTML=cfgSlots.map((s,i)=>`<div class="stag">${s}<span class="del" onclick="removeSlot(${i})">✕</span></div>`).join('');
 }
-function addSlotConfig(){
+function addSlot(){
   const v=document.getElementById('newSlotTime').value.trim();
-  if(!v||!/^\d{2}:\d{2}$/.test(v)){showToast('❌ Use HH:MM format','error');return;}
-  if(!cfgSlots.includes(v)){cfgSlots.push(v);cfgSlots.sort();saveDataAll();renderSlotTagsExt();renderTimeSlots();}
+  if(!v||!/^\d{2}:\d{2}$/.test(v)){toast('❌ Use HH:MM format','error');return;}
+  if(!cfgSlots.includes(v)){cfgSlots.push(v);cfgSlots.sort();saveAll();renderSlotTags();renderSlots();}
   document.getElementById('newSlotTime').value='';
 }
-function removeSlotConfig(i){cfgSlots.splice(i,1);saveDataAll();renderSlotTagsExt();renderTimeSlots();}
-function resetSlotsDefault(){cfgSlots=['07:30','08:30','09:30','10:30','12:30','13:30','14:30','15:30','16:30'];saveDataAll();renderSlotTagsExt();renderTimeSlots();}
-function exportAllData(){
-  const d={records,locations,sixsRecords,cleanerList,checkerList,observerList,cfgSlots,exportDate:new Date().toISOString()};
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));
-  a.download=`VRT_CleaningData_${new Date().toISOString().slice(0,10)}.json`;a.click();
-  showToast('📤 Exported','success');
+function removeSlot(i){cfgSlots.splice(i,1);saveAll();renderSlotTags();renderSlots();}
+function resetSlots(){cfgSlots=[...DEFAULT_SLOTS];saveAll();renderSlotTags();renderSlots();}
+function exportData(){
+  const d={records,locations,sixsRecords,cleanerList,checkerList,observerList,cfgSlots,cfg,exportDate:new Date().toISOString()};
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));a.download=`VRT_CleaningData_${new Date().toISOString().slice(0,10)}.json`;a.click();
+  toast('📤 Exported','success');
 }
-function importAllData(e){
+function importData(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
-  r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(confirm('Import & merge?')){
+  r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(confirm('Import & merge? / 匯入並合併？')){
     if(d.records)records=[...records,...d.records.filter(r=>!records.find(x=>x.id===r.id))];
     if(d.locations)locations=d.locations;if(d.sixsRecords)sixsRecords=d.sixsRecords;
     if(d.cleanerList)cleanerList=d.cleanerList;if(d.checkerList)checkerList=d.checkerList;
     if(d.observerList)observerList=d.observerList;if(d.cfgSlots)cfgSlots=d.cfgSlots;
-    saveData();saveDataAll();initForm();renderSettings();renderAll();showToast('✅ Imported','success');
-  }}catch(err){showToast('❌ Invalid file','error');}};
+    if(d.cfg)cfg=Object.assign({},DEFAULTS,d.cfg);
+    saveAll();initForm();renderSettings();renderAll();toast('✅ Imported','success');
+  }}catch(err){toast('❌ Invalid file','error');}};
   r.readAsText(f);e.target.value='';
 }
-function clearAllData(){
-  if(!confirm('Delete ALL records?'))return;if(!confirm('Are you SURE?'))return;
-  records=[];saveData();renderAll();showToast('🗑️ Cleared','error');
-}
-</script>
-<script>
-// ============ STATE ============
-let lang = 'en';
-let records = JSON.parse(localStorage.getItem('vrt_records') || '[]');
-let locations = JSON.parse(localStorage.getItem('vrt_locations') || JSON.stringify([
-  {id:'loc1', name:'Toilet A', type:'toilet'},
-  {id:'loc2', name:'Toilet B', type:'toilet'},
-  {id:'loc3', name:'Factory Floor', type:'factory'},
-  {id:'loc4', name:'Office', type:'office'},
-  {id:'loc5', name:'Canteen', type:'canteen'},
-]));
-let sixsRecords = JSON.parse(localStorage.getItem('vrt_sixs') || '[]');
-let importPhotos = [];
-let recPhotos = [];
-let dbPeriod = 'day';
-let histPeriod = 'day';
-let anaPeriod = 'week';
-let histOffset = 0;
-let currentSection = 'dashboard';
+function clearAll(){if(!confirm('Delete ALL records? / 刪除所有記錄？'))return;if(!confirm('Are you SURE? / 確定嗎？'))return;records=[];saveAll();renderAll();toast('🗑️ Cleared','error');}
 
-// ============ TRANSLATIONS ============
-const T = {
-  en: {
-    hTitle:'VRT Clean Record',
-    nav:['📊 Dashboard','✏️ New Record','📋 History','⭐ 6S Check','📈 Analysis','📍 Locations','⚙️ Settings'],
-    dbTitle:'Dashboard', dbDate:'', dbCompTitle:'Completion by Location', dbTrendTitle:'Check Trend', dbRecentTitle:'Recent Records',
-    recTitle:'New Cleaning Record', recDateLabel:'Date', recLocLabel:'Location', recCleanerLabel:'Cleaned By', recCheckerLabel:'Checked By',
-    recSlotsTitle:'Cleaning Time Slots', recItemsTitle:'Check Items', recNoteLabel:'Comment / Note',
-    recPhotoLabel:'Photos', recPhotoText:'Click to upload photos', clearBtn:'Clear', saveBtn:'💾 Save Record',
-    histTitle:'History Records', importBtn:'📎 Import Historical',
-    sixsTitle:'6S Workplace Diagnostic', sixsObsLabel:'Observer', sixsScoreLabel:'Total Score', sixsResetBtn:'Reset', sixsSaveBtn:'💾 Save 6S Record', sixsHistLabel:'6S History',
-    anaTitle:'Analysis', anaPassTitle:'Pass Rate by Item', anaLocTitle:'Records by Location', anaAnomalyTitle:'Anomaly Summary', anaSixsTitle:'6S Score Trend',
-    locTitle:'Manage Locations', addLocBtn:'+ Add Location',
-    addLocTitle:'Add Location', locNameLabel:'Location Name', locTypeLabel:'Type', cancelBtn:'Cancel', confirmAddBtn:'Add',
-    importTitle:'Import Historical Photo Record', importDateLabel:'Date', importLocLabel:'Location', importNoteLabel:'Note', importPhotoLabel:'Photos', importPhotoText:'Click to upload photos', saveImportBtn:'Save',
-    ptDay:'Day', ptWeek:'Week', ptMonth:'Month', ptYear:'Year',
-    apTitle:'Anomaly Alerts',
-    checkItems:{smell:'Smell/ក្លិន',light:'Light/LIGHT',floor:'Floor/FLOOR',door:'Door/ទ្វារ',corner:'Corner/CORNER',ceiling:'Ceiling/CEILING'},
-    checkIcons:{smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'},
-    pass:'✓ Pass', fail:'✗ Fail',
-    slots:['07:30','08:30','09:30','10:30','12:30','13:30','14:30','15:30','16:30'],
-    thead:['Date','Location','Cleaner','Checker','Status','Items','Note','Photos',''],
-    stat0:'Total Records', stat1:'Pass Rate', stat2:'Anomalies', stat3:'Locations',
-    locTypes:{toilet:'🚻 Toilet',factory:'🏭 Factory',office:'🏢 Office',canteen:'🍽️ Canteen',warehouse:'📦 Warehouse',entrance:'🚪 Entrance',other:'📌 Other'},
-    allLoc:'All Locations',
-    sixsCats:[
-      {name:'Sort (Organization)',items:['Items on wall bulletin not cleared','Items present in aisles/stairways/corners','Safety hazards exist (water/oil/chemical/machine)']},
-      {name:'Set in Order (Organization)',items:['Items not in correct places','Items not put back after use','Workstation locations not indicated']},
-      {name:'Shine (Cleanliness)',items:['Floors/walls/stairs not free of dirt/oil','Other cleaning problems present','After cleaning: is place more organized?']},
-      {name:'Standardize (Adherence)',items:['Standards not followed tightly','Checklists do not exist for cleaning/maintenance','Items cannot be located in 30 seconds']},
-      {name:'Sustain (Self Discipline)',items:['Workers not had 6S training','6S inspections not performed last week','Personal belongings not neatly stored']},
-      {name:'Safety',items:['Workers not had SOE training','Injuries this year in workplace','Safety exits not clearly marked','Hazard areas unmarked','SOE corrected actions incomplete']},
-    ],
-    anomalyMsg: (loc, item) => `Anomaly at ${loc}: ${item} failed`,
-    missedSlot: (loc, t) => `Missed cleaning slot at ${loc}: ${t}`,
-    noRecords:'No records found',
-  },
-  zh: {
-    hTitle:'清潔記錄系統',
-    nav:['📊 儀表板','✏️ 新增記錄','📋 歷史記錄','⭐ 6S檢查','📈 分析','📍 地點管理','⚙️ 設定'],
-    dbTitle:'儀表板', dbDate:'', dbCompTitle:'各地點完成率', dbTrendTitle:'檢查趨勢', dbRecentTitle:'最近記錄',
-    recTitle:'新增清潔記錄', recDateLabel:'日期', recLocLabel:'地點', recCleanerLabel:'清潔員', recCheckerLabel:'檢查員',
-    recSlotsTitle:'清潔時段', recItemsTitle:'檢查項目', recNoteLabel:'備注/異常',
-    recPhotoLabel:'照片', recPhotoText:'點擊上傳照片', clearBtn:'清除', saveBtn:'💾 儲存記錄',
-    histTitle:'歷史記錄', importBtn:'📎 匯入歷史照片',
-    sixsTitle:'6S工作場所診斷', sixsObsLabel:'觀察員', sixsScoreLabel:'總分', sixsResetBtn:'重置', sixsSaveBtn:'💾 儲存6S記錄', sixsHistLabel:'6S歷史',
-    anaTitle:'數據分析', anaPassTitle:'各項目通過率', anaLocTitle:'各地點記錄數', anaAnomalyTitle:'異常匯總', anaSixsTitle:'6S分數趨勢',
-    locTitle:'地點管理', addLocBtn:'+ 新增地點',
-    addLocTitle:'新增地點', locNameLabel:'地點名稱', locTypeLabel:'類型', cancelBtn:'取消', confirmAddBtn:'新增',
-    importTitle:'匯入歷史照片記錄', importDateLabel:'日期', importLocLabel:'地點', importNoteLabel:'備注', importPhotoLabel:'照片', importPhotoText:'點擊上傳照片', saveImportBtn:'儲存',
-    ptDay:'日', ptWeek:'週', ptMonth:'月', ptYear:'年',
-    apTitle:'異常警報',
-    checkItems:{smell:'氣味',light:'燈光',floor:'地板',door:'門',corner:'角落',ceiling:'天花'},
-    checkIcons:{smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'},
-    pass:'✓ 通過', fail:'✗ 不通過',
-    slots:['07:30','08:30','09:30','10:30','12:30','13:30','14:30','15:30','16:30'],
-    thead:['日期','地點','清潔員','檢查員','狀態','項目','備注','照片',''],
-    stat0:'總記錄', stat1:'通過率', stat2:'異常數', stat3:'地點數',
-    locTypes:{toilet:'🚻 廁所',factory:'🏭 廠房',office:'🏢 辦公室',canteen:'🍽️ 飯堂',warehouse:'📦 倉庫',entrance:'🚪 入口',other:'📌 其他'},
-    allLoc:'所有地點',
-    sixsCats:[
-      {name:'整理（組織）',items:['牆上公告欄未清理','走道/樓梯/角落有雜物','存在安全隱患（水/油/化學品/機械）']},
-      {name:'整頓（組織）',items:['物品未在正確位置','使用後未立即放回','工作站位置未標明']},
-      {name:'清潔（清潔）',items:['地板/牆/樓梯有污垢','其他清潔問題','清潔後是否更整潔？']},
-      {name:'標準化（規範）',items:['未嚴格遵守標準','清潔/保養無清單','30秒內找不到物品']},
-      {name:'持續（自律）',items:['員工未接受6S培訓','上週未進行6S檢查','個人物品未整齊存放']},
-      {name:'安全',items:['員工未接受SOE培訓','今年工傷次數','安全出口未清晰標明','危險區域未標示','SOE糾正措施未完成']},
-    ],
-    anomalyMsg: (loc, item) => `${loc} 異常：${item} 不合格`,
-    missedSlot: (loc, t) => `${loc} 漏清潔時段：${t}`,
-    noRecords:'沒有找到記錄',
-  },
-  kh: {
-    hTitle:'កំណត់ត្រាសំអាត VRT',
-    nav:['📊 ផ្ទាំងគ្រប់គ្រង','✏️ បន្ថែមកំណត់ត្រា','📋 ប្រវត្តិ','⭐ ពិនិត្យ 6S','📈 វិភាគ','📍 ទីតាំង','⚙️ ការកំណត់'],
-    dbTitle:'ផ្ទាំងគ្រប់គ្រង', dbDate:'', dbCompTitle:'ការបញ្ចប់តាមទីតាំង', dbTrendTitle:'និន្នាការពិនិត្យ', dbRecentTitle:'កំណត់ត្រាថ្មីៗ',
-    recTitle:'បន្ថែមកំណត់ត្រាសំអាត', recDateLabel:'កាលបរិច្ឆេទ', recLocLabel:'ទីតាំង', recCleanerLabel:'អ្នកសំអាត', recCheckerLabel:'អ្នកត្រួតពិនិត្យ',
-    recSlotsTitle:'ម៉ោងសំអាត', recItemsTitle:'ធាតុពិនិត្យ', recNoteLabel:'យោបល់/ចំណាំ',
-    recPhotoLabel:'រូបភាព', recPhotoText:'ចុចដើម្បីផ្ទុករូបភាព', clearBtn:'លុប', saveBtn:'💾 រក្សាទុក',
-    histTitle:'ប្រវត្តិកំណត់ត្រា', importBtn:'📎 នាំចូលប្រវត្តិ',
-    sixsTitle:'ការធ្វើរោគវិនិច្ឆ័យ 6S', sixsObsLabel:'អ្នកត្រួតពិនិត្យ', sixsScoreLabel:'ពិន្ទុសរុប', sixsResetBtn:'កំណត់ឡើងវិញ', sixsSaveBtn:'💾 រក្សាទុក 6S', sixsHistLabel:'ប្រវត្តិ 6S',
-    anaTitle:'វិភាគ', anaPassTitle:'អត្រាជាប់តាមធាតុ', anaLocTitle:'កំណត់ត្រាតាមទីតាំង', anaAnomalyTitle:'សង្ខេបភាពមិនប្រក្រតី', anaSixsTitle:'និន្នាការពិន្ទុ 6S',
-    locTitle:'គ្រប់គ្រងទីតាំង', addLocBtn:'+ បន្ថែមទីតាំង',
-    addLocTitle:'បន្ថែមទីតាំង', locNameLabel:'ឈ្មោះទីតាំង', locTypeLabel:'ប្រភេទ', cancelBtn:'បោះបង់', confirmAddBtn:'បន្ថែម',
-    importTitle:'នាំចូលប្រវត្តិរូបភាព', importDateLabel:'កាលបរិច្ឆេទ', importLocLabel:'ទីតាំង', importNoteLabel:'ចំណាំ', importPhotoLabel:'រូបភាព', importPhotoText:'ចុចដើម្បីផ្ទុករូបភាព', saveImportBtn:'រក្សាទុក',
-    ptDay:'ថ្ងៃ', ptWeek:'សប្តាហ៍', ptMonth:'ខែ', ptYear:'ឆ្នាំ',
-    apTitle:'ការជូនដំណឹងភាពមិនប្រក្រតី',
-    checkItems:{smell:'ក្លិន',light:'អំពូល',floor:'ជាន់',door:'ទ្វារ',corner:'ជ្រុង',ceiling:'ពិដាន'},
-    checkIcons:{smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'},
-    pass:'✓ ជាប់', fail:'✗ ធ្លាក់',
-    slots:['07:30','08:30','09:30','10:30','12:30','13:30','14:30','15:30','16:30'],
-    thead:['កាលបរិច្ឆេទ','ទីតាំង','អ្នកសំអាត','អ្នកត្រួតពិនិត្យ','ស្ថានភាព','ធាតុ','ចំណាំ','រូបភាព',''],
-    stat0:'កំណត់ត្រាសរុប', stat1:'អត្រាជាប់', stat2:'ភាពមិនប្រក្រតី', stat3:'ទីតាំង',
-    locTypes:{toilet:'🚻 បន្ទប់ទឹក',factory:'🏭 រោងចក្រ',office:'🏢 ការិយាល័យ',canteen:'🍽️ បន្ទប់ញ៉ាំ',warehouse:'📦 ឃ្លាំង',entrance:'🚪 ច្រក',other:'📌 ផ្សេងៗ'},
-    allLoc:'ទីតាំងទាំងអស់',
-    sixsCats:[
-      {name:'ការតម្រៀប (ការរៀបចំ)',items:['ធាតុនៅក្នុងក្ដារប្រកាសមិនបានសំអាត','ធាតុនៅក្នុងច្រក/កន្លែង','គ្រោះថ្នាក់សុវត្ថិភាព']},
-      {name:'ការដាក់ជាលំដាប់ (ការរៀបចំ)',items:['ធាតុមិននៅទីតាំងត្រឹមត្រូវ','ធាតុមិនបានដាក់ត្រឡប់ភ្លាម','ទីតាំងស្ថានីយការងារមិនបានចង្អុល']},
-      {name:'ចំណោតឆើតឆាយ (ការសំអាត)',items:['ជាន់/ជញ្ជាំង/ជណ្តើរមិនស្អាត','បញ្ហាសំអាតផ្សេងៗ','បន្ទាប់ពីសំអាត ប្រសើរជាងមុនទេ?']},
-      {name:'ការបង្រួបបង្រួម (ការអនុលោម)',items:['ស្ដង់ដារមិនបានអនុវត្តយ៉ាងតឹងរ៉ឹង','មិនមានបញ្ជីត្រួតពិនិត្យ','ធាតុរកមិនឃើញក្នុង 30 វិនាទី']},
-      {name:'ការរក្សាបន្ត (វិន័យខ្លួនឯង)',items:['បុគ្គលិកមិនបានទទួលការបណ្តុះបណ្តាល 6S','ការត្រួតពិនិត្យ 6S មិនបានធ្វើ','ទ្រព្យផ្ទាល់ខ្លួនមិនបានរៀបចំ']},
-      {name:'សុវត្ថិភាព',items:['បុគ្គលិកមិនបានទទួល SOE','របួស/ឧបទ្ទវហេតុក្នុងឆ្នាំ','ច្រកចេញសង្គ្រោះមិនច្បាស់','តំបន់គ្រោះថ្នាក់មិនបានសម្គាល់','SOE ការកែតម្រូវមិនបានបញ្ចប់']},
-    ],
-    anomalyMsg: (loc, item) => `ភាពមិនប្រក្រតីនៅ ${loc}: ${item}`,
-    missedSlot: (loc, t) => `ម៉ោងសំអាតខ្វះ ${loc}: ${t}`,
-    noRecords:'រកមិនឃើញកំណត់ត្រា',
-  }
-};
-
-function t(key) { return T[lang][key] || T['en'][key] || key; }
-
-// ============ LANG ============
-function setLang(l) {
-  lang = l;
-  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  applyLang();
-  renderAll();
-}
-
-function applyLang() {
-  const keys = ['hTitle','dbTitle','dbCompTitle','dbTrendTitle','dbRecentTitle','recTitle','recDateLabel','recLocLabel','recCleanerLabel','recCheckerLabel','recSlotsTitle','recItemsTitle','recNoteLabel','recPhotoLabel','recPhotoText','clearBtn','saveBtn','histTitle','importBtn','sixsTitle','sixsObsLabel','sixsScoreLabel','sixsResetBtn','sixsSaveBtn','sixsHistLabel','anaTitle','anaPassTitle','anaLocTitle','anaAnomalyTitle','anaSixsTitle','locTitle','addLocBtn','addLocTitle','locNameLabel','locTypeLabel','cancelBtn','confirmAddBtn','importTitle','importDateLabel','importLocLabel','importNoteLabel','importPhotoLabel','importPhotoText','saveImportBtn','ptDay','ptWeek','ptMonth','ptYear','apTitle'];
-  keys.forEach(k => { const el = document.getElementById(k); if(el) el.textContent = t(k); });
-  const navItems = document.querySelectorAll('.nav-item');
-  const navKeys = ['nav-dashboard','nav-record','nav-history','nav-sixs','nav-analysis','nav-locations'];
-  navKeys.forEach((id,i) => { const el = document.getElementById(id); if(el) el.textContent = t('nav')[i]; });
-  document.getElementById('dbDate').textContent = new Date().toLocaleDateString(lang==='zh'?'zh-TW':lang==='kh'?'km-KH':'en-US', {weekday:'long',year:'numeric',month:'long',day:'numeric'});
-}
-
-// ============ SECTION ============
-function showSection(s) {
-  document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
-  document.getElementById('section-'+s).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-  document.getElementById('nav-'+s).classList.add('active');
-  currentSection = s;
-  if(s==='dashboard') renderDashboard();
-  if(s==='history') renderHistory();
-  if(s==='sixs') render6S();
-  if(s==='analysis') renderAnalysis();
-  if(s==='locations') renderLocations();
-}
-
-// ============ SAVE/LOAD ============
-function saveData() {
-  localStorage.setItem('vrt_records', JSON.stringify(records));
-  localStorage.setItem('vrt_locations', JSON.stringify(locations));
-  localStorage.setItem('vrt_sixs', JSON.stringify(sixsRecords));
-}
-
-// ============ INIT FORM ============
-function initForm() {
-  const today = new Date().toISOString().slice(0,10);
-  document.getElementById('recDate').value = today;
-  document.getElementById('sixsDate').value = today;
-  document.getElementById('importDate').value = today;
-  populateLocSelects();
-  populateStaffSelects();
-  renderTimeSlots();
-  renderCheckItems();
-  render6SChecklist();
-}
-
-function populateLocSelects() {
-  const selects = ['recLoc','sixsLoc','importLoc','histLocFilter'];
-  selects.forEach(id => {
-    const sel = document.getElementById(id);
-    if(!sel) return;
-    const isFilter = id === 'histLocFilter';
-    sel.innerHTML = isFilter ? `<option value="all">${t('allLoc')}</option>` : '';
-    locations.forEach(loc => {
-      const opt = document.createElement('option');
-      opt.value = loc.id;
-      opt.textContent = (t('locTypes')[loc.type]||'📌') + ' ' + loc.name;
-      sel.appendChild(opt);
+// ════════════════════════════════════
+//  ALERTS
+// ════════════════════════════════════
+let alerts=[];
+function checkAnomalies(){
+  alerts=[];const today=new Date().toISOString().slice(0,10);
+  records.filter(r=>r.date===today).forEach(rec=>{
+    Object.entries(rec.checks).forEach(([item,val])=>{
+      if(val===false)alerts.push({type:'critical',msg:T[lang].anomalyMsg(getLocName(rec.locId),t('checkItems')[item]),time:rec.date});
     });
   });
+  document.getElementById('alertCount').textContent=alerts.length;
+  const list=document.getElementById('alertList');
+  list.innerHTML=alerts.length?alerts.map(a=>`<div class="ai ${a.type}"><div style="font-size:12px">${a.msg}</div><div style="font-size:10px;color:var(--soft);margin-top:2px">${a.time}</div></div>`).join(''):`<div class="empty"><div class="empty-i">✅</div>No anomalies today</div>`;
 }
+function toggleAP(){document.getElementById('alertPanel').classList.toggle('open');}
 
-// ============ TIME SLOTS ============
-let selectedSlots = [];
-function renderTimeSlots() {
-  const slots = t('slots');
-  const now = new Date();
-  const container = document.getElementById('timeSlots');
-  container.innerHTML = '';
-  slots.forEach(s => {
-    const [h,m] = s.split(':').map(Number);
-    const slotTime = new Date(); slotTime.setHours(h,m,0,0);
-    const done = selectedSlots.includes(s);
-    const div = document.createElement('div');
-    div.className = `time-slot ${done ? 'done' : 'pending'}`;
-    div.textContent = (done ? '✓ ' : '') + s;
-    div.onclick = () => toggleSlot(s, div);
-    container.appendChild(div);
-  });
-}
-function toggleSlot(s, el) {
-  if(selectedSlots.includes(s)) selectedSlots = selectedSlots.filter(x=>x!==s);
-  else selectedSlots.push(s);
-  el.className = `time-slot ${selectedSlots.includes(s)?'done':'pending'}`;
-  el.textContent = (selectedSlots.includes(s)?'✓ ':'')+s;
-}
-
-// ============ CHECK ITEMS ============
-let checkState = {smell:null,light:null,floor:null,door:null,corner:null,ceiling:null};
-function renderCheckItems() {
-  const items = ['smell','light','floor','door','corner','ceiling'];
-  const container = document.getElementById('checkItems');
-  container.innerHTML = '';
-  items.forEach(item => {
-    const state = checkState[item];
-    const div = document.createElement('div');
-    div.className = `check-item ${state===true?'pass':state===false?'fail':''}`;
-    div.innerHTML = `<div class="icon">${t('checkIcons')[item]}</div><div class="name">${t('checkItems')[item]}</div><div class="status">${state===true?t('pass'):state===false?t('fail'):'—'}</div>`;
-    div.onclick = () => cycleCheck(item);
-    container.appendChild(div);
-  });
-}
-function cycleCheck(item) {
-  if(checkState[item]===null) checkState[item]=true;
-  else if(checkState[item]===true) checkState[item]=false;
-  else checkState[item]=null;
-  renderCheckItems();
-}
-
-// ============ PHOTOS ============
-function previewRecPhotos(e) {
-  const files = Array.from(e.target.files);
-  const grid = document.getElementById('recPhotoGrid');
-  files.forEach(f => {
-    const reader = new FileReader();
-    reader.onload = ev => {
-      recPhotos.push(ev.target.result);
-      const idx = recPhotos.length-1;
-      const div = document.createElement('div'); div.className='photo-thumb';
-      div.innerHTML=`<img src="${ev.target.result}" onclick="viewPhoto('${ev.target.result}')"><button class="photo-del" onclick="removeRecPhoto(${idx})">✕</button>`;
-      grid.appendChild(div);
-    };
-    reader.readAsDataURL(f);
-  });
-}
-function removeRecPhoto(i) { recPhotos.splice(i,1); document.getElementById('recPhotoGrid').innerHTML=''; recPhotos.forEach((p,idx)=>{ const div=document.createElement('div');div.className='photo-thumb';div.innerHTML=`<img src="${p}" onclick="viewPhoto('${p}')"><button class="photo-del" onclick="removeRecPhoto(${idx})">✕</button>`;document.getElementById('recPhotoGrid').appendChild(div);});}
-function previewImportPhotos(e) {
-  const grid = document.getElementById('importPhotoGrid');
-  Array.from(e.target.files).forEach(f => {
-    const reader = new FileReader();
-    reader.onload = ev => {
-      importPhotos.push(ev.target.result);
-      const idx = importPhotos.length-1;
-      const div = document.createElement('div'); div.className='photo-thumb';
-      div.innerHTML=`<img src="${ev.target.result}" onclick="viewPhoto('${ev.target.result}')"><button class="photo-del" onclick="removeImportPhoto(${idx})">✕</button>`;
-      grid.appendChild(div);
-    };
-    reader.readAsDataURL(f);
-  });
-}
-function removeImportPhoto(i) { importPhotos.splice(i,1); document.getElementById('importPhotoGrid').innerHTML=''; importPhotos.forEach((p,idx)=>{ const div=document.createElement('div');div.className='photo-thumb';div.innerHTML=`<img src="${p}" onclick="viewPhoto('${p}')"><button class="photo-del" onclick="removeImportPhoto(${idx})">✕</button>`;document.getElementById('importPhotoGrid').appendChild(div);}); }
-function viewPhoto(src) { document.getElementById('photoViewerImg').src=src; document.getElementById('photoViewer').classList.add('open'); }
-function closePhotoViewer() { document.getElementById('photoViewer').classList.remove('open'); }
-
-// ============ SAVE RECORD ============
-function saveRecord() {
-  const date = document.getElementById('recDate').value;
-  const locId = document.getElementById('recLoc').value;
-  const cleaner = document.getElementById('recCleaner').value;
-  const checker = document.getElementById('recChecker').value;
-  const note = document.getElementById('recNote').value;
-  if(!date||!locId) { alert('Please fill date and location.'); return; }
-  const rec = {
-    id: 'r'+Date.now(), date, locId, cleaner, checker, note,
-    slots: [...selectedSlots],
-    checks: {...checkState},
-    photos: [...recPhotos],
-    isImport: false,
-    ts: Date.now()
-  };
-  records.unshift(rec);
-  saveData();
-  clearForm();
-  checkAnomalies();
-  showSection('dashboard');
-  renderAll();
-}
-
-function clearForm() {
-  checkState = {smell:null,light:null,floor:null,door:null,corner:null,ceiling:null};
-  selectedSlots = [];
-  recPhotos = [];
-  document.getElementById('recNote').value='';
-  document.getElementById('recCleaner').value='';
-  document.getElementById('recChecker').value='';
-  document.getElementById('recPhotoGrid').innerHTML='';
-  renderCheckItems();
-  renderTimeSlots();
-}
-
-// ============ IMPORT ============
-function openImportModal() {
-  importPhotos = [];
-  document.getElementById('importPhotoGrid').innerHTML='';
-  document.getElementById('importPhotoInput').value='';
-  document.getElementById('importModal').classList.add('open');
-}
-function closeImportModal() { document.getElementById('importModal').classList.remove('open'); importPhotos=[]; }
-function saveImportRecord() {
-  const date = document.getElementById('importDate').value;
-  const locId = document.getElementById('importLoc').value;
-  const note = document.getElementById('importNote').value;
-  if(!date||!locId) { alert('Fill date and location.'); return; }
-  const rec = {
-    id:'r'+Date.now(), date, locId, cleaner:'—', checker:'—', note,
-    slots:[], checks:{smell:null,light:null,floor:null,door:null,corner:null,ceiling:null},
-    photos:[...importPhotos], isImport:true, ts:Date.now()
-  };
-  records.unshift(rec);
-  saveData();
-  closeImportModal();
-  renderHistory();
-}
-
-// ============ DELETE RECORD ============
-function deleteRecord(id) {
-  if(!confirm('Delete this record?')) return;
-  records = records.filter(r=>r.id!==id);
-  saveData();
-  renderAll();
-}
-
-// ============ LOCATIONS ============
-function openAddLocModal() { document.getElementById('addLocModal').classList.add('open'); document.getElementById('newLocName').value=''; }
-function closeAddLocModal() { document.getElementById('addLocModal').classList.remove('open'); }
-function addLocation() {
-  const name = document.getElementById('newLocName').value.trim();
-  const type = document.getElementById('newLocType').value;
-  if(!name) return;
-  locations.push({id:'loc'+Date.now(), name, type});
-  saveData();
-  closeAddLocModal();
-  populateLocSelects();
-  renderLocations();
-}
-function deleteLocation(id) {
-  if(!confirm('Delete this location? All records remain.')) return;
-  locations = locations.filter(l=>l.id!==id);
-  saveData();
-  populateLocSelects();
-  renderLocations();
-}
-function getLocName(id) { const l=locations.find(x=>x.id===id); return l?l.name:'—'; }
-function getLocType(id) { const l=locations.find(x=>x.id===id); return l?l.type:'other'; }
-
-function renderLocations() {
-  const c = document.getElementById('locList');
-  if(!locations.length) { c.innerHTML=`<div class="empty"><div class="empty-icon">📍</div>No locations</div>`; return; }
-  c.innerHTML = locations.map(loc => {
-    const count = records.filter(r=>r.locId===loc.id).length;
-    return `<div style="display:flex;align-items:center;gap:12px;padding:12px;border:1.5px solid var(--border);border-radius:10px;margin-bottom:8px">
-      <div style="font-size:28px">${(t('locTypes')[loc.type]||'📌').split(' ')[0]}</div>
-      <div style="flex:1"><div style="font-weight:600">${loc.name}</div><div class="text-soft">${t('locTypes')[loc.type]||''} · ${count} records</div></div>
-      <button class="btn btn-danger btn-sm" onclick="deleteLocation('${loc.id}')">🗑</button>
-    </div>`;
-  }).join('');
-}
-
-// ============ ALERTS ============
-let alerts = [];
-function checkAnomalies() {
-  alerts = [];
-  const today = new Date().toISOString().slice(0,10);
-  const todayRecs = records.filter(r=>r.date===today);
-  todayRecs.forEach(rec => {
-    const locName = getLocName(rec.locId);
-    Object.entries(rec.checks).forEach(([item, val]) => {
-      if(val===false) alerts.push({type:'critical', msg: T[lang].anomalyMsg(locName, t('checkItems')[item]), time: rec.date});
-    });
-    const allSlots = t('slots');
-    const now = new Date();
-    allSlots.forEach(s => {
-      const [h,m] = s.split(':').map(Number);
-      const slotTime = new Date(); slotTime.setHours(h,m+30,0,0);
-      if(slotTime < now && !rec.slots.includes(s)) {
-        alerts.push({type:'warning', msg: T[lang].missedSlot(locName, s), time: rec.date});
-      }
-    });
-  });
-  document.getElementById('alertCount').textContent = alerts.length;
-  renderAlerts();
-}
-function renderAlerts() {
-  const list = document.getElementById('alertList');
-  if(!alerts.length) { list.innerHTML=`<div class="empty"><div class="empty-icon">✅</div>No anomalies</div>`; return; }
-  list.innerHTML = alerts.map(a=>`<div class="alert-item ${a.type}"><div class="alert-msg">${a.msg}</div><div class="alert-time">${a.time}</div></div>`).join('');
-}
-function toggleAlertPanel() { document.getElementById('alertPanel').classList.toggle('open'); }
-
-// ============ DASHBOARD ============
-function setDbPeriod(p, el) {
-  dbPeriod = p;
-  document.querySelectorAll('#section-dashboard .period-tab').forEach(x=>x.classList.remove('active'));
-  el.classList.add('active');
-  renderDashboard();
-}
-function filterByPeriod(recs, period, offset=0) {
-  const now = new Date();
-  return recs.filter(r => {
-    const d = new Date(r.date);
-    if(period==='day') { const t=new Date(now); t.setDate(t.getDate()+offset); return d.toDateString()===t.toDateString(); }
-    if(period==='week') { const start=new Date(now); start.setDate(start.getDate()-start.getDay()+offset*7); const end=new Date(start); end.setDate(end.getDate()+6); return d>=start&&d<=end; }
-    if(period==='month') { const m=new Date(now.getFullYear(), now.getMonth()+offset); return d.getMonth()===m.getMonth()&&d.getFullYear()===m.getFullYear(); }
-    if(period==='year') { return d.getFullYear()===(now.getFullYear()+offset); }
+// ════════════════════════════════════
+//  DASHBOARD
+// ════════════════════════════════════
+function setDbP(p,el){dbPeriod=p;document.querySelectorAll('#sec-dashboard .ptab').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderDashboard();}
+function filterByPeriod(recs,period,offset=0){
+  const now=new Date();
+  return recs.filter(r=>{
+    const d=new Date(r.date);
+    if(period==='day'){const t2=new Date(now);t2.setDate(t2.getDate()+offset);return d.toDateString()===t2.toDateString();}
+    if(period==='week'){const s=new Date(now);s.setDate(s.getDate()-s.getDay()+offset*7);const e=new Date(s);e.setDate(e.getDate()+6);return d>=s&&d<=e;}
+    if(period==='month'){const m=new Date(now.getFullYear(),now.getMonth()+offset);return d.getMonth()===m.getMonth()&&d.getFullYear()===m.getFullYear();}
+    if(period==='year'){return d.getFullYear()===(now.getFullYear()+offset);}
     return true;
   });
 }
-function renderDashboard() {
+function renderDashboard(){
   applyLang();
-  const filtered = filterByPeriod(records, dbPeriod);
-  const total = filtered.length;
-  const fails = filtered.filter(r=>Object.values(r.checks).some(v=>v===false));
-  const passRate = total ? Math.round((total-fails.length)/total*100) : 0;
-  document.getElementById('statsRow').innerHTML = `
-    <div class="stat-card"><div class="stat-num">${total}</div><div class="stat-label">${t('stat0')}</div></div>
-    <div class="stat-card"><div class="stat-num">${passRate}%</div><div class="stat-label">${t('stat1')}</div></div>
-    <div class="stat-card amber"><div class="stat-num">${fails.length}</div><div class="stat-label">${t('stat2')}</div></div>
-    <div class="stat-card blue"><div class="stat-num">${locations.length}</div><div class="stat-label">${t('stat3')}</div></div>
-  `;
-  // Location completion
-  const locComp = document.getElementById('locCompChart');
-  locComp.innerHTML = locations.map(loc => {
-    const locRecs = filtered.filter(r=>r.locId===loc.id);
-    const locPass = locRecs.filter(r=>!Object.values(r.checks).some(v=>v===false)).length;
-    const pct = locRecs.length ? Math.round(locPass/locRecs.length*100) : 0;
-    return `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>${loc.name}</span><span style="font-weight:700;color:var(--mint)">${pct}%</span></div><div style="background:var(--border);border-radius:6px;height:8px"><div style="background:${pct<60?'var(--red)':pct<80?'var(--amber)':'var(--mint)'};height:8px;border-radius:6px;width:${pct}%;transition:width 0.6s"></div></div></div>`;
-  }).join('') || '<div class="text-soft">No data</div>';
-  // Trend chart - last 7 days
-  const trend = document.getElementById('trendChart');
-  trend.innerHTML = '';
-  const days = 7;
-  let maxVal = 1;
-  const vals = [];
-  for(let i=days-1;i>=0;i--) {
-    const d = new Date(); d.setDate(d.getDate()-i);
-    const cnt = records.filter(r=>new Date(r.date).toDateString()===d.toDateString()).length;
-    vals.push({d,cnt});
-    if(cnt>maxVal) maxVal=cnt;
-  }
-  vals.forEach(v => {
-    const pct = Math.round(v.cnt/maxVal*100);
-    const col = document.createElement('div'); col.className='chart-bar-col';
-    col.innerHTML = `<div class="chart-val">${v.cnt}</div><div class="chart-bar" style="height:${Math.max(pct,4)}%;background:${v.cnt===0?'var(--border)':'var(--mint)'}"></div><div class="chart-label">${v.d.getDate()}/${v.d.getMonth()+1}</div>`;
-    trend.appendChild(col);
-  });
-  // Recent table
-  const thead = document.getElementById('recentThead');
-  thead.innerHTML = t('thead').map(h=>`<th>${h}</th>`).join('');
-  const tbody = document.getElementById('recentBody');
-  const recent = records.slice(0,10);
-  if(!recent.length) { tbody.innerHTML=`<tr><td colspan="9" class="empty">${t('noRecords')}</td></tr>`; return; }
-  tbody.innerHTML = recent.map(r => renderRecordRow(r)).join('');
+  const filtered=filterByPeriod(records,dbPeriod);
+  const total=filtered.length,fails=filtered.filter(r=>Object.values(r.checks).some(v=>v===false));
+  const pr=total?Math.round((total-fails.length)/total*100):0;
+  document.getElementById('statsRow').innerHTML=`<div class="sc"><div class="sn">${total}</div><div class="sl">${t('stat0')}</div></div><div class="sc"><div class="sn">${pr}%</div><div class="sl">${t('stat1')}</div></div><div class="sc a"><div class="sn">${fails.length}</div><div class="sl">${t('stat2')}</div></div><div class="sc b"><div class="sn">${locations.length}</div><div class="sl">${t('stat3')}</div></div>`;
+  document.getElementById('locCompChart').innerHTML=locations.map(loc=>{const lr=filtered.filter(r=>r.locId===loc.id),lp=lr.filter(r=>!Object.values(r.checks).some(v=>v===false)).length,pct=lr.length?Math.round(lp/lr.length*100):0;return`<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span>${loc.name}</span><span style="font-weight:700;color:var(--mint)">${pct}%</span></div><div class="pg"><div class="pf" style="width:${pct}%;background:${pct<60?'var(--red)':pct<80?'var(--amber)':'var(--mint)'}"></div></div></div>`;}).join('')||'<div class="ts-soft">No data</div>';
+  const trend=document.getElementById('trendChart');trend.innerHTML='';let mx=1;
+  const vals=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const cnt=records.filter(r=>new Date(r.date).toDateString()===d.toDateString()).length;vals.push({d,cnt});if(cnt>mx)mx=cnt;}
+  vals.forEach(v=>{const pct=Math.round(v.cnt/mx*100);const col=document.createElement('div');col.className='cc';col.innerHTML=`<div class="cv">${v.cnt}</div><div class="cb2" style="height:${Math.max(pct,4)}%;background:${v.cnt===0?'var(--border)':'var(--mint)'}"></div><div class="cl">${v.d.getDate()}/${v.d.getMonth()+1}</div>`;trend.appendChild(col);});
+  document.getElementById('recentThead').innerHTML=t('thead').map(h=>`<th>${h}</th>`).join('');
+  const recent=records.slice(0,8);
+  document.getElementById('recentBody').innerHTML=recent.length?recent.map(r=>recRow(r)).join(''):`<tr><td colspan="10" class="empty">${t('noRecords')}</td></tr>`;
+}
+function recRow(r){
+  const checks=Object.entries(r.checks),hf=checks.some(([,v])=>v===false),pc=checks.filter(([,v])=>v===true).length,ph=r.photos||[];
+  const sb=r.synced?'<span class="badge bb2" style="font-size:9px">☁️</span>':'<span class="badge bw2" style="font-size:9px">📱</span>';
+  return`<tr><td>${r.date}</td><td>${getLocName(r.locId)}</td><td>${r.cleaner||'—'}</td><td>${r.checker||'—'}</td><td><span class="badge ${hf?'bf2':r.isImport?'bw2':'bp2'}">${r.isImport?'📎':hf?t('fail'):t('pass')}</span></td><td>${pc}/6</td><td>${sb}</td><td style="max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.note||'—'}</td><td>${ph.length?`<span style="cursor:pointer;color:var(--mint)" onclick="showPV('${ph[0]}')">${ph.length}📷</span>`:'—'}</td><td><button class="btn bd bsm" onclick="deleteRecord('${r.id}')">🗑</button></td></tr>`;
 }
 
-function renderRecordRow(r) {
-  const checks = Object.entries(r.checks);
-  const hasFail = checks.some(([,v])=>v===false);
-  const passCount = checks.filter(([,v])=>v===true).length;
-  const photos = r.photos||[];
-  return `<tr>
-    <td>${r.date}</td>
-    <td>${getLocName(r.locId)}</td>
-    <td>${r.cleaner||'—'}</td>
-    <td>${r.checker||'—'}</td>
-    <td><span class="badge ${hasFail?'badge-fail':r.isImport?'badge-warn':'badge-pass'}">${r.isImport?'📎':hasFail?t('fail'):t('pass')}</span></td>
-    <td>${passCount}/6</td>
-    <td style="max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.note||'—'}</td>
-    <td>${photos.length?`<span style="cursor:pointer;color:var(--mint)" onclick="viewPhoto('${photos[0]}')">${photos.length}📷</span>`:'—'}</td>
-    <td><button class="btn btn-danger btn-sm" onclick="deleteRecord('${r.id}')">🗑</button></td>
-  </tr>`;
+// ════════════════════════════════════
+//  HISTORY
+// ════════════════════════════════════
+function setHistP(p,el){histPeriod=p;histOffset=0;document.querySelectorAll('#sec-history .ptab').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderHistory();}
+function shiftP(d){histOffset+=d;renderHistory();}
+function getPL(period,offset){
+  const now=new Date();
+  if(period==='day'){const d=new Date(now);d.setDate(d.getDate()+offset);return d.toLocaleDateString();}
+  if(period==='week'){const s=new Date(now);s.setDate(s.getDate()-s.getDay()+offset*7);const e=new Date(s);e.setDate(e.getDate()+6);return`${s.toLocaleDateString()}–${e.toLocaleDateString()}`;}
+  if(period==='month'){const m=new Date(now.getFullYear(),now.getMonth()+offset);return m.toLocaleDateString(undefined,{year:'numeric',month:'long'});}
+  if(period==='year')return String(now.getFullYear()+offset);
+}
+function renderHistory(){
+  const pl=document.getElementById('periodLabel');if(pl)pl.textContent=getPL(histPeriod,histOffset);
+  let filtered=filterByPeriod(records,histPeriod,histOffset);
+  const lf=document.getElementById('histLocFilter');if(lf&&lf.value!=='all')filtered=filtered.filter(r=>r.locId===lf.value);
+  const th=document.getElementById('histThead');if(th)th.innerHTML=t('thead').map(h=>`<th>${h}</th>`).join('');
+  const tb=document.getElementById('histBody');if(tb)tb.innerHTML=filtered.length?filtered.map(r=>recRow(r)).join(''):`<tr><td colspan="10" class="empty">${t('noRecords')}</td></tr>`;
 }
 
-// ============ HISTORY ============
-function setHistPeriod(p, el) {
-  histPeriod = p;
-  histOffset = 0;
-  document.querySelectorAll('#section-history .period-tab').forEach(x=>x.classList.remove('active'));
-  el.classList.add('active');
-  renderHistory();
+// ════════════════════════════════════
+//  6S
+// ════════════════════════════════════
+function render6SChecklist(){
+  const cats=t('sixsCats'),c=document.getElementById('sixsChecklist');if(!c)return;
+  c.innerHTML=cats.map((cat,ci)=>`<div class="sixc"><div class="sixct">${cat.name}</div>${cat.items.map((item,ii)=>`<div class="sixi"><span style="flex:1">${item}</span><div class="sbs">${[0,1,2,3,4].map(s=>`<button class="sbtn ${sixsScores[ci+'_'+ii]===s?'s'+s:''}" onclick="set6S(${ci},${ii},${s})">${s}</button>`).join('')}</div></div>`).join('')}</div>`).join('');
+  upd6S();
 }
-function shiftPeriod(d) { histOffset += d; renderHistory(); }
-function getPeriodLabel(period, offset) {
-  const now = new Date();
-  if(period==='day') { const d=new Date(now); d.setDate(d.getDate()+offset); return d.toLocaleDateString(); }
-  if(period==='week') { const s=new Date(now); s.setDate(s.getDate()-s.getDay()+offset*7); const e=new Date(s); e.setDate(e.getDate()+6); return `${s.toLocaleDateString()}–${e.toLocaleDateString()}`; }
-  if(period==='month') { const m=new Date(now.getFullYear(),now.getMonth()+offset); return m.toLocaleDateString(undefined,{year:'numeric',month:'long'}); }
-  if(period==='year') { return String(now.getFullYear()+offset); }
+function set6S(ci,ii,s){sixsScores[ci+'_'+ii]=s;render6SChecklist();}
+function upd6S(){
+  const vals=Object.values(sixsScores),total=vals.reduce((a,b)=>a+b,0),max=4*Object.keys(sixsScores).length;
+  const sc=document.getElementById('sixsScore');if(sc)sc.textContent=total;
+  const pct=max?total/max:0,level=pct>=0.8?4:pct>=0.6?3:pct>=0.4?2:pct>=0.2?1:0;
+  const lv=document.getElementById('sixsLevel');if(lv)lv.textContent=`Level - ${level}`;
+  if(sc)sc.style.color=level>=3?'var(--mint)':level>=2?'var(--amber)':'var(--red)';
 }
-function renderHistory() {
-  document.getElementById('periodLabel').textContent = getPeriodLabel(histPeriod, histOffset);
-  let filtered = filterByPeriod(records, histPeriod, histOffset);
-  const locFilter = document.getElementById('histLocFilter').value;
-  if(locFilter!=='all') filtered = filtered.filter(r=>r.locId===locFilter);
-  const thead = document.getElementById('histThead');
-  thead.innerHTML = `<tr>${t('thead').map(h=>`<th>${h}</th>`).join('')}</tr>`;
-  const tbody = document.getElementById('histBody');
-  if(!filtered.length) { tbody.innerHTML=`<tr><td colspan="9" class="empty">${t('noRecords')}</td></tr>`; return; }
-  tbody.innerHTML = filtered.map(r=>renderRecordRow(r)).join('');
+function render6S(){populateLocSelects();render6SChecklist();rend6SHist();}
+function reset6S(){sixsScores={};render6SChecklist();}
+function save6S(){
+  const date=document.getElementById('sixsDate').value,locId=document.getElementById('sixsLoc').value;
+  const observer=document.getElementById('sixsObsInput').value;
+  if(!date||!locId){toast('❌ Fill date and location','error');return;}
+  const vals=Object.values(sixsScores),total=vals.reduce((a,b)=>a+b,0);
+  sixsRecords.unshift({id:'s'+Date.now(),date,locId,observer,scores:{...sixsScores},total,ts:Date.now()});
+  saveAll();rend6SHist();toast('✅ 6S saved','success');
+}
+function rend6SHist(){
+  const th=document.getElementById('sixsHistThead');if(th)th.innerHTML=`<tr><th>Date</th><th>Location</th><th>Observer</th><th>Score</th><th>Level</th><th></th></tr>`;
+  const tb=document.getElementById('sixsHistBody');if(!tb)return;
+  if(!sixsRecords.length){tb.innerHTML=`<tr><td colspan="6" class="empty">${t('noRecords')}</td></tr>`;return;}
+  tb.innerHTML=sixsRecords.map(r=>{const ms=4*Object.keys(r.scores).length,pct=ms?r.total/ms:0,level=pct>=0.8?4:pct>=0.6?3:pct>=0.4?2:pct>=0.2?1:0;return`<tr><td>${r.date}</td><td>${getLocName(r.locId)}</td><td>${r.observer||'—'}</td><td style="font-weight:700;color:var(--mint)">${r.total}</td><td><span class="badge ${level>=3?'bp2':level>=2?'bw2':'bf2'}">L-${level}</span></td><td><button class="btn bd bsm" onclick="del6S('${r.id}')">🗑</button></td></tr>`;}).join('');
+}
+function del6S(id){if(!confirm('Delete?'))return;sixsRecords=sixsRecords.filter(r=>r.id!==id);saveAll();rend6SHist();}
+
+// ════════════════════════════════════
+//  ANALYSIS
+// ════════════════════════════════════
+function setAnaP(p,el){anaPeriod=p;document.querySelectorAll('#sec-analysis .ptab').forEach(x=>x.classList.remove('active'));el.classList.add('active');renderAnalysis();}
+function renderAnalysis(){
+  const filtered=filterByPeriod(records,anaPeriod);
+  const items=['smell','light','floor','door','corner','ceiling'];
+  document.getElementById('passRateChart').innerHTML=items.map(item=>{const rel=filtered.filter(r=>r.checks[item]!==null&&r.checks[item]!==undefined),pass=rel.filter(r=>r.checks[item]===true).length,pct=rel.length?Math.round(pass/rel.length*100):100;return`<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span>${t('checkIcons')[item]} ${t('checkItems')[item]}</span><span style="font-weight:700">${pct}%</span></div><div class="pg"><div class="pf" style="width:${pct}%;background:${pct<60?'var(--red)':pct<80?'var(--amber)':'var(--mint)'}"></div></div></div>`;}).join('')||'<div class="ts-soft">No data</div>';
+  const total=filtered.length||1;
+  document.getElementById('locPieChart').innerHTML=locations.map(loc=>{const cnt=filtered.filter(r=>r.locId===loc.id).length,pct=Math.round(cnt/total*100);return`<div style="display:flex;align-items:center;gap:9px;margin-bottom:7px"><div style="width:30px;height:30px;border-radius:50%;background:var(--mint-l);display:flex;align-items:center;justify-content:center;font-size:15px">${(t('locTypes')[loc.type]||'📌').split(' ')[0]}</div><div style="flex:1"><div style="font-size:11px">${loc.name}</div><div class="pg" style="margin-top:2px"><div class="pf" style="width:${pct}%"></div></div></div><div style="font-size:11px;font-weight:700;color:var(--mint)">${cnt}</div></div>`;}).join('')||'<div class="ts-soft">No data</div>';
+  const aRecs=filtered.filter(r=>Object.values(r.checks).some(v=>v===false));
+  document.getElementById('anomalySummary').innerHTML=aRecs.length?aRecs.map(r=>{const fi=Object.entries(r.checks).filter(([,v])=>v===false).map(([k])=>t('checkItems')[k]);return`<div style="display:flex;align-items:center;gap:11px;padding:9px;border:1px solid var(--red-l);border-radius:7px;margin-bottom:5px"><span class="badge bf2">!</span><div><div style="font-size:12px;font-weight:600">${getLocName(r.locId)} · ${r.date}</div><div class="ts-soft">${fi.join(', ')}</div></div></div>`;}).join(''):`<div class="empty"><div class="empty-i">✅</div>No anomalies in period</div>`;
+  const st=document.getElementById('sixsTrendChart');if(!st)return;st.innerHTML='';
+  const r6=sixsRecords.slice(0,10).reverse();if(!r6.length){st.innerHTML='<div class="ts-soft" style="padding:18px">No 6S data</div>';return;}
+  const mx=Math.max(...r6.map(r=>r.total),1);
+  r6.forEach(r=>{const pct=Math.round(r.total/mx*100);const col=document.createElement('div');col.className='cc';col.innerHTML=`<div class="cv">${r.total}</div><div class="cb2" style="height:${Math.max(pct,4)}%;background:${pct<40?'var(--red)':pct<70?'var(--amber)':'var(--mint)'}"></div><div class="cl">${r.date.slice(5)}</div>`;st.appendChild(col);});
 }
 
-// ============ 6S ============
-let sixsScores = {};
-function render6SChecklist() {
-  const cats = t('sixsCats');
-  const c = document.getElementById('sixsChecklist');
-  c.innerHTML = cats.map((cat, ci) => `
-    <div class="sixs-category">
-      <div class="sixs-cat-title">${cat.name}</div>
-      ${cat.items.map((item, ii) => `
-        <div class="sixs-item">
-          <span style="flex:1;font-size:12px">${item}</span>
-          <div class="sixs-score-btns">
-            ${[0,1,2,3,4].map(s => `<button class="score-btn ${sixsScores[ci+'_'+ii]===s?'sel-'+s:''}" onclick="set6SScore(${ci},${ii},${s})">${s}</button>`).join('')}
-          </div>
-        </div>`).join('')}
-    </div>`).join('');
-  updateSixsTotal();
-}
-function set6SScore(ci, ii, s) {
-  sixsScores[ci+'_'+ii] = s;
-  render6SChecklist();
-}
-function updateSixsTotal() {
-  const vals = Object.values(sixsScores);
-  const total = vals.reduce((a,b)=>a+b,0);
-  const maxScore = 4 * Object.keys(sixsScores).length;
-  document.getElementById('sixsScore').textContent = total;
-  const pct = maxScore ? total/maxScore : 0;
-  let level = pct>=0.8?4:pct>=0.6?3:pct>=0.4?2:pct>=0.2?1:0;
-  document.getElementById('sixsLevel').textContent = `Level - ${level}`;
-  document.getElementById('sixsScore').style.color = level>=3?'var(--mint)':level>=2?'var(--amber)':'var(--red)';
-}
-function render6S() {
-  populateLocSelects();
-  render6SChecklist();
-  render6SHistory();
-}
-function reset6S() { sixsScores={}; render6SChecklist(); }
-function save6S() {
-  const date = document.getElementById('sixsDate').value;
-  const locId = document.getElementById('sixsLoc').value;
-  const observer = document.getElementById('sixsObsInput').value;
-  if(!date||!locId) { alert('Fill date and location.'); return; }
-  const vals = Object.values(sixsScores);
-  const total = vals.reduce((a,b)=>a+b,0);
-  sixsRecords.unshift({id:'s'+Date.now(), date, locId, observer, scores:{...sixsScores}, total, ts:Date.now()});
-  saveData();
-  render6SHistory();
-}
-function render6SHistory() {
-  const thead = document.getElementById('sixsHistThead');
-  const cats = ['Sort','Set','Shine','Std','Sustain','Safety'];
-  thead.innerHTML = `<tr><th>Date</th><th>Location</th><th>Observer</th><th>Score</th><th>Level</th><th></th></tr>`;
-  const tbody = document.getElementById('sixsHistBody');
-  if(!sixsRecords.length) { tbody.innerHTML=`<tr><td colspan="6" class="empty">${t('noRecords')}</td></tr>`; return; }
-  tbody.innerHTML = sixsRecords.map(r => {
-    const maxScore = 4 * Object.keys(r.scores).length;
-    const pct = maxScore ? r.total/maxScore : 0;
-    const level = pct>=0.8?4:pct>=0.6?3:pct>=0.4?2:pct>=0.2?1:0;
-    return `<tr><td>${r.date}</td><td>${getLocName(r.locId)}</td><td>${r.observer||'—'}</td><td style="font-weight:700;color:var(--mint)">${r.total}</td><td><span class="badge ${level>=3?'badge-pass':level>=2?'badge-warn':'badge-fail'}">L-${level}</span></td><td><button class="btn btn-danger btn-sm" onclick="delete6S('${r.id}')">🗑</button></td></tr>`;
-  }).join('');
-}
-function delete6S(id) { if(!confirm('Delete?'))return; sixsRecords=sixsRecords.filter(r=>r.id!==id); saveData(); render6SHistory(); }
-
-// ============ ANALYSIS ============
-let anaPeriodVal = 'week';
-function setAnaPeriod(p, el) {
-  anaPeriodVal = p;
-  document.querySelectorAll('#section-analysis .period-tab').forEach(x=>x.classList.remove('active'));
-  el.classList.add('active');
-  renderAnalysis();
-}
-function renderAnalysis() {
-  const filtered = filterByPeriod(records, anaPeriodVal);
-  // Pass rate by item
-  const items = ['smell','light','floor','door','corner','ceiling'];
-  const passRateDiv = document.getElementById('passRateChart');
-  passRateDiv.innerHTML = items.map(item => {
-    const relevant = filtered.filter(r=>r.checks[item]!==null&&r.checks[item]!==undefined);
-    const pass = relevant.filter(r=>r.checks[item]===true).length;
-    const pct = relevant.length ? Math.round(pass/relevant.length*100) : 100;
-    return `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>${t('checkIcons')[item]} ${t('checkItems')[item]}</span><span style="font-weight:700">${pct}%</span></div><div style="background:var(--border);border-radius:6px;height:8px"><div style="background:${pct<60?'var(--red)':pct<80?'var(--amber)':'var(--mint)'};height:8px;border-radius:6px;width:${pct}%"></div></div></div>`;
-  }).join('') || '<div class="text-soft">No data</div>';
-  // Records by location pie-style
-  const locPie = document.getElementById('locPieChart');
-  const total = filtered.length || 1;
-  locPie.innerHTML = locations.map(loc => {
-    const cnt = filtered.filter(r=>r.locId===loc.id).length;
-    const pct = Math.round(cnt/total*100);
-    return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:8px"><div style="width:32px;height:32px;border-radius:50%;background:var(--mint-light);display:flex;align-items:center;justify-content:center;font-size:16px">${(t('locTypes')[loc.type]||'📌').split(' ')[0]}</div><div style="flex:1"><div style="font-size:12px">${loc.name}</div><div style="background:var(--border);height:6px;border-radius:4px;margin-top:3px"><div style="background:var(--mint);height:6px;border-radius:4px;width:${pct}%"></div></div></div><div style="font-size:12px;font-weight:700;color:var(--mint)">${cnt}</div></div>`;
-  }).join('') || '<div class="text-soft">No data</div>';
-  // Anomaly summary
-  const anomalyDiv = document.getElementById('anomalySummary');
-  const anomalyRecs = filtered.filter(r=>Object.values(r.checks).some(v=>v===false));
-  if(!anomalyRecs.length) { anomalyDiv.innerHTML=`<div class="empty"><div class="empty-icon">✅</div>No anomalies in period</div>`; }
-  else {
-    anomalyDiv.innerHTML = anomalyRecs.map(r => {
-      const failItems = Object.entries(r.checks).filter(([,v])=>v===false).map(([k])=>t('checkItems')[k]);
-      return `<div style="display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--red-light);border-radius:8px;margin-bottom:6px"><span class="badge badge-fail">!</span><div><div style="font-size:13px;font-weight:600">${getLocName(r.locId)} · ${r.date}</div><div class="text-soft">${failItems.join(', ')}</div></div></div>`;
-    }).join('');
-  }
-  // 6S trend
-  const sixsTrend = document.getElementById('sixsTrendChart');
-  sixsTrend.innerHTML = '';
-  const recent6S = sixsRecords.slice(0,10).reverse();
-  if(!recent6S.length) { sixsTrend.innerHTML='<div class="text-soft" style="padding:20px">No 6S data</div>'; return; }
-  const maxS = Math.max(...recent6S.map(r=>r.total), 1);
-  recent6S.forEach(r => {
-    const pct = Math.round(r.total/maxS*100);
-    const col = document.createElement('div'); col.className='chart-bar-col';
-    col.innerHTML=`<div class="chart-val">${r.total}</div><div class="chart-bar" style="height:${Math.max(pct,4)}%;background:${pct<40?'var(--red)':pct<70?'var(--amber)':'var(--mint)'}"></div><div class="chart-label">${r.date.slice(5)}</div>`;
-    sixsTrend.appendChild(col);
-  });
-}
-
-// ============ RENDER ALL ============
-function renderAll() {
-  if(currentSection==='dashboard') renderDashboard();
-  if(currentSection==='history') renderHistory();
-  if(currentSection==='sixs') render6S();
-  if(currentSection==='analysis') renderAnalysis();
-  if(currentSection==='locations') renderLocations();
-  if(currentSection==='settings') renderSettings();
-  checkAnomalies();
-}
-
-// ============ INIT ============
-window.onload = () => {
+// ════════════════════════════════════
+//  INIT
+// ════════════════════════════════════
+window.onload=()=>{
   applyLang();
   initForm();
   renderDashboard();
   checkAnomalies();
-  // Add sample data if empty
-  if(!records.length && locations.length) {
-    const today = new Date().toISOString().slice(0,10);
-    const yesterday = new Date(Date.now()-86400000).toISOString().slice(0,10);
-    records.push({id:'demo1',date:today,locId:locations[0].id,cleaner:'Srey',checker:'Chan',note:'Normal',slots:['07:30','08:30','09:30'],checks:{smell:true,light:true,floor:true,door:true,corner:null,ceiling:null},photos:[],isImport:false,ts:Date.now()});
-    records.push({id:'demo2',date:today,locId:locations[1].id,cleaner:'Dara',checker:'Sok',note:'',slots:['07:30','08:30'],checks:{smell:true,light:false,floor:true,door:true,corner:true,ceiling:true},photos:[],isImport:false,ts:Date.now()});
-    records.push({id:'demo3',date:yesterday,locId:locations[2].id,cleaner:'Bopha',checker:'Rith',note:'Floor wet',slots:['07:30','08:30','09:30','10:30'],checks:{smell:true,light:true,floor:false,door:true,corner:true,ceiling:true},photos:[],isImport:false,ts:Date.now()});
-    saveData();
-    renderDashboard();
-    checkAnomalies();
+  // Demo data if completely empty
+  if(!records.length&&locations.length){
+    const today=new Date().toISOString().slice(0,10),yest=new Date(Date.now()-86400000).toISOString().slice(0,10);
+    records.push({id:'demo1',date:today,locId:locations[0].id,cleaner:'Srey',checker:'Chan',note:'Normal',slots:['07:30','08:30','09:30'],checks:{smell:true,light:true,floor:true,door:true,corner:null,ceiling:null},photos:[],isImport:false,synced:false,ts:Date.now()});
+    records.push({id:'demo2',date:today,locId:locations[1].id,cleaner:'Dara',checker:'Sok',note:'',slots:['07:30','08:30'],checks:{smell:true,light:false,floor:true,door:true,corner:true,ceiling:true},photos:[],isImport:false,synced:false,ts:Date.now()});
+    records.push({id:'demo3',date:yest,locId:locations[2].id,cleaner:'Bopha',checker:'Rith',note:'Floor wet',slots:['07:30','08:30','09:30','10:30'],checks:{smell:true,light:true,floor:false,door:true,corner:true,ceiling:true},photos:[],isImport:false,synced:false,ts:Date.now()});
+    saveAll();renderDashboard();checkAnomalies();
   }
 };
 </script>
