@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VRT Clean Record | 清潔記錄 | កំណត់ត្រាសំអាត</title>
+<title>VRT Clean Record | 清潔記錄</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Noto+Sans+KH:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -19,38 +19,27 @@ body{font-family:'DM Sans','Noto Sans KH',sans-serif;background:var(--bg);color:
 .hdr{background:linear-gradient(135deg,#2A7A5E,#3BAA7E 60%,#4CAF8A);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:60px;box-shadow:0 2px 16px rgba(0,0,0,.12);position:sticky;top:0;z-index:100;}
 .hdr-l{display:flex;align-items:center;gap:10px;}
 .logo{width:34px;height:34px;background:rgba(255,255,255,.2);border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:19px;}
-.hdr-t{color:#fff;font-size:16px;font-weight:700;}
-.hdr-s{color:rgba(255,255,255,.75);font-size:10px;}
+.hdr-t{color:#fff;font-size:16px;font-weight:700;}.hdr-s{color:rgba(255,255,255,.75);font-size:10px;}
 .hdr-r{display:flex;align-items:center;gap:7px;}
-.lbtn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 9px;border-radius:18px;font-size:11px;cursor:pointer;font-family:inherit;}
-.lbtn.active{background:rgba(255,255,255,.3);}
+.lbtn{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);color:#fff;padding:4px 9px;border-radius:18px;font-size:11px;cursor:pointer;font-family:inherit;}.lbtn.active{background:rgba(255,255,255,.3);}
 .bell{background:rgba(255,255,255,.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:17px;display:flex;align-items:center;justify-content:center;position:relative;}
 .bell-b{position:absolute;top:-2px;right:-2px;background:var(--amber);color:#fff;font-size:9px;width:15px;height:15px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;}
 .nav{background:var(--card);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;padding:0 10px;}
 .nav::-webkit-scrollbar{height:0;}
-.ni{padding:13px 14px;font-size:12px;font-weight:500;color:var(--soft);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:all .2s;}
-.ni.active{color:var(--mint);border-bottom-color:var(--mint);}
-.ni:hover{color:var(--teal);}
+.ni{padding:13px 14px;font-size:12px;font-weight:500;color:var(--soft);cursor:pointer;border-bottom:2.5px solid transparent;white-space:nowrap;transition:all .2s;}.ni.active{color:var(--mint);border-bottom-color:var(--mint);}
 .ap{background:#fff;position:fixed;top:60px;right:0;width:300px;height:calc(100vh - 60px);box-shadow:-4px 0 24px rgba(0,0,0,.1);z-index:200;transform:translateX(100%);transition:transform .3s;overflow-y:auto;}
 .ap.open{transform:translateX(0);}
 .ap-h{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-weight:700;}
-.ai{padding:11px 18px;border-bottom:1px solid var(--border);}
-.ai.critical{border-left:3px solid var(--red);}
-.ai.warning{border-left:3px solid var(--amber);}
-.mbg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:300;display:none;align-items:center;justify-content:center;padding:14px;}
-.mbg.open{display:flex;}
+.ai{padding:11px 18px;border-bottom:1px solid var(--border);}.ai.critical{border-left:3px solid var(--red);}
+.mbg{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:300;display:none;align-items:center;justify-content:center;padding:14px;}.mbg.open{display:flex;}
 .modal{background:#fff;border-radius:14px;padding:22px;max-width:500px;width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.2);}
-.mt{font-size:17px;font-weight:700;margin-bottom:18px;}
-.mf{display:flex;gap:9px;justify-content:flex-end;margin-top:18px;}
-
-
-
-
+.mt{font-size:17px;font-weight:700;margin-bottom:18px;}.mf{display:flex;gap:9px;justify-content:flex-end;margin-top:18px;}
+.pv{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:400;display:none;align-items:center;justify-content:center;}.pv.open{display:flex;}
+.pv img{max-width:92vw;max-height:92vh;border-radius:8px;}.pv-c{position:absolute;top:18px;right:22px;color:#fff;font-size:28px;cursor:pointer;background:none;border:none;}
 .wrap{max-width:1000px;margin:0 auto;padding:16px 14px;}
 .card{background:var(--card);border-radius:13px;box-shadow:var(--shadow);padding:18px;margin-bottom:14px;}
 .ch{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.ct{font-size:14px;font-weight:600;}
-.cb{background:var(--mint-l);color:var(--teal);font-size:10px;font-weight:600;padding:2px 9px;border-radius:18px;}
+.ct{font-size:14px;font-weight:600;}.cb{background:var(--mint-l);color:var(--teal);font-size:10px;font-weight:600;padding:2px 9px;border-radius:18px;}
 .sr{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:14px;}
 .sc{background:var(--card);border-radius:11px;padding:14px;box-shadow:var(--shadow);border-left:4px solid var(--mint);}
 .sc.a{border-left-color:var(--amber);}.sc.r{border-left-color:var(--red);}.sc.b{border-left-color:var(--blue);}
@@ -60,93 +49,75 @@ body{font-family:'DM Sans','Noto Sans KH',sans-serif;background:var(--bg);color:
 .bp:disabled{background:#aaa;cursor:not-allowed;}
 .bs{background:var(--mint-l);color:var(--teal);}.bs:hover{background:var(--mint-m);}
 .bd{background:var(--red-l);color:var(--red);}.bd:hover{background:#fcd0d0;}
-.ba{background:var(--amber-l);color:#c47d0a;}
-.bb{background:var(--blue-l);color:var(--blue);}.bb:hover{background:#d6e9ff;}
+.ba{background:var(--amber-l);color:#c47d0a;}.bb{background:var(--blue-l);color:var(--blue);}
 .bsm{padding:4px 10px;font-size:10px;border-radius:6px;}
 .fg{display:flex;flex-direction:column;gap:4px;}
 .fl{font-size:11px;font-weight:600;color:var(--mid);}
 .fi,.fsel,.fta{padding:8px 10px;border:1.5px solid var(--border);border-radius:8px;font-size:12px;font-family:inherit;background:#fff;color:var(--text);width:100%;transition:border .2s;}
 .fi:focus,.fsel:focus,.fta:focus{outline:none;border-color:var(--mint);box-shadow:0 0 0 3px rgba(76,175,138,.12);}
-.fta{min-height:68px;resize:vertical;}
-.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;}
+.fta{min-height:68px;resize:vertical;}.fgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px;}
 .cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:7px;}
 .ci{border:1.5px solid var(--border);border-radius:9px;padding:9px 7px;text-align:center;cursor:pointer;transition:all .2s;}
-.ci:hover{border-color:var(--mint);}
-.ci.pass{border-color:var(--mint);background:var(--mint-l);}
-.ci.fail{border-color:var(--red);background:var(--red-l);}
+.ci:hover{border-color:var(--mint);}.ci.pass{border-color:var(--mint);background:var(--mint-l);}.ci.fail{border-color:var(--red);background:var(--red-l);}
 .ci-ic{font-size:20px;}.ci-n{font-size:10px;font-weight:600;color:var(--mid);margin-top:3px;}.ci-s{font-size:9px;margin-top:2px;}
 .ci.pass .ci-s{color:var(--mint);}.ci.fail .ci-s{color:var(--red);}
 .tslots{display:flex;flex-wrap:wrap;gap:5px;}
 .ts{padding:4px 11px;border-radius:14px;font-size:10px;font-weight:600;border:1.5px solid var(--border);cursor:pointer;transition:all .2s;}
-.ts.done{background:var(--mint-l);border-color:var(--mint);color:var(--teal);}
-.ts.pending{background:#fff;color:var(--soft);}
+.ts.done{background:var(--mint-l);border-color:var(--mint);color:var(--teal);}.ts.pending{background:#fff;color:var(--soft);}
 .tw{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;font-size:12px;}
 th{background:var(--mint-l);color:var(--teal);font-weight:600;padding:9px 11px;text-align:left;font-size:11px;}
 td{padding:9px 11px;border-bottom:1px solid var(--border);}
 tr:hover td{background:#F9FCF9;}
 .badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:11px;font-size:10px;font-weight:600;}
-.bp2{background:var(--mint-l);color:var(--teal);}
-.bf2{background:var(--red-l);color:var(--red);}
-.bw2{background:var(--amber-l);color:#b8780a;}
-.bb2{background:var(--blue-l);color:var(--blue);}
+.bp2{background:var(--mint-l);color:var(--teal);}.bf2{background:var(--red-l);color:var(--red);}.bw2{background:var(--amber-l);color:#b8780a;}.bb2{background:var(--blue-l);color:var(--blue);}
 .cw{display:flex;align-items:flex-end;gap:5px;height:110px;padding:7px 0;}
 .cc{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;height:100%;}
 .cb2{width:100%;border-radius:5px 5px 0 0;background:var(--mint);min-height:4px;transition:height .5s;}
 .cl{font-size:9px;color:var(--soft);text-align:center;}.cv{font-size:9px;font-weight:700;color:var(--mid);}
 .sixc{background:var(--mint-l);border-radius:9px;padding:9px 12px;margin-bottom:7px;}
 .sixct{font-size:12px;font-weight:700;color:var(--teal);margin-bottom:7px;}
-.sixi{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(76,175,138,.15);font-size:11px;}
-.sixi:last-child{border-bottom:none;}
+.sixi{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(76,175,138,.15);font-size:11px;}.sixi:last-child{border-bottom:none;}
 .sbs{display:flex;gap:3px;}
 .sbtn{width:24px;height:24px;border-radius:5px;border:1.5px solid var(--border);background:#fff;cursor:pointer;font-size:10px;font-weight:700;}
-.sbtn.s0{background:var(--red);color:#fff;border-color:var(--red);}
-.sbtn.s1{background:#f5923a;color:#fff;border-color:#f5923a;}
-.sbtn.s2{background:var(--amber);color:#fff;border-color:var(--amber);}
-.sbtn.s3{background:#8bc34a;color:#fff;border-color:#8bc34a;}
-.sbtn.s4{background:var(--mint);color:#fff;border-color:var(--mint);}
-.ptabs{display:flex;gap:3px;background:var(--mint-l);border-radius:9px;padding:3px;}
-.ptab{padding:5px 12px;border-radius:6px;font-size:11px;font-weight:600;cursor:pointer;color:var(--soft);transition:all .2s;}
+.sbtn.s0{background:var(--red);color:#fff;border-color:var(--red);}.sbtn.s1{background:#f5923a;color:#fff;border-color:#f5923a;}
+.sbtn.s2{background:var(--amber);color:#fff;border-color:var(--amber);}.sbtn.s3{background:#8bc34a;color:#fff;border-color:#8bc34a;}.sbtn.s4{background:var(--mint);color:#fff;border-color:var(--mint);}
+/* PERIOD TABS */
+.ptabs{display:flex;background:var(--mint-l);border-radius:10px;padding:3px;gap:2px;}
+.ptab{padding:6px 14px;border-radius:7px;font-size:11px;font-weight:600;cursor:pointer;color:var(--soft);transition:all .2s;white-space:nowrap;}
 .ptab.active{background:#fff;color:var(--mint);box-shadow:0 1px 4px rgba(0,0,0,.1);}
-.pnav{display:flex;align-items:center;gap:10px;}
-.pnav button{background:var(--mint-l);border:none;color:var(--teal);width:28px;height:28px;border-radius:7px;cursor:pointer;font-size:15px;}
-.pnav span{font-size:13px;font-weight:600;min-width:130px;text-align:center;}
+/* PERIOD NAV */
+.pnav{display:flex;align-items:center;gap:6px;}
+.pnav-btn{background:var(--card);border:1.5px solid var(--border);color:var(--teal);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.pnav-btn:hover{background:var(--mint-l);border-color:var(--mint);}
+.pnav-label{font-size:12px;font-weight:700;color:var(--text);min-width:150px;text-align:center;padding:5px 10px;background:var(--mint-l);border-radius:8px;}
+/* STAFF TAGS */
 .stags{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:9px;min-height:30px;}
 .stag{background:var(--mint-l);color:var(--teal);border-radius:18px;padding:4px 11px;font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px;}
 .stag .del{cursor:pointer;opacity:.6;font-size:11px;}.stag .del:hover{opacity:1;}
-.ar{display:flex;gap:7px;}.ar .fi{flex:1;}
-.sct{font-size:13px;font-weight:700;color:var(--teal);margin-bottom:10px;}
+.ar{display:flex;gap:7px;}.ar .fi{flex:1;}.sct{font-size:13px;font-weight:700;color:var(--teal);margin-bottom:10px;}
 .pg{height:6px;background:var(--border);border-radius:3px;overflow:hidden;margin-top:3px;}
 .pf{height:100%;background:var(--mint);border-radius:3px;transition:width .4s;}
-
-
-
-
-
-
-
 /* PHOTO */
 .pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(80px,1fr));gap:7px;margin-top:9px;}
 .pthumb{position:relative;aspect-ratio:1;border-radius:7px;overflow:hidden;border:1.5px solid var(--border);}
 .pthumb img{width:100%;height:100%;object-fit:cover;cursor:pointer;}
-.pdel{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.pdel{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:10px;cursor:pointer;}
 .photo-add{aspect-ratio:1;border-radius:7px;border:2px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;font-size:20px;color:var(--soft);transition:all .2s;background:#fff;}
 .photo-add:hover{border-color:var(--mint);color:var(--mint);background:var(--mint-l);}
-.photo-add input{display:none;}
-.photo-limit{font-size:10px;color:var(--soft);margin-top:4px;text-align:center;}
-/* PHOTO VIEWER */
-.pv{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:400;display:none;align-items:center;justify-content:center;}
-.pv.open{display:flex;}
-.pv img{max-width:92vw;max-height:92vh;border-radius:8px;}
-.pv-c{position:absolute;top:18px;right:22px;color:#fff;font-size:28px;cursor:pointer;background:none;border:none;}
-/* CLOUD STATUS BAR */
-.cloud-bar{display:none;padding:11px 16px;border-radius:9px;font-size:12px;font-weight:600;margin-bottom:12px;align-items:center;gap:10px;animation:fadeIn .3s;}
+/* CLOUD STATUS */
+.cloud-bar{display:none;padding:11px 14px;border-radius:9px;font-size:12px;font-weight:600;margin-bottom:12px;align-items:center;gap:10px;animation:fadeIn .3s;}
 .cloud-bar.show{display:flex;}
 .cloud-bar.info{background:var(--blue-l);color:var(--blue);border:1.5px solid var(--blue);}
 .cloud-bar.success{background:var(--mint-l);color:var(--teal);border:1.5px solid var(--mint);}
 .cloud-bar.error{background:var(--red-l);color:var(--red);border:1.5px solid var(--red);}
 .cloud-bar.warning{background:var(--amber-l);color:#b8780a;border:1.5px solid var(--amber);}
 @keyframes fadeIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+/* SYNC STATUS ROW */
+.sync-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--mint-l);border-radius:9px;margin-bottom:12px;flex-wrap:wrap;}
+.sync-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.sync-dot.ok{background:var(--mint);}.sync-dot.warn{background:var(--amber);}.sync-dot.err{background:var(--red);}
+.sync-txt{font-size:11px;font-weight:600;color:var(--mid);flex:1;}
 /* TOAST */
 #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);padding:11px 22px;border-radius:9px;font-size:12px;font-weight:600;color:#fff;background:var(--teal);box-shadow:0 6px 24px rgba(0,0,0,.2);z-index:9999;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s;white-space:nowrap;max-width:92vw;text-align:center;}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(-4px);}
@@ -154,11 +125,9 @@ tr:hover td{background:#F9FCF9;}
 .section{display:none;}.section.active{display:block;}
 .sep{height:1px;background:var(--border);margin:14px 0;}
 .fl2{display:flex;}.g8{gap:8px;}.fw{flex-wrap:wrap;}.aic{align-items:center;}.jb{justify-content:space-between;}.mla{margin-left:auto;}
-.ts-soft{color:var(--soft);font-size:11px;}
-.mt8{margin-top:8px;}.mt12{margin-top:12px;}
-.empty{text-align:center;padding:36px 18px;color:var(--soft);}
-.empty-i{font-size:38px;margin-bottom:7px;}
-@media(max-width:560px){.hdr-t{font-size:13px;}.sr{grid-template-columns:repeat(2,1fr);}.fgrid{grid-template-columns:1fr;}.cg{grid-template-columns:repeat(3,1fr);}}
+.ts-soft{color:var(--soft);font-size:11px;}.mt8{margin-top:8px;}.mt12{margin-top:12px;}
+.empty{text-align:center;padding:36px 18px;color:var(--soft);}.empty-i{font-size:38px;margin-bottom:7px;}
+@media(max-width:560px){.hdr-t{font-size:13px;}.sr{grid-template-columns:repeat(2,1fr);}.fgrid{grid-template-columns:1fr;}.cg{grid-template-columns:repeat(3,1fr);}}.ptab{padding:6px 8px;font-size:10px;}
 @media print{.hdr,.nav,.ap,#toast,.btn{display:none!important;}.section{display:block!important;}.section:not(#sec-history){display:none!important;}body{background:#fff;}}
 </style>
 </head>
@@ -195,6 +164,7 @@ tr:hover td{background:#F9FCF9;}
 <div class="pv" id="photoViewer" onclick="closePV()"><button class="pv-c">✕</button><img id="pvImg" src="" alt=""></div>
 <input type="file" id="globalPhotoInput" accept="image/*" capture="environment" style="display:none" onchange="handlePhotoAdd(event)">
 
+<!-- ADD LOC MODAL -->
 <div class="mbg" id="addLocModal">
   <div class="modal">
     <div class="mt" id="addLocTitle">Add Location</div>
@@ -209,36 +179,25 @@ tr:hover td{background:#F9FCF9;}
   </div>
 </div>
 
-<div class="mbg" id="importModal">
-  <div class="modal">
-    <div class="mt" id="importTitle">Import Historical Record</div>
-    <div class="fg"><label class="fl" id="importDateLabel">Date</label><input class="fi" type="date" id="importDate"></div>
-    <div class="fg mt8"><label class="fl" id="importLocLabel">Location</label><select class="fsel" id="importLoc"></select></div>
-    <div class="fg mt8"><label class="fl" id="importNoteLabel">Note</label><input class="fi" id="importNote" placeholder="Description..."></div>
-    
-    <div class="mf"><button class="btn bs" onclick="closeImport()">Cancel</button><button class="btn bp" onclick="saveImport()" id="saveImportBtn">Save</button></div>
-  </div>
-</div>
-
 <div id="toast"></div>
 
 <div class="wrap">
 
 <!-- DASHBOARD -->
 <div class="section active" id="sec-dashboard">
-  <div class="fl2 aic jb" style="margin-bottom:14px">
+  <div class="fl2 aic jb fw g8" style="margin-bottom:14px">
     <div><div style="font-size:19px;font-weight:700" id="dbTitle">Dashboard</div><div class="ts-soft" id="dbDate"></div></div>
     <div class="ptabs">
-      <div class="ptab active" onclick="setDbP('day',this)" id="ptDay">Day</div>
-      <div class="ptab" onclick="setDbP('week',this)" id="ptWeek">Week</div>
-      <div class="ptab" onclick="setDbP('month',this)" id="ptMonth">Month</div>
-      <div class="ptab" onclick="setDbP('year',this)" id="ptYear">Year</div>
+      <div class="ptab active" onclick="setDbP('day',this)" id="ptDay">日 Day</div>
+      <div class="ptab" onclick="setDbP('week',this)" id="ptWeek">週 Week</div>
+      <div class="ptab" onclick="setDbP('month',this)" id="ptMonth">月 Month</div>
+      <div class="ptab" onclick="setDbP('year',this)" id="ptYear">年 Year</div>
     </div>
   </div>
   <div class="sr" id="statsRow"></div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
     <div class="card"><div class="ch"><span class="ct" id="dbCompTitle">Completion</span></div><div id="locCompChart"></div></div>
-    <div class="card"><div class="ch"><span class="ct" id="dbTrendTitle">Trend</span></div><div id="trendChart" class="cw"></div></div>
+    <div class="card"><div class="ch"><span class="ct" id="dbTrendTitle">7-Day Trend</span></div><div id="trendChart" class="cw"></div></div>
   </div>
   <div class="card mt12"><div class="ch"><span class="ct" id="dbRecentTitle">Recent Records</span></div>
     <div class="tw"><table><thead><tr id="recentThead"></tr></thead><tbody id="recentBody"></tbody></table></div>
@@ -273,10 +232,9 @@ tr:hover td{background:#F9FCF9;}
     <div class="cg" id="checkItems"></div>
     <div class="sep"></div>
     <div class="fg"><label class="fl" id="recNoteLabel">Note / Remarks</label><textarea class="fta" id="recNote" placeholder="Anomaly, issue..."></textarea></div>
-    
     <div class="sep"></div>
     <div class="fl2 aic jb" style="margin-bottom:9px">
-      <div class="ct">📷 Photos <span id="photoCountLabel" style="font-size:11px;color:var(--soft);font-weight:400">（最多 2 張 / Max 2）</span></div>
+      <div class="ct">📷 Photos <span style="font-size:10px;color:var(--soft);font-weight:400">max 2 / day 5</span></div>
     </div>
     <div class="pgrid" id="recPhotoGrid"></div>
     <div class="sep"></div>
@@ -293,36 +251,46 @@ tr:hover td{background:#F9FCF9;}
 <!-- HISTORY -->
 <div class="section" id="sec-history">
   <div class="card">
-    <div class="fl2 aic jb fw g8" style="margin-bottom:14px">
+    <!-- Cloud Status Bar -->
+    <div class="cloud-bar" id="cloudBar"></div>
+
+    <div class="fl2 aic jb fw g8" style="margin-bottom:12px">
       <div style="font-weight:700;font-size:15px" id="histTitle">History Records</div>
       <div class="fl2 g8 fw">
-        <button class="btn bs bsm" onclick="openImport()" id="importBtn">📎 Import</button>
         <button class="btn bb bsm" onclick="uploadAllUnsynced()">☁️ Upload Unsynced</button>
         <button class="btn bs bsm" onclick="downloadFromCloud()">⬇️ Download Cloud</button>
         <button class="btn ba bsm" onclick="exportCSV()">📊 CSV</button>
         <button class="btn bs bsm" onclick="window.print()">🖨️ Print</button>
       </div>
     </div>
-    <!-- CLOUD STATUS BAR -->
-    <div class="cloud-bar" id="cloudBar"></div>
+
+    <!-- Period tabs + nav -->
     <div class="fl2 g8 fw aic" style="margin-bottom:12px">
       <div class="ptabs">
-        <div class="ptab active" onclick="setHistP('day',this)">Day</div>
-        <div class="ptab" onclick="setHistP('week',this)">Week</div>
-        <div class="ptab" onclick="setHistP('month',this)">Month</div>
-        <div class="ptab" onclick="setHistP('year',this)">Year</div>
+        <div class="ptab active" onclick="setHistP('day',this)">日 Day</div>
+        <div class="ptab" onclick="setHistP('week',this)">週 Week</div>
+        <div class="ptab" onclick="setHistP('month',this)">月 Month</div>
+        <div class="ptab" onclick="setHistP('year',this)">年 Year</div>
       </div>
-      <div class="pnav"><button onclick="shiftP(-1)">‹</button><span id="periodLabel"></span><button onclick="shiftP(1)">›</button></div>
+      <div class="pnav">
+        <button class="pnav-btn" onclick="shiftP(-1)">◀</button>
+        <div class="pnav-label" id="periodLabel"></div>
+        <button class="pnav-btn" onclick="shiftP(1)">▶</button>
+      </div>
       <select class="fsel" style="width:130px" id="histLocFilter" onchange="renderHistory()"><option value="all">All Locations</option></select>
     </div>
+
+    <!-- Sync summary -->
+    <div class="sync-row" id="syncSummary"></div>
+
     <div class="tw"><table><thead><tr id="histThead"></tr></thead><tbody id="histBody"></tbody></table></div>
   </div>
 </div>
 
-<!-- 6S -->
+<!-- 6S CHECK -->
 <div class="section" id="sec-sixs">
   <div class="card">
-    <div class="fl2 aic jb" style="margin-bottom:14px">
+    <div class="fl2 aic jb fw g8" style="margin-bottom:14px">
       <div style="font-weight:700;font-size:15px" id="sixsTitle">6S Workplace Diagnostic</div>
       <div class="fl2 g8"><input type="date" class="fi" id="sixsDate" style="width:130px"><select class="fsel" id="sixsLoc" style="width:130px"></select></div>
     </div>
@@ -336,10 +304,7 @@ tr:hover td{background:#F9FCF9;}
     </div>
     <div id="sixsChecklist"></div>
     <div class="sep"></div>
-    <div class="fl2 jb">
-      <button class="btn bs" onclick="reset6S()" id="sixsResetBtn">Reset</button>
-      <button class="btn bp" onclick="save6S()" id="sixsSaveBtn">💾 Save 6S</button>
-    </div>
+    <div class="fl2 jb"><button class="btn bs" onclick="reset6S()" id="sixsResetBtn">Reset</button><button class="btn bp" onclick="save6S()" id="sixsSaveBtn">💾 Save 6S</button></div>
     <div class="sep"></div>
     <div style="font-weight:600;margin-bottom:9px" id="sixsHistLabel">6S History</div>
     <div class="tw"><table><thead id="sixsHistThead"></thead><tbody id="sixsHistBody"></tbody></table></div>
@@ -348,9 +313,9 @@ tr:hover td{background:#F9FCF9;}
 
 <!-- ANALYSIS -->
 <div class="section" id="sec-analysis">
-  <div class="fl2 g8 aic" style="margin-bottom:14px">
+  <div class="fl2 g8 aic fw" style="margin-bottom:14px">
     <div style="font-weight:700;font-size:15px" id="anaTitle">Analysis</div>
-    <div class="ptabs mla"><div class="ptab active" onclick="setAnaP('week',this)">Week</div><div class="ptab" onclick="setAnaP('month',this)">Month</div><div class="ptab" onclick="setAnaP('year',this)">Year</div></div>
+    <div class="ptabs mla"><div class="ptab active" onclick="setAnaP('week',this)">週 Week</div><div class="ptab" onclick="setAnaP('month',this)">月 Month</div><div class="ptab" onclick="setAnaP('year',this)">年 Year</div></div>
   </div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
     <div class="card"><div class="ch"><span class="ct" id="anaPassTitle">Pass Rate</span></div><div id="passRateChart"></div></div>
@@ -375,42 +340,57 @@ tr:hover td{background:#F9FCF9;}
 <div class="section" id="sec-settings">
   <div style="font-weight:700;font-size:15px;margin-bottom:14px">⚙️ Settings / 設定</div>
 
+  <!-- Cloud Sync Settings -->
   <div class="card">
-    <div class="sct">👷 Cleaners / 清潔人員</div>
+    <div class="sct">☁️ Cloud Config / GAS 設定</div>
+    <div class="fg" style="margin-bottom:9px"><label class="fl">GAS Web App URL</label><input class="fi" id="cfgGasUrl" placeholder="https://script.google.com/macros/s/..."></div>
+    <div class="fl2 g8 fw">
+      <button class="btn bp bsm" onclick="saveConfig()">💾 Save Config</button>
+      <button class="btn bb bsm" onclick="testGas()">🔌 Test Connection</button>
+    </div>
+  </div>
+
+  <!-- Staff: Cleaners -->
+  <div class="card">
+    <div class="fl2 aic jb" style="margin-bottom:10px">
+      <div class="sct" style="margin-bottom:0">👷 Cleaners / 清潔人員</div>
+      <div class="fl2 g8">
+        <button class="btn bb bsm" onclick="uploadSettings()">☁️ Sync to Cloud</button>
+        <button class="btn bs bsm" onclick="downloadSettings()">⬇️ Sync from Cloud</button>
+      </div>
+    </div>
     <div class="stags" id="cleanerTags"></div>
     <div class="ar"><input class="fi" id="newCleanerName" placeholder="Name..."><button class="btn bp bsm" onclick="addStaff('cleaner')">➕ Add</button></div>
   </div>
 
+  <!-- Staff: Checkers -->
   <div class="card">
     <div class="sct">🔍 Checkers / 檢查員</div>
     <div class="stags" id="checkerTags"></div>
     <div class="ar"><input class="fi" id="newCheckerName" placeholder="Name..."><button class="btn bp bsm" onclick="addStaff('checker')">➕ Add</button></div>
   </div>
 
+  <!-- Staff: Observers -->
   <div class="card">
-    <div class="sct">👁️ 6S Observers / 6S觀察員</div>
+    <div class="sct">👁️ 6S Observers / 觀察員</div>
     <div class="stags" id="observerTags"></div>
     <div class="ar"><input class="fi" id="newObserverName" placeholder="Name..."><button class="btn bp bsm" onclick="addStaff('observer')">➕ Add</button></div>
   </div>
 
-  <div class="card">
-    <div class="sct">☁️ Cloud Config / GAS 設定</div>
-    <div class="fg" style="margin-bottom:9px"><label class="fl">GAS Web App URL</label><input class="fi" id="cfgGasUrl" placeholder="https://script.google.com/macros/s/..."></div>
-    <div class="fl2 g8"><button class="btn bp bsm" onclick="saveConfig()">💾 Save</button><button class="btn bb bsm" onclick="testGas()">🔌 Test Connection</button></div>
-  </div>
-
+  <!-- Telegram -->
   <div class="card">
     <div class="sct">📨 Telegram</div>
-    <div class="fg" style="margin-bottom:9px"><label class="fl">Bot Token</label><input class="fi" id="cfgBotToken" placeholder="已填入預設值 / Default set"></div>
-    <div class="fg" style="margin-bottom:9px"><label class="fl">Chat ID</label><input class="fi" id="cfgChatId" placeholder="已填入預設值 / Default set"></div>
+    <div class="fg" style="margin-bottom:9px"><label class="fl">Bot Token</label><input class="fi" id="cfgBotToken" placeholder="8673221735:AAH0..."></div>
+    <div class="fg" style="margin-bottom:9px"><label class="fl">Chat ID</label><input class="fi" id="cfgChatId" placeholder="-717190406"></div>
     <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;margin-bottom:9px">
-      <input type="checkbox" id="cfgTgOnSave" style="width:15px;height:15px;accent-color:var(--mint)"> Send Telegram when record saved / 儲存時通知
+      <input type="checkbox" id="cfgTgOnSave" style="width:15px;height:15px;accent-color:var(--mint)"> Send Telegram when record saved
     </label>
-    <div class="fl2 g8"><button class="btn bp bsm" onclick="saveConfig()">💾 Save</button><button class="btn bb bsm" onclick="testTg()">📨 Test Telegram</button></div>
+    <div class="fl2 g8"><button class="btn bp bsm" onclick="saveConfig()">💾 Save</button><button class="btn bb bsm" onclick="testTg()">📨 Test</button></div>
   </div>
 
+  <!-- Time Slots -->
   <div class="card">
-    <div class="sct">⏰ Time Slots / 時段設定</div>
+    <div class="sct">⏰ Time Slots / 時段</div>
     <div class="stags" id="slotTags"></div>
     <div class="ar mt8">
       <input class="fi" id="newSlotTime" placeholder="HH:MM" style="max-width:110px">
@@ -419,6 +399,7 @@ tr:hover td{background:#F9FCF9;}
     </div>
   </div>
 
+  <!-- Data -->
   <div class="card">
     <div class="sct">🗃️ Data Management</div>
     <div class="fl2 g8 fw">
@@ -432,8 +413,9 @@ tr:hover td{background:#F9FCF9;}
 </div><!-- /wrap -->
 
 <script>
+'use strict';
 // ════════════════════════════════════
-//  HARDCODED DEFAULTS（寫死預設值）
+//  HARDCODED DEFAULTS
 // ════════════════════════════════════
 const DEFAULTS = {
   gasUrl:   'https://script.google.com/macros/s/AKfycbyRmex6EmpUKGEzrswyFwO_aySAFg2d7tJuUaFBKtlAuOEwVc2TRerP7zbFilitVvZ8Sg/exec',
@@ -442,46 +424,66 @@ const DEFAULTS = {
   tgOnSave: true
 };
 const DEFAULT_SLOTS = ['07:30','08:30','09:30','10:30','12:30','13:30','14:30','15:30','16:30'];
+const MAX_PER_REC=2, MAX_PER_DAY=5, PHOTO_PX=600, PHOTO_Q=0.6;
 
 // ════════════════════════════════════
-//  STATE（每次載入從 localStorage 讀回）
+//  STATE — all loaded from localStorage
 // ════════════════════════════════════
 let lang         = localStorage.getItem('vrt_lang') || 'en';
-let records      = JSON.parse(localStorage.getItem('vrt_records')   || '[]');
-let locations    = JSON.parse(localStorage.getItem('vrt_locations') || JSON.stringify([
+let records      = safeJSON('vrt_records', []);
+let locations    = safeJSON('vrt_locations', [
   {id:'loc1',name:'Toilet A',type:'toilet'},{id:'loc2',name:'Toilet B',type:'toilet'},
   {id:'loc3',name:'Factory Floor',type:'factory'},{id:'loc4',name:'Office',type:'office'},
   {id:'loc5',name:'Canteen',type:'canteen'},
-]));
-let sixsRecords  = JSON.parse(localStorage.getItem('vrt_sixs')      || '[]');
-let cleanerList  = JSON.parse(localStorage.getItem('vrt_cleaners')  || '[]');
-let checkerList  = JSON.parse(localStorage.getItem('vrt_checkers')  || '[]');
-let observerList = JSON.parse(localStorage.getItem('vrt_observers') || '[]');
-let cfgSlots     = JSON.parse(localStorage.getItem('vrt_slots')     || JSON.stringify(DEFAULT_SLOTS));
-// 合併寫死預設值 + localStorage 已儲存的設定（localStorage 優先）
-let cfg = Object.assign({}, DEFAULTS, JSON.parse(localStorage.getItem('vrt_cfg') || '{}'));
+]);
+let sixsRecords  = safeJSON('vrt_sixs', []);
+let cleanerList  = safeJSON('vrt_cleaners', []);
+let checkerList  = safeJSON('vrt_checkers', []);
+let observerList = safeJSON('vrt_observers', []);
+let cfgSlots     = safeJSON('vrt_slots', DEFAULT_SLOTS);
+let cfg          = Object.assign({}, DEFAULTS, safeJSON('vrt_cfg', {}));
 
+function safeJSON(key, def) {
+  try { const v=localStorage.getItem(key); return v?JSON.parse(v):def; }
+  catch(e){ return def; }
+}
+
+let importPhotos=[], recPhotos=[];
 let dbPeriod='day', histPeriod='day', anaPeriod='week', histOffset=0;
 let curSec='dashboard';
 let selSlots=[], checkState={smell:null,light:null,floor:null,door:null,corner:null,ceiling:null};
 let sixsScores={};
 
 // ════════════════════════════════════
-//  SAVE ALL（一次儲存全部）
+//  SAVE ALL — single function, saves everything
 // ════════════════════════════════════
-function saveAll(){
-  localStorage.setItem('vrt_records',   JSON.stringify(records));
-  localStorage.setItem('vrt_locations', JSON.stringify(locations));
-  localStorage.setItem('vrt_sixs',      JSON.stringify(sixsRecords));
-  localStorage.setItem('vrt_cleaners',  JSON.stringify(cleanerList));
-  localStorage.setItem('vrt_checkers',  JSON.stringify(checkerList));
-  localStorage.setItem('vrt_observers', JSON.stringify(observerList));
-  localStorage.setItem('vrt_slots',     JSON.stringify(cfgSlots));
-  localStorage.setItem('vrt_cfg',       JSON.stringify(cfg));
-  localStorage.setItem('vrt_lang',      lang);
+function saveAll() {
+  const data = {
+    vrt_records:   records,
+    vrt_locations: locations,
+    vrt_sixs:      sixsRecords,
+    vrt_cleaners:  cleanerList,
+    vrt_checkers:  checkerList,
+    vrt_observers: observerList,
+    vrt_slots:     cfgSlots,
+    vrt_cfg:       cfg,
+    vrt_lang:      lang,
+  };
+  Object.entries(data).forEach(([k,v])=>{
+    try{ localStorage.setItem(k, JSON.stringify(v)); }
+    catch(e){ console.warn('localStorage write failed:', k, e.message); }
+  });
 }
-// 向後兼容
-function saveData(){ saveAll(); }
+
+// ════════════════════════════════════
+//  DATE HELPER — fix ISO dates from cloud
+// ════════════════════════════════════
+function fmtDate(v) {
+  if (!v) return '';
+  const s = String(v);
+  if (s.includes('T')) return s.slice(0,10);
+  return s.slice(0,10);
+}
 
 // ════════════════════════════════════
 //  TRANSLATIONS
@@ -493,13 +495,12 @@ const T = {
     dbTitle:'Dashboard',dbDate:'',dbCompTitle:'Completion by Location',dbTrendTitle:'7-Day Trend',dbRecentTitle:'Recent Records',
     recTitle:'New Cleaning Record',recDateLabel:'Date',recLocLabel:'Location',recCleanerLabel:'Cleaned By',recCheckerLabel:'Checked By',
     recSlotsTitle:'Time Slots',recItemsTitle:'Check Items',recNoteLabel:'Note / Remarks',clearBtn:'Clear',saveBtn:'💾 Save Record',
-    histTitle:'History Records',importBtn:'📎 Import',
+    histTitle:'History Records',
     sixsTitle:'6S Workplace Diagnostic',sixsObsLabel:'Observer',sixsScoreLabel:'Total Score',sixsResetBtn:'Reset',sixsSaveBtn:'💾 Save 6S',sixsHistLabel:'6S History',
     anaTitle:'Analysis',anaPassTitle:'Pass Rate by Item',anaLocTitle:'Records by Location',anaAnomalyTitle:'Anomaly Summary',anaSixsTitle:'6S Score Trend',
     locTitle:'Manage Locations',addLocBtn:'+ Add',
     addLocTitle:'Add Location',locNameLabel:'Location Name',locTypeLabel:'Type',cancelBtn:'Cancel',confirmAddBtn:'Add',
-    importTitle:'Import Historical Record',importDateLabel:'Date',importLocLabel:'Location',importNoteLabel:'Note',saveImportBtn:'Save',
-    ptDay:'Day',ptWeek:'Week',ptMonth:'Month',ptYear:'Year',apTitle:'Anomaly Alerts',
+    apTitle:'Anomaly Alerts',
     checkItems:{smell:'Smell',light:'Light',floor:'Floor',door:'Door',corner:'Corner',ceiling:'Ceiling'},
     checkIcons:{smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'},
     pass:'✓ Pass',fail:'✗ Fail',
@@ -508,9 +509,9 @@ const T = {
     locTypes:{toilet:'🚻 Toilet',factory:'🏭 Factory',office:'🏢 Office',canteen:'🍽️ Canteen',warehouse:'📦 Warehouse',entrance:'🚪 Entrance',other:'📌 Other'},
     allLoc:'All Locations',
     sixsCats:[
-      {name:'Sort',items:['Bulletin board not cleared','Items in aisles/corners','Safety hazards (water/oil/chemical)']},
+      {name:'Sort',items:['Bulletin board not cleared','Items in aisles/corners','Safety hazards']},
       {name:'Set in Order',items:['Items not in correct places','Items not returned after use','Workstation not marked']},
-      {name:'Shine',items:['Floors/walls not clean','Other cleaning issues','Is place more organized after cleaning?']},
+      {name:'Shine',items:['Floors/walls not clean','Other cleaning issues','More organized after cleaning?']},
       {name:'Standardize',items:['Standards not strictly followed','No checklist for cleaning','Cannot find items in 30s']},
       {name:'Sustain',items:['Workers not 6S trained','6S inspection not done last week','Personal items not tidy']},
       {name:'Safety',items:['Workers not SOE trained','Injuries this year','Emergency exits not marked','Hazard areas unmarked','SOE actions incomplete']},
@@ -523,13 +524,12 @@ const T = {
     dbTitle:'儀表板',dbDate:'',dbCompTitle:'各地點完成率',dbTrendTitle:'7天趨勢',dbRecentTitle:'最近記錄',
     recTitle:'新增清潔記錄',recDateLabel:'日期',recLocLabel:'地點',recCleanerLabel:'清潔員',recCheckerLabel:'檢查員',
     recSlotsTitle:'清潔時段',recItemsTitle:'檢查項目',recNoteLabel:'備注/異常',clearBtn:'清除',saveBtn:'💾 儲存記錄',
-    histTitle:'歷史記錄',importBtn:'📎 匯入',
+    histTitle:'歷史記錄',
     sixsTitle:'6S工作場所診斷',sixsObsLabel:'觀察員',sixsScoreLabel:'總分',sixsResetBtn:'重置',sixsSaveBtn:'💾 儲存6S',sixsHistLabel:'6S歷史',
     anaTitle:'數據分析',anaPassTitle:'各項目通過率',anaLocTitle:'各地點記錄數',anaAnomalyTitle:'異常匯總',anaSixsTitle:'6S分數趨勢',
     locTitle:'地點管理',addLocBtn:'+ 新增',
     addLocTitle:'新增地點',locNameLabel:'地點名稱',locTypeLabel:'類型',cancelBtn:'取消',confirmAddBtn:'新增',
-    importTitle:'匯入歷史記錄',importDateLabel:'日期',importLocLabel:'地點',importNoteLabel:'備注',saveImportBtn:'儲存',
-    ptDay:'日',ptWeek:'週',ptMonth:'月',ptYear:'年',apTitle:'異常警報',
+    apTitle:'異常警報',
     checkItems:{smell:'氣味',light:'燈光',floor:'地板',door:'門',corner:'角落',ceiling:'天花'},
     checkIcons:{smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'},
     pass:'✓ 通過',fail:'✗ 不通過',
@@ -538,7 +538,7 @@ const T = {
     locTypes:{toilet:'🚻 廁所',factory:'🏭 廠房',office:'🏢 辦公室',canteen:'🍽️ 飯堂',warehouse:'📦 倉庫',entrance:'🚪 入口',other:'📌 其他'},
     allLoc:'所有地點',
     sixsCats:[
-      {name:'整理',items:['公告欄未清理','走道/角落有雜物','安全隱患（水/油/化學品）']},
+      {name:'整理',items:['公告欄未清理','走道/角落有雜物','安全隱患']},
       {name:'整頓',items:['物品未在正確位置','使用後未放回','工作站未標明']},
       {name:'清潔',items:['地板/牆壁有污垢','其他清潔問題','清潔後是否更整潔？']},
       {name:'標準化',items:['未嚴格遵守標準','無清潔清單','30秒找不到物品']},
@@ -550,54 +550,51 @@ const T = {
   kh:{
     hTitle:'កំណត់ត្រាសំអាត VRT',
     nav:['📊 ផ្ទាំង','✏️ បន្ថែម','📋 ប្រវត្តិ','⭐ 6S','📈 វិភាគ','📍 ទីតាំង','⚙️ ការកំណត់'],
-    dbTitle:'ផ្ទាំងគ្រប់គ្រង',dbDate:'',dbCompTitle:'ការបញ្ចប់',dbTrendTitle:'7ថ្ងៃ',dbRecentTitle:'ថ្មីៗ',
-    recTitle:'កំណត់ត្រាសំអាត',recDateLabel:'កាលបរិច្ឆេទ',recLocLabel:'ទីតាំង',recCleanerLabel:'អ្នកសំអាត',recCheckerLabel:'អ្នកត្រួតពិនិត្យ',
-    recSlotsTitle:'ម៉ោងសំអាត',recItemsTitle:'ធាតុពិនិត្យ',recNoteLabel:'ចំណាំ',clearBtn:'លុប',saveBtn:'💾 រក្សាទុក',
-    histTitle:'ប្រវត្តិ',importBtn:'📎 នាំចូល',
-    sixsTitle:'6S',sixsObsLabel:'អ្នកត្រួតពិនិត្យ',sixsScoreLabel:'ពិន្ទុ',sixsResetBtn:'កំណត់ឡើងវិញ',sixsSaveBtn:'💾 រក្សា 6S',sixsHistLabel:'ប្រវត្តិ 6S',
+    dbTitle:'ផ្ទាំង',dbDate:'',dbCompTitle:'ការបញ្ចប់',dbTrendTitle:'7ថ្ងៃ',dbRecentTitle:'ថ្មីៗ',
+    recTitle:'កំណត់ត្រា',recDateLabel:'កាលបរិច្ឆេទ',recLocLabel:'ទីតាំង',recCleanerLabel:'អ្នកសំអាត',recCheckerLabel:'អ្នកត្រួតពិនិត្យ',
+    recSlotsTitle:'ម៉ោង',recItemsTitle:'ធាតុ',recNoteLabel:'ចំណាំ',clearBtn:'លុប',saveBtn:'💾 រក្សា',
+    histTitle:'ប្រវត្តិ',
+    sixsTitle:'6S',sixsObsLabel:'អ្នកត្រួត',sixsScoreLabel:'ពិន្ទុ',sixsResetBtn:'កំណត់ឡើងវិញ',sixsSaveBtn:'💾 រក្សា 6S',sixsHistLabel:'ប្រវត្តិ 6S',
     anaTitle:'វិភាគ',anaPassTitle:'អត្រាជាប់',anaLocTitle:'តាមទីតាំង',anaAnomalyTitle:'មិនប្រក្រតី',anaSixsTitle:'6S',
     locTitle:'ទីតាំង',addLocBtn:'+ បន្ថែម',
     addLocTitle:'បន្ថែម',locNameLabel:'ឈ្មោះ',locTypeLabel:'ប្រភេទ',cancelBtn:'បោះបង់',confirmAddBtn:'បន្ថែម',
-    importTitle:'នាំចូល',importDateLabel:'កាលបរិច្ឆេទ',importLocLabel:'ទីតាំង',importNoteLabel:'ចំណាំ',saveImportBtn:'រក្សាទុក',
-    ptDay:'ថ្ងៃ',ptWeek:'សប្តាហ៍',ptMonth:'ខែ',ptYear:'ឆ្នាំ',apTitle:'ការជូនដំណឹង',
+    apTitle:'ការជូនដំណឹង',
     checkItems:{smell:'ក្លិន',light:'អំពូល',floor:'ជាន់',door:'ទ្វារ',corner:'ជ្រុង',ceiling:'ពិដាន'},
     checkIcons:{smell:'👃',light:'💡',floor:'🪟',door:'🚪',corner:'📐',ceiling:'🏠'},
     pass:'✓ ជាប់',fail:'✗ ធ្លាក់',
-    thead:['កាលបរិច្ឆេទ','ទីតាំង','អ្នកសំអាត','អ្នកត្រួតពិនិត្យ','ស្ថានភាព','ធាតុ','Sync','ចំណាំ','📷',''],
+    thead:['កាលបរិច្ឆេទ','ទីតាំង','អ្នកសំអាត','អ្នកត្រួត','ស្ថានភាព','ធាតុ','Sync','ចំណាំ','📷',''],
     stat0:'សរុប',stat1:'អត្រាជាប់',stat2:'មិនប្រក្រតី',stat3:'ទីតាំង',
     locTypes:{toilet:'🚻 បន្ទប់ទឹក',factory:'🏭 រោងចក្រ',office:'🏢 ការិយាល័យ',canteen:'🍽️ បន្ទប់ញ៉ាំ',warehouse:'📦 ឃ្លាំង',entrance:'🚪 ច្រក',other:'📌 ផ្សេងៗ'},
     allLoc:'ទីតាំងទាំងអស់',
     sixsCats:[
-      {name:'ការតម្រៀប',items:['ក្ដារប្រកាសមិនបានសំអាត','ធាតុនៅក្នុងច្រក','គ្រោះថ្នាក់']},
-      {name:'ការដាក់ជាលំដាប់',items:['ធាតុមិននៅទីតាំង','ធាតុមិនបានដាក់ត្រឡប់','ទីតាំងការងារ']},
-      {name:'ចំណោតឆើតឆាយ',items:['ជាន់/ជញ្ជាំងមិនស្អាត','បញ្ហាសំអាត','ប្រសើរជាងមុន?']},
-      {name:'ការបង្រួបបង្រួម',items:['ស្ដង់ដារ','បញ្ជីត្រួតពិនិត្យ','ធាតុ 30 វិ']},
-      {name:'ការរក្សាបន្ត',items:['ការបណ្តុះ 6S','ការត្រួតពិនិត្យ','ទ្រព្យផ្ទាល់ខ្លួន']},
-      {name:'សុវត្ថិភាព',items:['SOE','របួស','ច្រកចេញ','តំបន់គ្រោះថ្នាក់','SOE']},
+      {name:'ការតម្រៀប',items:['ក្ដារប្រកាស','ច្រក','គ្រោះថ្នាក់']},
+      {name:'ការដាក់',items:['ទីតាំង','ដាក់ត្រឡប់','ទីតាំងការងារ']},
+      {name:'ចំណោត',items:['ជាន់/ជញ្ជាំង','បញ្ហាសំអាត','ប្រសើរជាងមុន?']},
+      {name:'ស្ដង់ដារ',items:['ស្ដង់ដារ','បញ្ជី','ធាតុ 30វិ']},
+      {name:'ការរក្សា',items:['ការបណ្តុះ','ការត្រួតពិនិត្យ','ទ្រព្យ']},
+      {name:'សុវត្ថិភាព',items:['SOE','របួស','ច្រក','តំបន់','SOE']},
     ],
-    anomalyMsg:(loc,item)=>`ភាពមិនប្រក្រតី ${loc}: ${item}`,noRecords:'រកមិនឃើញ',
+    anomalyMsg:(loc,item)=>`${loc}: ${item}`,noRecords:'រកមិនឃើញ',
   }
 };
 function t(k){return T[lang][k]||T['en'][k]||k;}
 
 // ════════════════════════════════════
-//  TOAST + CLOUD STATUS BAR
+//  TOAST + CLOUD BAR
 // ════════════════════════════════════
 let toastTimer;
 function toast(msg,type='',dur=3000){
   const el=document.getElementById('toast');
-  el.textContent=msg;el.className=type||'';
-  void el.offsetWidth;el.classList.add('show');
-  clearTimeout(toastTimer);toastTimer=setTimeout(()=>el.classList.remove('show'),dur);
+  el.textContent=msg; el.className=type||'';
+  void el.offsetWidth; el.classList.add('show');
+  clearTimeout(toastTimer); toastTimer=setTimeout(()=>el.classList.remove('show'),dur);
 }
 let cloudBarTimer;
 function showCloud(msg,type='info',dur=0){
-  const bar=document.getElementById('cloudBar');
-  if(!bar)return;
-  bar.textContent=msg;
-  bar.className='cloud-bar '+type+' show';
+  const bar=document.getElementById('cloudBar'); if(!bar)return;
+  bar.textContent=msg; bar.className='cloud-bar '+type+' show';
   clearTimeout(cloudBarTimer);
-  if(dur>0) cloudBarTimer=setTimeout(()=>{bar.classList.remove('show');},dur);
+  if(dur>0) cloudBarTimer=setTimeout(()=>bar.classList.remove('show'),dur);
 }
 
 // ════════════════════════════════════
@@ -607,17 +604,15 @@ function setLang(l,e){
   lang=l;
   document.querySelectorAll('.lbtn').forEach(b=>b.classList.remove('active'));
   if(e&&e.target)e.target.classList.add('active');
-  applyLang();renderAll();
-  localStorage.setItem('vrt_lang',lang);
+  applyLang(); renderAll();
+  saveAll();
 }
 function applyLang(){
-  const ks=['hTitle','dbTitle','dbCompTitle','dbTrendTitle','dbRecentTitle','recTitle','recDateLabel','recLocLabel','recCleanerLabel','recCheckerLabel','recSlotsTitle','recItemsTitle','recNoteLabel','clearBtn','saveBtn','histTitle','importBtn','sixsTitle','sixsObsLabel','sixsScoreLabel','sixsResetBtn','sixsSaveBtn','sixsHistLabel','anaTitle','anaPassTitle','anaLocTitle','anaAnomalyTitle','anaSixsTitle','locTitle','addLocBtn','addLocTitle','locNameLabel','locTypeLabel','cancelBtn','confirmAddBtn','importTitle','importDateLabel','importLocLabel','importNoteLabel','saveImportBtn','ptDay','ptWeek','ptMonth','ptYear','apTitle'];
+  const ks=['hTitle','dbTitle','dbCompTitle','dbTrendTitle','dbRecentTitle','recTitle','recDateLabel','recLocLabel','recCleanerLabel','recCheckerLabel','recSlotsTitle','recItemsTitle','recNoteLabel','clearBtn','saveBtn','histTitle','sixsTitle','sixsObsLabel','sixsScoreLabel','sixsResetBtn','sixsSaveBtn','sixsHistLabel','anaTitle','anaPassTitle','anaLocTitle','anaAnomalyTitle','anaSixsTitle','locTitle','addLocBtn','addLocTitle','locNameLabel','locTypeLabel','cancelBtn','confirmAddBtn','apTitle'];
   ks.forEach(k=>{const el=document.getElementById(k);if(el)el.textContent=t(k);});
   ['nav-dashboard','nav-record','nav-history','nav-sixs','nav-analysis','nav-locations','nav-settings'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=t('nav')[i];});
   document.getElementById('dbDate').textContent=new Date().toLocaleDateString(lang==='zh'?'zh-TW':lang==='kh'?'km-KH':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  // restore active lang button
-  const langMap={en:0,zh:1,kh:2};
-  document.querySelectorAll('.lbtn').forEach((b,i)=>b.classList.toggle('active',i===langMap[lang]));
+  document.querySelectorAll('.lbtn').forEach((b,i)=>b.classList.toggle('active',['en','zh','kh'][i]===lang));
 }
 
 // ════════════════════════════════════
@@ -630,7 +625,7 @@ function showSec(s){
   document.getElementById('nav-'+s).classList.add('active');
   curSec=s;
   if(s==='dashboard')renderDashboard();
-  if(s==='history')renderHistory();
+  if(s==='history'){renderHistory();updateSyncSummary();}
   if(s==='sixs')render6S();
   if(s==='analysis')renderAnalysis();
   if(s==='locations')renderLocations();
@@ -638,7 +633,7 @@ function showSec(s){
 }
 function renderAll(){
   if(curSec==='dashboard')renderDashboard();
-  if(curSec==='history')renderHistory();
+  if(curSec==='history'){renderHistory();updateSyncSummary();}
   if(curSec==='sixs')render6S();
   if(curSec==='analysis')renderAnalysis();
   if(curSec==='locations')renderLocations();
@@ -651,7 +646,7 @@ function renderAll(){
 // ════════════════════════════════════
 function initForm(){
   const today=new Date().toISOString().slice(0,10);
-  ['recDate','sixsDate','importDate'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=today;});
+  ['recDate','sixsDate'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=today;});
   populateLocSelects();
   populateStaffSelects();
   renderSlots();
@@ -659,22 +654,20 @@ function initForm(){
   render6SChecklist();
   renderPhotoGrid();
 }
-
 function populateLocSelects(){
-  ['recLoc','sixsLoc','importLoc','histLocFilter'].forEach(id=>{
+  ['recLoc','sixsLoc','histLocFilter'].forEach(id=>{
     const sel=document.getElementById(id);if(!sel)return;
     const isF=id==='histLocFilter';
     sel.innerHTML=isF?`<option value="all">${t('allLoc')}</option>`:'';
     locations.forEach(loc=>{const o=document.createElement('option');o.value=loc.id;o.textContent=(t('locTypes')[loc.type]||'📌')+' '+loc.name;sel.appendChild(o);});
   });
 }
-
 function populateStaffSelects(){
   const c=document.getElementById('recCleaner');
   const ch=document.getElementById('recChecker');
   const ob=document.getElementById('sixsObsInput');
-  if(c){c.innerHTML='<option value="">-- Cleaner / 清潔員 --</option>';cleanerList.forEach(n=>{c.innerHTML+=`<option value="${n}">${n}</option>`;});}
-  if(ch){ch.innerHTML='<option value="">-- Checker / 檢查員 --</option>';checkerList.forEach(n=>{ch.innerHTML+=`<option value="${n}">${n}</option>`;});}
+  if(c){c.innerHTML='<option value="">-- Cleaner --</option>';cleanerList.forEach(n=>{c.innerHTML+=`<option value="${n}">${n}</option>`;});}
+  if(ch){ch.innerHTML='<option value="">-- Checker --</option>';checkerList.forEach(n=>{ch.innerHTML+=`<option value="${n}">${n}</option>`;});}
   if(ob){ob.innerHTML='<option value="">-- Observer --</option>';observerList.forEach(n=>{ob.innerHTML+=`<option value="${n}">${n}</option>`;});}
 }
 
@@ -682,15 +675,11 @@ function populateStaffSelects(){
 //  SLOTS
 // ════════════════════════════════════
 function renderSlots(){
-  const c=document.getElementById('timeSlots');if(!c)return;
-  c.innerHTML='';
+  const c=document.getElementById('timeSlots');if(!c)return;c.innerHTML='';
   cfgSlots.forEach(s=>{
     const done=selSlots.includes(s);
-    const d=document.createElement('div');
-    d.className=`ts ${done?'done':'pending'}`;
-    d.textContent=(done?'✓ ':'')+s;
-    d.onclick=()=>toggleSlot(s,d);
-    c.appendChild(d);
+    const d=document.createElement('div');d.className=`ts ${done?'done':'pending'}`;
+    d.textContent=(done?'✓ ':'')+s; d.onclick=()=>toggleSlot(s,d); c.appendChild(d);
   });
 }
 function toggleSlot(s,el){
@@ -706,12 +695,10 @@ function noSlots(){selSlots=[];renderSlots();}
 // ════════════════════════════════════
 function renderCheckItems(){
   const items=['smell','light','floor','door','corner','ceiling'];
-  const c=document.getElementById('checkItems');if(!c)return;
-  c.innerHTML='';
+  const c=document.getElementById('checkItems');if(!c)return;c.innerHTML='';
   items.forEach(item=>{
     const st=checkState[item];
-    const d=document.createElement('div');
-    d.className=`ci ${st===true?'pass':st===false?'fail':''}`;
+    const d=document.createElement('div');d.className=`ci ${st===true?'pass':st===false?'fail':''}`;
     d.innerHTML=`<div class="ci-ic">${t('checkIcons')[item]}</div><div class="ci-n">${t('checkItems')[item]}</div><div class="ci-s">${st===true?t('pass'):st===false?t('fail'):'—'}</div>`;
     d.onclick=()=>cycleCheck(item);c.appendChild(d);
   });
@@ -729,9 +716,67 @@ function allReset(){Object.keys(checkState).forEach(k=>checkState[k]=null);rende
 // ════════════════════════════════════
 //  PHOTOS
 // ════════════════════════════════════
+function countTodayPhotos(){
+  const today=new Date().toISOString().slice(0,10);
+  return records.filter(r=>fmtDate(r.date)===today).reduce((s,r)=>s+(r.photos||[]).length,0);
+}
+function compressImage(file){
+  return new Promise((res,rej)=>{
+    const reader=new FileReader();
+    reader.onerror=()=>rej(new Error('Read failed'));
+    reader.onload=ev=>{
+      const img=new Image();
+      img.onerror=()=>rej(new Error('Load failed'));
+      img.onload=()=>{
+        let w=img.width,h=img.height;
+        if(w>h&&w>PHOTO_PX){h=Math.round(h*PHOTO_PX/w);w=PHOTO_PX;}
+        else if(h>PHOTO_PX){w=Math.round(w*PHOTO_PX/h);h=PHOTO_PX;}
+        const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        res(canvas.toDataURL('image/jpeg',PHOTO_Q));
+      };
+      img.src=ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function triggerPhoto(){
+  if(recPhotos.length>=MAX_PER_REC){toast(`❌ Max ${MAX_PER_REC} photos per record`,'error');return;}
+  if(countTodayPhotos()+recPhotos.length>=MAX_PER_DAY){toast(`❌ Daily limit ${MAX_PER_DAY} photos reached`,'error');return;}
+  document.getElementById('globalPhotoInput').value='';
+  document.getElementById('globalPhotoInput').click();
+}
+async function handlePhotoAdd(e){
+  const file=e.target.files[0];if(!file)return;
+  if(recPhotos.length>=MAX_PER_REC){toast(`❌ Max ${MAX_PER_REC} photos`,'error');return;}
+  if(countTodayPhotos()+recPhotos.length>=MAX_PER_DAY){toast(`❌ Daily limit reached`,'error');return;}
+  try{
+    toast('⏳ Compressing...','info',2000);
+    const b64=await compressImage(file);
+    const kb=Math.round(b64.length*0.75/1024);
+    recPhotos.push(b64);renderPhotoGrid();
+    toast(`✅ Photo added (${kb}KB)`,'success');
+  }catch(err){toast('❌ Photo failed: '+err.message,'error');}
+}
+function renderPhotoGrid(){
+  const grid=document.getElementById('recPhotoGrid');if(!grid)return;grid.innerHTML='';
+  recPhotos.forEach((b64,i)=>{
+    const d=document.createElement('div');d.className='pthumb';
+    d.innerHTML=`<img src="${b64}" onclick="showPV('${b64}')"><button class="pdel" onclick="delRP(${i})">✕</button>`;
+    grid.appendChild(d);
+  });
+  if(recPhotos.length<MAX_PER_REC&&countTodayPhotos()+recPhotos.length<MAX_PER_DAY){
+    const add=document.createElement('div');add.className='photo-add';
+    add.innerHTML=`<div>📷</div><div style="font-size:9px;margin-top:3px">${recPhotos.length}/${MAX_PER_REC}</div>`;
+    add.onclick=triggerPhoto;grid.appendChild(add);
+  }
+}
+function delRP(i){recPhotos.splice(i,1);renderPhotoGrid();}
+function showPV(src){document.getElementById('pvImg').src=src;document.getElementById('photoViewer').classList.add('open');}
+function closePV(){document.getElementById('photoViewer').classList.remove('open');}
 
 // ════════════════════════════════════
-//  SAVE RECORD
+//  BUILD RECORD
 // ════════════════════════════════════
 function buildRec(){
   const date=document.getElementById('recDate').value;
@@ -739,52 +784,46 @@ function buildRec(){
   const cleaner=document.getElementById('recCleaner').value;
   const checker=document.getElementById('recChecker').value;
   const note=document.getElementById('recNote').value;
-  if(!date){toast('❌ Please select a date / 請選擇日期','error');return null;}
-  if(!locId){toast('❌ Please select a location / 請選擇地點','error');return null;}
+  if(!date){toast('❌ Please select a date','error');return null;}
+  if(!locId){toast('❌ Please select a location','error');return null;}
   if(!cleaner){toast('❌ Select cleaner — Settings → Cleaners','error');return null;}
   if(!checker){toast('❌ Select checker — Settings → Checkers','error');return null;}
-  return {id:'r'+Date.now(),date,locId,cleaner,checker,note,slots:[...selSlots],checks:{...checkState},photos:[...recPhotos],isImport:false,synced:false,ts:Date.now()};
+  return {id:'r'+Date.now(),date,locId,location:getLocName(locId),cleaner,checker,note,
+    slots:[...selSlots],checks:{...checkState},photos:[...recPhotos],isImport:false,synced:false,ts:Date.now()};
 }
+
 function saveRecord(){
   const rec=buildRec();if(!rec)return;
   records.unshift(rec);saveAll();clearForm();checkAnomalies();
   toast('✅ Record saved! / 記錄已儲存！','success');
-  if(cfg.tgOnSave) sendTgReport(rec);   // 文字 + 照片一起發
+  if(cfg.tgOnSave)sendTgReport(rec);
   showSec('dashboard');renderAll();
 }
 
 async function saveAndUpload(){
   const rec=buildRec();if(!rec)return;
-  const photos=[...rec.photos]; // 儲存前先拿到照片
+  const photos=[...rec.photos];
   records.unshift(rec);saveAll();clearForm();checkAnomalies();
-
-  // 1. 上傳文字記錄到 Sheets
-  toast('⏳ Uploading record...','info',6000);
+  showCloud('⏳ 上傳文字記錄中... Uploading record...','info');
   const ok=await uploadToGas(rec);
-  if(ok){ rec.synced=true; saveAll(); }
+  if(ok){rec.synced=true;saveAll();}
 
-  // 2. 上傳照片到 Google Drive
   const driveUrls=[];
-  if(photos.length && cfg.gasUrl){
-    showCloud(`⏳ 上傳照片到 Drive... 0/${photos.length}`,'info');
+  if(photos.length&&cfg.gasUrl){
     for(let i=0;i<photos.length;i++){
-      const url=await uploadPhotoToDrive(photos[i], rec.id, i);
-      if(url) driveUrls.push(url);
       showCloud(`⏳ 上傳照片 ${i+1}/${photos.length} 到 Drive...`,'info');
+      const url=await uploadPhotoToDrive(photos[i],rec.id,i);
+      if(url)driveUrls.push(url);
       await new Promise(x=>setTimeout(x,300));
     }
-    if(driveUrls.length){
-      rec.driveUrls=driveUrls; saveAll();
-      showCloud(`✅ ${driveUrls.length} 張照片已存至 Google Drive`,'success',5000);
-    }
+    if(driveUrls.length){rec.driveUrls=driveUrls;saveAll();}
   }
 
-  // 3. Telegram：文字 + 照片
-  if(cfg.tgOnSave){
-    await sendTgReport(rec, driveUrls);
-  }
+  if(cfg.tgOnSave)await sendTgReport(rec,driveUrls);
 
-  toast(ok?'☁️ 全部上傳完成！':'⚠️ 文字已儲存，雲端上傳失敗',ok?'success':'',3000);
+  if(ok) showCloud(`✅ 上傳完成！記錄已同步 Upload complete`,'success',6000);
+  else   showCloud('⚠️ 文字記錄上傳失敗，請確認 GAS URL','warning',6000);
+  toast(ok?'☁️ Uploaded!':'⚠️ Upload failed',ok?'success':'',3000);
   showSec('dashboard');renderAll();
 }
 
@@ -797,18 +836,18 @@ function clearForm(){
 }
 
 // ════════════════════════════════════
-//  GAS CLOUD
+//  GAS UPLOAD
 // ════════════════════════════════════
 async function uploadToGas(rec){
-  if(!cfg.gasUrl){toast('❌ GAS URL not set in Settings','error');return false;}
+  if(!cfg.gasUrl){toast('❌ GAS URL not set','error');return false;}
   const payload={
-    action:'saveCleaning', date:rec.date, location:getLocName(rec.locId),
+    action:'saveCleaning',
+    date:rec.date, locId:rec.locId, location:rec.location||getLocName(rec.locId),
     cleaner:rec.cleaner, checker:rec.checker,
     slots:rec.slots.join(', '),
     checks:Object.entries(rec.checks).filter(([,v])=>v!==null).map(([k,v])=>k+(v?'✓':'✗')).join(', '),
     hasFail:Object.values(rec.checks).some(v=>v===false)?'YES':'NO',
-    note:rec.note||'', recId:rec.id,
-    photoCount:rec.photos?rec.photos.length:0
+    note:rec.note||'', recId:rec.id, photoCount:rec.photos?rec.photos.length:0
   };
   try{
     await fetch(cfg.gasUrl,{method:'POST',body:JSON.stringify(payload),mode:'no-cors'});
@@ -816,149 +855,197 @@ async function uploadToGas(rec){
   }catch(e){toast('❌ Upload failed: '+e.message,'error');return false;}
 }
 
-// 上傳單張照片到 Google Drive（透過 GAS）
-async function uploadPhotoToDrive(base64, recId, idx){
+async function uploadPhotoToDrive(base64,recId,idx){
   if(!cfg.gasUrl)return null;
-  // 把 base64 header 去掉只送純資料，減少傳輸量
   const pureB64=base64.replace(/^data:image\/\w+;base64,/,'');
-  const payload={action:'uploadPhoto', base64:pureB64, recId, idx};
+  const payload={action:'uploadPhoto',base64:pureB64,recId,idx};
   try{
-    // Drive 上傳需要讀回 URL，用 cors mode（GAS 支援）
-    const res=await fetch(cfg.gasUrl,{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(payload)
-    });
+    const res=await fetch(cfg.gasUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const data=await res.json();
     return data.url||null;
   }catch(e){
-    // cors 失敗改 no-cors（Drive 備份但拿不到 URL）
-    try{
-      await fetch(cfg.gasUrl,{method:'POST',body:JSON.stringify(payload),mode:'no-cors'});
-    }catch(e2){}
+    try{await fetch(cfg.gasUrl,{method:'POST',body:JSON.stringify(payload),mode:'no-cors'});}catch(e2){}
     return null;
   }
 }
 
 async function uploadAllUnsynced(){
   const un=records.filter(r=>!r.synced&&!r.isImport);
-  if(!un.length){showCloud('✅ 所有記錄已同步 All records synced','success',5000);toast('✅ All synced','success');return;}
-  showCloud(`⏳ 上傳中 Uploading... 0 / ${un.length} 筆`,'info');
+  if(!un.length){showCloud('✅ 所有記錄已同步 All synced','success',5000);toast('✅ All synced','success');return;}
+  showCloud(`⏳ 上傳中 Uploading 0 / ${un.length} 筆...`,'info');
   let ok=0;
   for(const r of un){
     const s=await uploadToGas(r);
     if(s){r.synced=true;ok++;}
-    showCloud(`⏳ 上傳中 Uploading... ${ok} / ${un.length} 筆`,'info');
-    await new Promise(x=>setTimeout(x,350));
+    showCloud(`⏳ 上傳中 Uploading ${ok} / ${un.length} 筆...`,'info');
+    await new Promise(x=>setTimeout(x,400));
   }
-  saveAll();renderHistory();
-  if(ok===un.length){
-    showCloud(`✅ 上傳完成！成功同步 ${ok} 筆記錄 Upload complete: ${ok} records synced`,'success',6000);
-    toast(`☁️ Uploaded ${ok} records`,'success');
-  } else {
-    showCloud(`⚠️ 部分失敗：${ok} / ${un.length} 筆成功 Partial: ${ok}/${un.length} uploaded`,'warning',6000);
-  }
+  saveAll();renderHistory();updateSyncSummary();
+  const msg=ok===un.length
+    ? `✅ 上傳完成！成功同步 ${ok} 筆 Upload complete: ${ok} records`
+    : `⚠️ 部分失敗 ${ok}/${un.length} 筆成功 Partial: ${ok}/${un.length}`;
+  showCloud(msg, ok===un.length?'success':'warning', 6000);
+  toast(`☁️ ${ok}/${un.length} uploaded`,'success');
 }
 
 async function downloadFromCloud(){
-  if(!cfg.gasUrl){showCloud('❌ GAS URL 未設定 GAS URL not set','error',5000);return;}
+  if(!cfg.gasUrl){showCloud('❌ GAS URL not set in Settings','error',5000);return;}
   showCloud('⏳ 從雲端下載中 Downloading from cloud...','info');
   try{
     const res=await fetch(cfg.gasUrl+'?action=getCleaning');
     if(!res.ok)throw new Error('HTTP '+res.status);
     const data=await res.json();
-    if(data.records&&data.records.length){
-      const ids=new Set(records.map(r=>r.id));let added=0;
-      data.records.forEach(r=>{if(!ids.has(r.id)){records.push({...r,synced:true});added++;}});
-      saveAll();renderHistory();
-      showCloud(`✅ 下載完成！新增 ${added} 筆記錄 Downloaded ${added} new records`,'success',6000);
-      toast(`⬇️ Downloaded ${added} new records`,'success');
-    } else {
-      showCloud('ℹ️ 雲端無新記錄 No new records from cloud','info',5000);
-    }
+    if(!data.ok)throw new Error(data.msg||'GAS error');
+
+    const recs=data.records||[];
+    const ids=new Set(records.map(r=>r.id));
+    let added=0,updated=0;
+
+    recs.forEach(r=>{
+      // Fix date format
+      r.date=fmtDate(r.date);
+      // If locId exists and matches local location → use it
+      // Otherwise keep location string for display
+      if(r.locId&&!r.location)r.location=getLocName(r.locId);
+      if(!r.checks||typeof r.checks==='string'){
+        // Parse checks string back to object
+        r.checks=parseChecksStr(r.checks||'');
+      }
+      if(!ids.has(r.id)){
+        records.push({...r,synced:true,photos:[]});
+        ids.add(r.id);added++;
+      } else {
+        // Update sync status of existing
+        const idx=records.findIndex(x=>x.id===r.id);
+        if(idx>=0){records[idx].synced=true;updated++;}
+      }
+    });
+
+    saveAll();renderHistory();updateSyncSummary();
+    showCloud(`✅ 下載完成！新增 ${added} 筆，更新 ${updated} 筆同步狀態 Downloaded ${added} new, ${updated} updated`,'success',7000);
+    toast(`⬇️ ${added} new, ${updated} updated`,'success');
   }catch(e){
     showCloud('❌ 下載失敗 Download failed: '+e.message,'error',6000);
   }
 }
 
+function parseChecksStr(str){
+  const base={smell:null,light:null,floor:null,door:null,corner:null,ceiling:null};
+  if(!str)return base;
+  ['smell','light','floor','door','corner','ceiling'].forEach(k=>{
+    if(str.includes(k+'✓'))base[k]=true;
+    else if(str.includes(k+'✗'))base[k]=false;
+  });
+  return base;
+}
+
+function updateSyncSummary(){
+  const sr=document.getElementById('syncSummary');if(!sr)return;
+  const total=records.length;
+  const synced=records.filter(r=>r.synced).length;
+  const unsynced=total-synced;
+  let cls=unsynced>0?'warn':'ok';
+  let msg=unsynced>0
+    ? `📱 ${unsynced} 筆未同步 unsynced — 按「☁️ Upload Unsynced」`
+    : `✅ 全部 ${total} 筆已同步 All ${total} records synced`;
+  sr.innerHTML=`<div class="sync-dot ${cls}"></div><div class="sync-txt">${msg}</div>`;
+}
+
 async function testGas(){
   if(!cfg.gasUrl){toast('❌ Enter GAS URL first','error');return;}
   toast('⏳ Testing...','info');
-  try{await fetch(cfg.gasUrl+'?action=ping',{mode:'no-cors'});toast('✅ GAS connection OK!','success');}
-  catch(e){toast('❌ Failed: '+e.message,'error');}
+  try{
+    const res=await fetch(cfg.gasUrl+'?action=ping');
+    const data=await res.json();
+    toast('✅ '+data.msg,'success');
+  }catch(e){
+    // fallback no-cors
+    try{await fetch(cfg.gasUrl+'?action=ping',{mode:'no-cors'});toast('✅ GAS reachable (no-cors)','success');}
+    catch(e2){toast('❌ Failed: '+e2.message,'error');}
+  }
+}
+
+// ════════════════════════════════════
+//  SETTINGS CLOUD SYNC
+// ════════════════════════════════════
+async function uploadSettings(){
+  if(!cfg.gasUrl){toast('❌ GAS URL not set','error');return;}
+  toast('⏳ Syncing settings to cloud...','info');
+  const payload={
+    action:'saveSettings',
+    cleaners:cleanerList, checkers:checkerList, observers:observerList,
+    locations:locations, slots:cfgSlots
+  };
+  try{
+    await fetch(cfg.gasUrl,{method:'POST',body:JSON.stringify(payload),mode:'no-cors'});
+    toast('✅ Settings synced to cloud / 設定已同步至雲端','success');
+  }catch(e){toast('❌ Sync failed: '+e.message,'error');}
+}
+
+async function downloadSettings(){
+  if(!cfg.gasUrl){toast('❌ GAS URL not set','error');return;}
+  toast('⏳ Downloading settings from cloud...','info');
+  try{
+    const res=await fetch(cfg.gasUrl+'?action=getSettings');
+    const data=await res.json();
+    if(!data.ok)throw new Error(data.msg);
+    const s=data.settings||{};
+    if(s.cleaners  &&Array.isArray(s.cleaners))  cleanerList =s.cleaners;
+    if(s.checkers  &&Array.isArray(s.checkers))  checkerList =s.checkers;
+    if(s.observers &&Array.isArray(s.observers)) observerList=s.observers;
+    if(s.locations &&Array.isArray(s.locations)) locations   =s.locations;
+    if(s.slots     &&Array.isArray(s.slots))     cfgSlots    =s.slots;
+    saveAll(); initForm(); renderSettings();
+    toast('✅ Settings downloaded / 設定已從雲端下載','success');
+  }catch(e){toast('❌ Download failed: '+e.message,'error');}
 }
 
 // ════════════════════════════════════
 //  TELEGRAM
 // ════════════════════════════════════
-function recMsg(rec, driveUrls=[]){
+function recMsg(rec,driveUrls=[]){
   const checks=Object.entries(rec.checks).filter(([,v])=>v!==null).map(([k,v])=>`${t('checkIcons')[k]}${v?'✓':'✗'}`).join(' ');
   const fail=Object.values(rec.checks).some(v=>v===false);
-  const photoLine=rec.photos&&rec.photos.length?`📷 ${rec.photos.length} 張照片 photo(s)${driveUrls.length?' — '+driveUrls.join(' '):'（本地）'}\n`:'';
-  return `${fail?'⚠️':'✅'} *VRT Cleaning Record*\n━━━━━━━━━━━━━━━━━\n📅 ${rec.date}  📍 ${getLocName(rec.locId)}\n👷 ${rec.cleaner}  🔍 ${rec.checker}\n⏰ ${rec.slots.join(', ')||'—'}\n${fail?'❌':'✅'} ${checks||'—'}\n${rec.note?'📝 '+rec.note+'\n':''}${photoLine}━━━━━━━━━━━━━━━━━`;
+  const locName=rec.location||getLocName(rec.locId);
+  const photoLine=rec.photos&&rec.photos.length
+    ?`📷 ${rec.photos.length} photo(s)${driveUrls.length?' — '+driveUrls.join(' '):''}\n`:'';
+  return `${fail?'⚠️':'✅'} *VRT Cleaning Record*\n━━━━━━━━━━━━━\n📅 ${fmtDate(rec.date)}  📍 ${locName}\n👷 ${rec.cleaner}  🔍 ${rec.checker}\n⏰ ${rec.slots.join(', ')||'—'}\n${fail?'❌':'✅'} ${checks||'—'}\n${rec.note?'📝 '+rec.note+'\n':''}${photoLine}━━━━━━━━━━━━━`;
 }
-
 async function sendTg(msg){
   if(!cfg.botToken||!cfg.chatId)return;
-  try{
-    await fetch(`https://api.telegram.org/bot${cfg.botToken}/sendMessage`,{
-      method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({chat_id:cfg.chatId,text:msg,parse_mode:'Markdown'})
-    });
-  }catch(e){console.warn('TG msg failed',e);}
+  try{await fetch(`https://api.telegram.org/bot${cfg.botToken}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:cfg.chatId,text:msg,parse_mode:'Markdown'})});}
+  catch(e){console.warn('TG msg failed',e);}
 }
-
-// 發送單張照片到 Telegram
-async function sendTgPhoto(base64, caption=''){
+async function sendTgPhoto(base64,caption=''){
   if(!cfg.botToken||!cfg.chatId)return;
   try{
-    // Base64 → Blob
-    const arr=base64.split(',');
-    const mime=arr[0].match(/:(.*?);/)[1];
-    const bstr=atob(arr[1]);
-    const u8=new Uint8Array(bstr.length);
-    for(let i=0;i<bstr.length;i++) u8[i]=bstr.charCodeAt(i);
+    const arr=base64.split(','),mime=arr[0].match(/:(.*?);/)[1],bstr=atob(arr[1]);
+    const u8=new Uint8Array(bstr.length);for(let i=0;i<bstr.length;i++)u8[i]=bstr.charCodeAt(i);
     const blob=new Blob([u8],{type:mime});
-
-    const form=new FormData();
-    form.append('chat_id',cfg.chatId);
-    form.append('photo',blob,'photo.jpg');
-    if(caption) form.append('caption',caption);
-
+    const form=new FormData();form.append('chat_id',cfg.chatId);form.append('photo',blob,'photo.jpg');
+    if(caption)form.append('caption',caption);
     await fetch(`https://api.telegram.org/bot${cfg.botToken}/sendPhoto`,{method:'POST',body:form});
   }catch(e){console.warn('TG photo failed',e);}
 }
-
-// 統一發送：文字訊息 + 所有照片
-async function sendTgReport(rec, driveUrls=[]){
+async function sendTgReport(rec,driveUrls=[]){
   await sendTg(recMsg(rec,driveUrls));
-  // 有照片就逐張發（照片直接從 base64 發，不需要 Drive URL）
   if(rec.photos&&rec.photos.length){
     for(let i=0;i<rec.photos.length;i++){
-      const caption=i===0?`📷 ${getLocName(rec.locId)} — ${rec.date}`:'';
+      const caption=i===0?`📷 ${rec.location||getLocName(rec.locId)} — ${fmtDate(rec.date)}`:'';
       await sendTgPhoto(rec.photos[i],caption);
       await new Promise(x=>setTimeout(x,300));
     }
   }
 }
-
 async function testTg(){
   toast('📨 Sending test...','info');
   await sendTg(`🧹 *VRT Cleaning Record*\n✅ Telegram test OK!\n${new Date().toLocaleString()}`);
-  toast('📨 Test sent! Check Telegram.','success');
+  toast('📨 Test sent!','success');
 }
 
 // ════════════════════════════════════
-//  IMPORT MODAL
+//  IMPORT MODAL (kept simple - no modal HTML, use a basic confirm flow)
 // ════════════════════════════════════
-function openImport(){importPhotos=[];document.getElementById('importModal').classList.add('open');}
-function closeImport(){document.getElementById('importModal').classList.remove('open');}
-function saveImport(){
-  const date=document.getElementById('importDate').value,locId=document.getElementById('importLoc').value,note=document.getElementById('importNote').value;
-  if(!date||!locId){toast('❌ Fill date and location','error');return;}
-  records.unshift({id:'r'+Date.now(),date,locId,cleaner:'—',checker:'—',note,slots:[],checks:{smell:null,light:null,floor:null,door:null,corner:null,ceiling:null},photos:[],isImport:true,synced:false,ts:Date.now()});
-  saveAll();closeImport();renderHistory();toast('✅ Imported','success');
-}
 function deleteRecord(id){if(!confirm('Delete?'))return;records=records.filter(r=>r.id!==id);saveAll();renderAll();}
 
 // ════════════════════════════════════
@@ -967,9 +1054,16 @@ function deleteRecord(id){if(!confirm('Delete?'))return;records=records.filter(r
 function exportCSV(){
   if(!records.length){toast('No records','error');return;}
   const h=['Date','Location','Cleaner','Checker','Slots','Smell','Light','Floor','Door','Corner','Ceiling','HasFail','Synced','Note'];
-  const rows=records.map(r=>{const c=r.checks,fv=v=>v===true?'PASS':v===false?'FAIL':'—';return[r.date,getLocName(r.locId),r.cleaner||'',r.checker||'',r.slots.join('|'),fv(c.smell),fv(c.light),fv(c.floor),fv(c.door),fv(c.corner),fv(c.ceiling),Object.values(c).some(v=>v===false)?'YES':'NO',r.synced?'YES':'NO',r.note||''];});
+  const rows=records.map(r=>{
+    const c=r.checks||{},fv=v=>v===true?'PASS':v===false?'FAIL':'—';
+    const locName=r.location||getLocName(r.locId);
+    return[fmtDate(r.date),locName,r.cleaner||'',r.checker||'',
+      (r.slots||[]).join('|'),fv(c.smell),fv(c.light),fv(c.floor),fv(c.door),fv(c.corner),fv(c.ceiling),
+      Object.values(c).some(v=>v===false)?'YES':'NO',r.synced?'YES':'NO',r.note||''];
+  });
   const csv=[h,...rows].map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}));a.download=`VRT_Cleaning_${new Date().toISOString().slice(0,10)}.csv`;a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8;'}));
+  a.download=`VRT_Cleaning_${new Date().toISOString().slice(0,10)}.csv`;a.click();
   toast('📊 CSV downloaded','success');
 }
 
@@ -985,12 +1079,14 @@ function addLocation(){
   toast('📍 Location added','success');
 }
 function deleteLocation(id){if(!confirm('Delete?'))return;locations=locations.filter(l=>l.id!==id);saveAll();populateLocSelects();renderLocations();}
-function getLocName(id){const l=locations.find(x=>x.id===id);return l?l.name:'—';}
-
+function getLocName(id){
+  if(!id)return '—';
+  const l=locations.find(x=>x.id===id);return l?l.name:'—';
+}
 function renderLocations(){
   const c=document.getElementById('locList');
   if(!locations.length){c.innerHTML=`<div class="empty"><div class="empty-i">📍</div>No locations</div>`;return;}
-  c.innerHTML=locations.map(loc=>{const cnt=records.filter(r=>r.locId===loc.id).length;return`<div style="display:flex;align-items:center;gap:11px;padding:11px;border:1.5px solid var(--border);border-radius:9px;margin-bottom:7px"><div style="font-size:26px">${(t('locTypes')[loc.type]||'📌').split(' ')[0]}</div><div style="flex:1"><div style="font-weight:600;font-size:13px">${loc.name}</div><div class="ts-soft">${t('locTypes')[loc.type]||''} · ${cnt} records</div></div><button class="btn bd bsm" onclick="deleteLocation('${loc.id}')">🗑</button></div>`;}).join('');
+  c.innerHTML=locations.map(loc=>{const cnt=records.filter(r=>r.locId===loc.id||r.location===loc.name).length;return`<div style="display:flex;align-items:center;gap:11px;padding:11px;border:1.5px solid var(--border);border-radius:9px;margin-bottom:7px"><div style="font-size:26px">${(t('locTypes')[loc.type]||'📌').split(' ')[0]}</div><div style="flex:1"><div style="font-weight:600;font-size:13px">${loc.name}</div><div class="ts-soft">${t('locTypes')[loc.type]||''} · ${cnt} records</div></div><button class="btn bd bsm" onclick="deleteLocation('${loc.id}')">🗑</button></div>`;}).join('');
 }
 
 // ════════════════════════════════════
@@ -1008,7 +1104,9 @@ function renderSettings(){
 }
 function renderTags(cId,list,type){
   const c=document.getElementById(cId);if(!c)return;
-  c.innerHTML=list.length?list.map((n,i)=>`<div class="stag">${n}<span class="del" onclick="removeStaff('${type}',${i})">✕</span></div>`).join(''):'<span class="ts-soft">None added yet / 尚未新增</span>';
+  c.innerHTML=list.length
+    ?list.map((n,i)=>`<div class="stag">${n}<span class="del" onclick="removeStaff('${type}',${i})">✕</span></div>`).join('')
+    :'<span class="ts-soft">None — Add below / 請在下方新增</span>';
 }
 function addStaff(type){
   const ids={cleaner:'newCleanerName',checker:'newCheckerName',observer:'newObserverName'};
@@ -1032,7 +1130,6 @@ function saveConfig(){
   cfg.chatId  =document.getElementById('cfgChatId').value.trim()||DEFAULTS.chatId;
   cfg.tgOnSave=document.getElementById('cfgTgOnSave').checked;
   saveAll();toast('✅ Config saved / 設定已儲存','success');
-  renderSettings();
 }
 function renderSlotTags(){
   const c=document.getElementById('slotTags');if(!c)return;
@@ -1048,13 +1145,14 @@ function removeSlot(i){cfgSlots.splice(i,1);saveAll();renderSlotTags();renderSlo
 function resetSlots(){cfgSlots=[...DEFAULT_SLOTS];saveAll();renderSlotTags();renderSlots();}
 function exportData(){
   const d={records,locations,sixsRecords,cleanerList,checkerList,observerList,cfgSlots,cfg,exportDate:new Date().toISOString()};
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));a.download=`VRT_CleaningData_${new Date().toISOString().slice(0,10)}.json`;a.click();
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(d,null,2)],{type:'application/json'}));
+  a.download=`VRT_CleaningData_${new Date().toISOString().slice(0,10)}.json`;a.click();
   toast('📤 Exported','success');
 }
 function importData(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
-  r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(confirm('Import & merge? / 匯入並合併？')){
+  r.onload=ev=>{try{const d=JSON.parse(ev.target.result);if(confirm('Import & merge?')){
     if(d.records)records=[...records,...d.records.filter(r=>!records.find(x=>x.id===r.id))];
     if(d.locations)locations=d.locations;if(d.sixsRecords)sixsRecords=d.sixsRecords;
     if(d.cleanerList)cleanerList=d.cleanerList;if(d.checkerList)checkerList=d.checkerList;
@@ -1064,7 +1162,7 @@ function importData(e){
   }}catch(err){toast('❌ Invalid file','error');}};
   r.readAsText(f);e.target.value='';
 }
-function clearAll(){if(!confirm('Delete ALL records? / 刪除所有記錄？'))return;if(!confirm('Are you SURE? / 確定嗎？'))return;records=[];saveAll();renderAll();toast('🗑️ Cleared','error');}
+function clearAll(){if(!confirm('Delete ALL records?'))return;if(!confirm('Are you SURE?'))return;records=[];saveAll();renderAll();toast('🗑️ Cleared','error');}
 
 // ════════════════════════════════════
 //  ALERTS
@@ -1072,9 +1170,10 @@ function clearAll(){if(!confirm('Delete ALL records? / 刪除所有記錄？'))r
 let alerts=[];
 function checkAnomalies(){
   alerts=[];const today=new Date().toISOString().slice(0,10);
-  records.filter(r=>r.date===today).forEach(rec=>{
-    Object.entries(rec.checks).forEach(([item,val])=>{
-      if(val===false)alerts.push({type:'critical',msg:T[lang].anomalyMsg(getLocName(rec.locId),t('checkItems')[item]),time:rec.date});
+  records.filter(r=>fmtDate(r.date)===today).forEach(rec=>{
+    const c=rec.checks||{};
+    Object.entries(c).forEach(([item,val])=>{
+      if(val===false)alerts.push({type:'critical',msg:T[lang].anomalyMsg(rec.location||getLocName(rec.locId),t('checkItems')[item]),time:fmtDate(rec.date)});
     });
   });
   document.getElementById('alertCount').textContent=alerts.length;
@@ -1090,34 +1189,37 @@ function setDbP(p,el){dbPeriod=p;document.querySelectorAll('#sec-dashboard .ptab
 function filterByPeriod(recs,period,offset=0){
   const now=new Date();
   return recs.filter(r=>{
-    const d=new Date(r.date);
+    const d=new Date(fmtDate(r.date)+'T00:00:00');
+    if(isNaN(d))return false;
     if(period==='day'){const t2=new Date(now);t2.setDate(t2.getDate()+offset);return d.toDateString()===t2.toDateString();}
     if(period==='week'){const s=new Date(now);s.setDate(s.getDate()-s.getDay()+offset*7);const e=new Date(s);e.setDate(e.getDate()+6);return d>=s&&d<=e;}
     if(period==='month'){const m=new Date(now.getFullYear(),now.getMonth()+offset);return d.getMonth()===m.getMonth()&&d.getFullYear()===m.getFullYear();}
-    if(period==='year'){return d.getFullYear()===(now.getFullYear()+offset);}
+    if(period==='year')return d.getFullYear()===(now.getFullYear()+offset);
     return true;
   });
 }
 function renderDashboard(){
   applyLang();
   const filtered=filterByPeriod(records,dbPeriod);
-  const total=filtered.length,fails=filtered.filter(r=>Object.values(r.checks).some(v=>v===false));
+  const total=filtered.length,fails=filtered.filter(r=>Object.values(r.checks||{}).some(v=>v===false));
   const pr=total?Math.round((total-fails.length)/total*100):0;
   document.getElementById('statsRow').innerHTML=`<div class="sc"><div class="sn">${total}</div><div class="sl">${t('stat0')}</div></div><div class="sc"><div class="sn">${pr}%</div><div class="sl">${t('stat1')}</div></div><div class="sc a"><div class="sn">${fails.length}</div><div class="sl">${t('stat2')}</div></div><div class="sc b"><div class="sn">${locations.length}</div><div class="sl">${t('stat3')}</div></div>`;
-  document.getElementById('locCompChart').innerHTML=locations.map(loc=>{const lr=filtered.filter(r=>r.locId===loc.id),lp=lr.filter(r=>!Object.values(r.checks).some(v=>v===false)).length,pct=lr.length?Math.round(lp/lr.length*100):0;return`<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span>${loc.name}</span><span style="font-weight:700;color:var(--mint)">${pct}%</span></div><div class="pg"><div class="pf" style="width:${pct}%;background:${pct<60?'var(--red)':pct<80?'var(--amber)':'var(--mint)'}"></div></div></div>`;}).join('')||'<div class="ts-soft">No data</div>';
+  document.getElementById('locCompChart').innerHTML=locations.map(loc=>{const lr=filtered.filter(r=>r.locId===loc.id||r.location===loc.name),lp=lr.filter(r=>!Object.values(r.checks||{}).some(v=>v===false)).length,pct=lr.length?Math.round(lp/lr.length*100):0;return`<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span>${loc.name}</span><span style="font-weight:700;color:var(--mint)">${pct}%</span></div><div class="pg"><div class="pf" style="width:${pct}%;background:${pct<60?'var(--red)':pct<80?'var(--amber)':'var(--mint)'}"></div></div></div>`;}).join('')||'<div class="ts-soft">No data</div>';
   const trend=document.getElementById('trendChart');trend.innerHTML='';let mx=1;
-  const vals=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const cnt=records.filter(r=>new Date(r.date).toDateString()===d.toDateString()).length;vals.push({d,cnt});if(cnt>mx)mx=cnt;}
+  const vals=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const ds=d.toISOString().slice(0,10);const cnt=records.filter(r=>fmtDate(r.date)===ds).length;vals.push({d,cnt});if(cnt>mx)mx=cnt;}
   vals.forEach(v=>{const pct=Math.round(v.cnt/mx*100);const col=document.createElement('div');col.className='cc';col.innerHTML=`<div class="cv">${v.cnt}</div><div class="cb2" style="height:${Math.max(pct,4)}%;background:${v.cnt===0?'var(--border)':'var(--mint)'}"></div><div class="cl">${v.d.getDate()}/${v.d.getMonth()+1}</div>`;trend.appendChild(col);});
   document.getElementById('recentThead').innerHTML=t('thead').map(h=>`<th>${h}</th>`).join('');
-  const recent=records.slice(0,8);
-  document.getElementById('recentBody').innerHTML=recent.length?recent.map(r=>recRow(r)).join(''):`<tr><td colspan="10" class="empty">${t('noRecords')}</td></tr>`;
+  document.getElementById('recentBody').innerHTML=records.slice(0,8).map(r=>recRow(r)).join('')||`<tr><td colspan="10" class="empty">${t('noRecords')}</td></tr>`;
 }
+
 function recRow(r){
-  const checks=Object.entries(r.checks),hf=checks.some(([,v])=>v===false),pc=checks.filter(([,v])=>v===true).length;
+  const c=r.checks||{},hf=Object.values(c).some(v=>v===false),pc=Object.values(c).filter(v=>v===true).length;
   const ph=r.photos||[];
   const sb=r.synced?'<span class="badge bb2" style="font-size:9px">☁️</span>':'<span class="badge bw2" style="font-size:9px">📱</span>';
+  const locName=r.location||getLocName(r.locId);
+  const dateStr=fmtDate(r.date);
   const phCell=ph.length?ph.map(p=>`<img src="${p}" onclick="showPV('${p}')" style="width:28px;height:28px;object-fit:cover;border-radius:4px;cursor:pointer;border:1px solid var(--border)">`).join(' '):'—';
-  return`<tr><td>${r.date}</td><td>${getLocName(r.locId)}</td><td>${r.cleaner||'—'}</td><td>${r.checker||'—'}</td><td><span class="badge ${hf?'bf2':r.isImport?'bw2':'bp2'}">${r.isImport?'📎':hf?t('fail'):t('pass')}</span></td><td>${pc}/6</td><td>${sb}</td><td style="max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.note||'—'}</td><td style="white-space:nowrap">${phCell}</td><td><button class="btn bd bsm" onclick="deleteRecord('${r.id}')">🗑</button></td></tr>`;
+  return`<tr><td>${dateStr}</td><td>${locName}</td><td>${r.cleaner||'—'}</td><td>${r.checker||'—'}</td><td><span class="badge ${hf?'bf2':r.isImport?'bw2':'bp2'}">${r.isImport?'📎':hf?t('fail'):t('pass')}</span></td><td>${pc}/6</td><td>${sb}</td><td style="max-width:110px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${r.note||'—'}</td><td>${phCell}</td><td><button class="btn bd bsm" onclick="deleteRecord('${r.id}')">🗑</button></td></tr>`;
 }
 
 // ════════════════════════════════════
@@ -1127,15 +1229,16 @@ function setHistP(p,el){histPeriod=p;histOffset=0;document.querySelectorAll('#se
 function shiftP(d){histOffset+=d;renderHistory();}
 function getPL(period,offset){
   const now=new Date();
-  if(period==='day'){const d=new Date(now);d.setDate(d.getDate()+offset);return d.toLocaleDateString();}
-  if(period==='week'){const s=new Date(now);s.setDate(s.getDate()-s.getDay()+offset*7);const e=new Date(s);e.setDate(e.getDate()+6);return`${s.toLocaleDateString()}–${e.toLocaleDateString()}`;}
-  if(period==='month'){const m=new Date(now.getFullYear(),now.getMonth()+offset);return m.toLocaleDateString(undefined,{year:'numeric',month:'long'});}
-  if(period==='year')return String(now.getFullYear()+offset);
+  if(period==='day'){const d=new Date(now);d.setDate(d.getDate()+offset);return d.toLocaleDateString(lang==='zh'?'zh-TW':'en-US',{year:'numeric',month:'short',day:'numeric',weekday:'short'});}
+  if(period==='week'){const s=new Date(now);s.setDate(s.getDate()-s.getDay()+offset*7);const e=new Date(s);e.setDate(e.getDate()+6);return`${s.getMonth()+1}/${s.getDate()} – ${e.getMonth()+1}/${e.getDate()} (W${getWeekNum(s)})`;}
+  if(period==='month'){const m=new Date(now.getFullYear(),now.getMonth()+offset);return m.toLocaleDateString(lang==='zh'?'zh-TW':'en-US',{year:'numeric',month:'long'});}
+  if(period==='year')return String(now.getFullYear()+offset)+' 年';
 }
+function getWeekNum(d){const jan1=new Date(d.getFullYear(),0,1);return Math.ceil(((d-jan1)/86400000+jan1.getDay()+1)/7);}
 function renderHistory(){
   const pl=document.getElementById('periodLabel');if(pl)pl.textContent=getPL(histPeriod,histOffset);
   let filtered=filterByPeriod(records,histPeriod,histOffset);
-  const lf=document.getElementById('histLocFilter');if(lf&&lf.value!=='all')filtered=filtered.filter(r=>r.locId===lf.value);
+  const lf=document.getElementById('histLocFilter');if(lf&&lf.value!=='all')filtered=filtered.filter(r=>r.locId===lf.value||r.location===getLocName(lf.value));
   const th=document.getElementById('histThead');if(th)th.innerHTML=t('thead').map(h=>`<th>${h}</th>`).join('');
   const tb=document.getElementById('histBody');if(tb)tb.innerHTML=filtered.length?filtered.map(r=>recRow(r)).join(''):`<tr><td colspan="10" class="empty">${t('noRecords')}</td></tr>`;
 }
@@ -1170,7 +1273,7 @@ function rend6SHist(){
   const th=document.getElementById('sixsHistThead');if(th)th.innerHTML=`<tr><th>Date</th><th>Location</th><th>Observer</th><th>Score</th><th>Level</th><th></th></tr>`;
   const tb=document.getElementById('sixsHistBody');if(!tb)return;
   if(!sixsRecords.length){tb.innerHTML=`<tr><td colspan="6" class="empty">${t('noRecords')}</td></tr>`;return;}
-  tb.innerHTML=sixsRecords.map(r=>{const ms=4*Object.keys(r.scores).length,pct=ms?r.total/ms:0,level=pct>=0.8?4:pct>=0.6?3:pct>=0.4?2:pct>=0.2?1:0;return`<tr><td>${r.date}</td><td>${getLocName(r.locId)}</td><td>${r.observer||'—'}</td><td style="font-weight:700;color:var(--mint)">${r.total}</td><td><span class="badge ${level>=3?'bp2':level>=2?'bw2':'bf2'}">L-${level}</span></td><td><button class="btn bd bsm" onclick="del6S('${r.id}')">🗑</button></td></tr>`;}).join('');
+  tb.innerHTML=sixsRecords.map(r=>{const ms=4*Object.keys(r.scores).length,pct=ms?r.total/ms:0,level=pct>=0.8?4:pct>=0.6?3:pct>=0.4?2:pct>=0.2?1:0;return`<tr><td>${fmtDate(r.date)}</td><td>${getLocName(r.locId)}</td><td>${r.observer||'—'}</td><td style="font-weight:700;color:var(--mint)">${r.total}</td><td><span class="badge ${level>=3?'bp2':level>=2?'bw2':'bf2'}">L-${level}</span></td><td><button class="btn bd bsm" onclick="del6S('${r.id}')">🗑</button></td></tr>`;}).join('');
 }
 function del6S(id){if(!confirm('Delete?'))return;sixsRecords=sixsRecords.filter(r=>r.id!==id);saveAll();rend6SHist();}
 
@@ -1181,124 +1284,25 @@ function setAnaP(p,el){anaPeriod=p;document.querySelectorAll('#sec-analysis .pta
 function renderAnalysis(){
   const filtered=filterByPeriod(records,anaPeriod);
   const items=['smell','light','floor','door','corner','ceiling'];
-  document.getElementById('passRateChart').innerHTML=items.map(item=>{const rel=filtered.filter(r=>r.checks[item]!==null&&r.checks[item]!==undefined),pass=rel.filter(r=>r.checks[item]===true).length,pct=rel.length?Math.round(pass/rel.length*100):100;return`<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span>${t('checkIcons')[item]} ${t('checkItems')[item]}</span><span style="font-weight:700">${pct}%</span></div><div class="pg"><div class="pf" style="width:${pct}%;background:${pct<60?'var(--red)':pct<80?'var(--amber)':'var(--mint)'}"></div></div></div>`;}).join('')||'<div class="ts-soft">No data</div>';
+  document.getElementById('passRateChart').innerHTML=items.map(item=>{const rel=filtered.filter(r=>{const c=r.checks||{};return c[item]!==null&&c[item]!==undefined;}),pass=rel.filter(r=>(r.checks||{})[item]===true).length,pct=rel.length?Math.round(pass/rel.length*100):100;return`<div style="margin-bottom:7px"><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:2px"><span>${t('checkIcons')[item]} ${t('checkItems')[item]}</span><span style="font-weight:700">${pct}%</span></div><div class="pg"><div class="pf" style="width:${pct}%;background:${pct<60?'var(--red)':pct<80?'var(--amber)':'var(--mint)'}"></div></div></div>`;}).join('')||'<div class="ts-soft">No data</div>';
   const total=filtered.length||1;
-  document.getElementById('locPieChart').innerHTML=locations.map(loc=>{const cnt=filtered.filter(r=>r.locId===loc.id).length,pct=Math.round(cnt/total*100);return`<div style="display:flex;align-items:center;gap:9px;margin-bottom:7px"><div style="width:30px;height:30px;border-radius:50%;background:var(--mint-l);display:flex;align-items:center;justify-content:center;font-size:15px">${(t('locTypes')[loc.type]||'📌').split(' ')[0]}</div><div style="flex:1"><div style="font-size:11px">${loc.name}</div><div class="pg" style="margin-top:2px"><div class="pf" style="width:${pct}%"></div></div></div><div style="font-size:11px;font-weight:700;color:var(--mint)">${cnt}</div></div>`;}).join('')||'<div class="ts-soft">No data</div>';
-  const aRecs=filtered.filter(r=>Object.values(r.checks).some(v=>v===false));
-  document.getElementById('anomalySummary').innerHTML=aRecs.length?aRecs.map(r=>{const fi=Object.entries(r.checks).filter(([,v])=>v===false).map(([k])=>t('checkItems')[k]);return`<div style="display:flex;align-items:center;gap:11px;padding:9px;border:1px solid var(--red-l);border-radius:7px;margin-bottom:5px"><span class="badge bf2">!</span><div><div style="font-size:12px;font-weight:600">${getLocName(r.locId)} · ${r.date}</div><div class="ts-soft">${fi.join(', ')}</div></div></div>`;}).join(''):`<div class="empty"><div class="empty-i">✅</div>No anomalies in period</div>`;
+  document.getElementById('locPieChart').innerHTML=locations.map(loc=>{const cnt=filtered.filter(r=>r.locId===loc.id||r.location===loc.name).length,pct=Math.round(cnt/total*100);return`<div style="display:flex;align-items:center;gap:9px;margin-bottom:7px"><div style="width:30px;height:30px;border-radius:50%;background:var(--mint-l);display:flex;align-items:center;justify-content:center;font-size:15px">${(t('locTypes')[loc.type]||'📌').split(' ')[0]}</div><div style="flex:1"><div style="font-size:11px">${loc.name}</div><div class="pg" style="margin-top:2px"><div class="pf" style="width:${pct}%"></div></div></div><div style="font-size:11px;font-weight:700;color:var(--mint)">${cnt}</div></div>`;}).join('')||'<div class="ts-soft">No data</div>';
+  const aRecs=filtered.filter(r=>Object.values(r.checks||{}).some(v=>v===false));
+  document.getElementById('anomalySummary').innerHTML=aRecs.length?aRecs.map(r=>{const fi=Object.entries(r.checks||{}).filter(([,v])=>v===false).map(([k])=>t('checkItems')[k]);return`<div style="display:flex;align-items:center;gap:11px;padding:9px;border:1px solid var(--red-l);border-radius:7px;margin-bottom:5px"><span class="badge bf2">!</span><div><div style="font-size:12px;font-weight:600">${r.location||getLocName(r.locId)} · ${fmtDate(r.date)}</div><div class="ts-soft">${fi.join(', ')}</div></div></div>`;}).join(''):`<div class="empty"><div class="empty-i">✅</div>No anomalies in period</div>`;
   const st=document.getElementById('sixsTrendChart');if(!st)return;st.innerHTML='';
   const r6=sixsRecords.slice(0,10).reverse();if(!r6.length){st.innerHTML='<div class="ts-soft" style="padding:18px">No 6S data</div>';return;}
   const mx=Math.max(...r6.map(r=>r.total),1);
-  r6.forEach(r=>{const pct=Math.round(r.total/mx*100);const col=document.createElement('div');col.className='cc';col.innerHTML=`<div class="cv">${r.total}</div><div class="cb2" style="height:${Math.max(pct,4)}%;background:${pct<40?'var(--red)':pct<70?'var(--amber)':'var(--mint)'}"></div><div class="cl">${r.date.slice(5)}</div>`;st.appendChild(col);});
+  r6.forEach(r=>{const pct=Math.round(r.total/mx*100);const col=document.createElement('div');col.className='cc';col.innerHTML=`<div class="cv">${r.total}</div><div class="cb2" style="height:${Math.max(pct,4)}%;background:${pct<40?'var(--red)':pct<70?'var(--amber)':'var(--mint)'}"></div><div class="cl">${fmtDate(r.date).slice(5)}</div>`;st.appendChild(col);});
 }
 
 // ════════════════════════════════════
 //  INIT
 // ════════════════════════════════════
-// ════════════════════════════════════
-//  PHOTO — 壓縮限制版
-//  每筆最多 2 張，每天合計最多 5 張
-//  自動壓縮：最長邊 600px / JPEG 60%
-// ════════════════════════════════════
-const MAX_PER_REC = 2;   // 每筆最多
-const MAX_PER_DAY = 5;   // 每天合計最多
-const PHOTO_MAX_PX = 600; // 最長邊 px
-const PHOTO_QUALITY = 0.6; // JPEG 品質
-
-let recPhotos = [];
-
-function countTodayPhotos(){
-  const today=new Date().toISOString().slice(0,10);
-  return records.filter(r=>r.date===today).reduce((sum,r)=>sum+(r.photos||[]).length,0);
-}
-
-function compressImage(file){
-  return new Promise((resolve,reject)=>{
-    const reader=new FileReader();
-    reader.onerror=()=>reject(new Error('Read failed'));
-    reader.onload=ev=>{
-      const img=new Image();
-      img.onerror=()=>reject(new Error('Load failed'));
-      img.onload=()=>{
-        let w=img.width, h=img.height;
-        if(w>h && w>PHOTO_MAX_PX){ h=Math.round(h*PHOTO_MAX_PX/w); w=PHOTO_MAX_PX; }
-        else if(h>PHOTO_MAX_PX){ w=Math.round(w*PHOTO_MAX_PX/h); h=PHOTO_MAX_PX; }
-        const canvas=document.createElement('canvas');
-        canvas.width=w; canvas.height=h;
-        canvas.getContext('2d').drawImage(img,0,0,w,h);
-        resolve(canvas.toDataURL('image/jpeg',PHOTO_QUALITY));
-      };
-      img.src=ev.target.result;
-    };
-    reader.readAsDataURL(file);
-  });
-}
-
-// 統一入口：點「+ 新增照片」時呼叫
-function triggerPhoto(){
-  const dayCount=countTodayPhotos()+recPhotos.length;
-  if(recPhotos.length>=MAX_PER_REC){toast(`❌ 每筆最多 ${MAX_PER_REC} 張 / Max ${MAX_PER_REC} per record`,'error');return;}
-  if(dayCount>=MAX_PER_DAY){toast(`❌ 今日已達上限 ${MAX_PER_DAY} 張 / Daily limit reached`,'error');return;}
-  document.getElementById('globalPhotoInput').value='';
-  document.getElementById('globalPhotoInput').click();
-}
-
-async function handlePhotoAdd(e){
-  const file=e.target.files[0];
-  if(!file)return;
-  const dayCount=countTodayPhotos()+recPhotos.length;
-  if(recPhotos.length>=MAX_PER_REC){toast(`❌ 每筆最多 ${MAX_PER_REC} 張`,'error');return;}
-  if(dayCount>=MAX_PER_DAY){toast(`❌ 今日已達上限 ${MAX_PER_DAY} 張`,'error');return;}
-  try{
-    toast('⏳ 壓縮中...','info',2000);
-    const b64=await compressImage(file);
-    const kb=Math.round(b64.length*0.75/1024);
-    recPhotos.push(b64);
-    renderPhotoGrid();
-    toast(`✅ 照片已加入 (${kb}KB)`,'success');
-  }catch(err){toast('❌ 照片處理失敗: '+err.message,'error');}
-}
-
-function renderPhotoGrid(){
-  const grid=document.getElementById('recPhotoGrid');
-  if(!grid)return;
-  grid.innerHTML='';
-  recPhotos.forEach((b64,i)=>{
-    const d=document.createElement('div');d.className='pthumb';
-    d.innerHTML=`<img src="${b64}" onclick="showPV('${b64}')"><button class="pdel" onclick="delRP(${i})">✕</button>`;
-    grid.appendChild(d);
-  });
-  // 加號格子
-  if(recPhotos.length<MAX_PER_REC){
-    const dayCount=countTodayPhotos()+recPhotos.length;
-    if(dayCount<MAX_PER_DAY){
-      const add=document.createElement('div');add.className='photo-add';
-      add.innerHTML=`<div>📷</div><div class="photo-limit">${recPhotos.length}/${MAX_PER_REC}</div>`;
-      add.onclick=triggerPhoto;
-      grid.appendChild(add);
-    }
-  }
-}
-function delRP(i){
-  recPhotos.splice(i,1);
-  renderPhotoGrid();
-}
-function showPV(src){document.getElementById('pvImg').src=src;document.getElementById('photoViewer').classList.add('open');}
-function closePV(){document.getElementById('photoViewer').classList.remove('open');}
-
 window.onload=()=>{
   applyLang();
   initForm();
   renderDashboard();
   checkAnomalies();
-  // Demo data if completely empty
-  if(!records.length&&locations.length){
-    const today=new Date().toISOString().slice(0,10),yest=new Date(Date.now()-86400000).toISOString().slice(0,10);
-    records.push({id:'demo1',date:today,locId:locations[0].id,cleaner:'Srey',checker:'Chan',note:'Normal',slots:['07:30','08:30','09:30'],checks:{smell:true,light:true,floor:true,door:true,corner:null,ceiling:null},photos:[],isImport:false,synced:false,ts:Date.now()});
-    records.push({id:'demo2',date:today,locId:locations[1].id,cleaner:'Dara',checker:'Sok',note:'',slots:['07:30','08:30'],checks:{smell:true,light:false,floor:true,door:true,corner:true,ceiling:true},photos:[],isImport:false,synced:false,ts:Date.now()});
-    records.push({id:'demo3',date:yest,locId:locations[2].id,cleaner:'Bopha',checker:'Rith',note:'Floor wet',slots:['07:30','08:30','09:30','10:30'],checks:{smell:true,light:true,floor:false,door:true,corner:true,ceiling:true},photos:[],isImport:false,synced:false,ts:Date.now()});
-    saveAll();renderDashboard();checkAnomalies();
-  }
 };
 </script>
 </body>
