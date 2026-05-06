@@ -429,7 +429,9 @@ const MAX_PER_REC=2, MAX_PER_DAY=5, PHOTO_PX=600, PHOTO_Q=0.6;
 // ════════════════════════════════════
 //  STATE — all loaded from localStorage
 // ════════════════════════════════════
-let lang         = localStorage.getItem('vrt_lang') || 'en';
+let lang = localStorage.getItem('vrt_lang') || 'en';
+// Fix corrupted lang (e.g. '"en"' stored by old code)
+if(!T[lang]) lang = 'en';
 let records      = safeJSON('vrt_records', []);
 let locations    = safeJSON('vrt_locations', [
   {id:'loc1',name:'Toilet A',type:'toilet'},{id:'loc2',name:'Toilet B',type:'toilet'},
@@ -467,12 +469,14 @@ function saveAll() {
     vrt_observers: observerList,
     vrt_slots:     cfgSlots,
     vrt_cfg:       cfg,
-    vrt_lang:      lang,
   };
   Object.entries(data).forEach(([k,v])=>{
     try{ localStorage.setItem(k, JSON.stringify(v)); }
     catch(e){ console.warn('localStorage write failed:', k, e.message); }
   });
+  // lang stored as plain string (NOT JSON) to avoid '"en"' corruption
+  try{ localStorage.setItem('vrt_lang', lang); }
+  catch(e){}
 }
 
 // ════════════════════════════════════
@@ -577,7 +581,13 @@ const T = {
     anomalyMsg:(loc,item)=>`${loc}: ${item}`,noRecords:'រកមិនឃើញ',
   }
 };
-function t(k){return T[lang][k]||T['en'][k]||k;}
+function t(k){
+  // Safe: never crash even if lang is corrupted
+  const lv = T[lang] || T['en'];
+  const v = lv ? lv[k] : undefined;
+  if(v !== undefined) return v;
+  return T['en'][k] !== undefined ? T['en'][k] : k;
+}
 
 // ════════════════════════════════════
 //  TOAST + CLOUD BAR
@@ -899,30 +909,33 @@ async function downloadFromCloud(){
 
     const recs=data.records||[];
     const ids=new Set(records.map(r=>r.id));
-    let added=0,updated=0;
+    const delSet=new Set(deletedIds); // never re-add deleted records
+    let added=0,updated=0,skipped=0;
 
     recs.forEach(r=>{
-      // Fix date format
       r.date=fmtDate(r.date);
-      // If locId exists and matches local location → use it
-      // Otherwise keep location string for display
       if(r.locId&&!r.location)r.location=getLocName(r.locId);
       if(!r.checks||typeof r.checks==='string'){
-        // Parse checks string back to object
         r.checks=parseChecksStr(r.checks||'');
       }
+      // Skip if user deleted this record
+      if(delSet.has(r.id)){skipped++;return;}
+
       if(!ids.has(r.id)){
         records.push({...r,synced:true,photos:[]});
         ids.add(r.id);added++;
       } else {
-        // Update sync status of existing
         const idx=records.findIndex(x=>x.id===r.id);
         if(idx>=0){records[idx].synced=true;updated++;}
       }
     });
 
-    saveAll();renderHistory();updateSyncSummary();
-    showCloud(`✅ 下載完成！新增 ${added} 筆，更新 ${updated} 筆同步狀態 Downloaded ${added} new, ${updated} updated`,'success',7000);
+    saveAll();
+    // Safely render history - guard against missing DOM elements
+    if(document.getElementById('histThead'))renderHistory();
+    updateSyncSummary();
+    const skipMsg=skipped?` (${skipped} 筆已刪除跳過)`:'';
+    showCloud(`✅ 下載完成！新增 ${added} 筆，更新 ${updated} 筆${skipMsg} Downloaded ${added} new`,'success',7000);
     toast(`⬇️ ${added} new, ${updated} updated`,'success');
   }catch(e){
     showCloud('❌ 下載失敗 Download failed: '+e.message,'error',6000);
@@ -990,12 +1003,16 @@ async function downloadSettings(){
     const data=await res.json();
     if(!data.ok)throw new Error(data.msg);
     const s=data.settings||{};
-    if(s.cleaners  &&Array.isArray(s.cleaners))  cleanerList =s.cleaners;
-    if(s.checkers  &&Array.isArray(s.checkers))  checkerList =s.checkers;
-    if(s.observers &&Array.isArray(s.observers)) observerList=s.observers;
-    if(s.locations &&Array.isArray(s.locations)) locations   =s.locations;
-    if(s.slots     &&Array.isArray(s.slots))     cfgSlots    =s.slots;
-    saveAll(); initForm(); renderSettings();
+    // Only overwrite if cloud has non-empty data
+    if(s.cleaners  &&Array.isArray(s.cleaners)  &&s.cleaners.length)  cleanerList =s.cleaners;
+    if(s.checkers  &&Array.isArray(s.checkers)  &&s.checkers.length)  checkerList =s.checkers;
+    if(s.observers &&Array.isArray(s.observers) &&s.observers.length) observerList=s.observers;
+    if(s.locations &&Array.isArray(s.locations) &&s.locations.length) locations   =s.locations;
+    if(s.slots     &&Array.isArray(s.slots)     &&s.slots.length)     cfgSlots    =s.slots;
+    saveAll();
+    populateLocSelects();   // ← re-populate dropdowns immediately
+    populateStaffSelects(); // ← re-populate cleaner/checker dropdowns
+    renderSettings();
     toast('✅ Settings downloaded / 設定已從雲端下載','success');
   }catch(e){toast('❌ Download failed: '+e.message,'error');}
 }
@@ -1004,12 +1021,13 @@ async function downloadSettings(){
 //  TELEGRAM
 // ════════════════════════════════════
 function recMsg(rec,driveUrls=[]){
-  const checks=Object.entries(rec.checks).filter(([,v])=>v!==null).map(([k,v])=>`${t('checkIcons')[k]}${v?'✓':'✗'}`).join(' ');
-  const fail=Object.values(rec.checks).some(v=>v===false);
+  const c = (rec.checks && typeof rec.checks==='object') ? rec.checks : parseChecksStr(rec.checks||'');
+  const checks=Object.entries(c).filter(([,v])=>v!==null).map(([k,v])=>`${t('checkIcons')[k]||''}${v?'✓':'✗'}`).join(' ');
+  const fail=Object.values(c).some(v=>v===false);
   const locName=rec.location||getLocName(rec.locId);
   const photoLine=rec.photos&&rec.photos.length
     ?`📷 ${rec.photos.length} photo(s)${driveUrls.length?' — '+driveUrls.join(' '):''}\n`:'';
-  return `${fail?'⚠️':'✅'} *VRT Cleaning Record*\n━━━━━━━━━━━━━\n📅 ${fmtDate(rec.date)}  📍 ${locName}\n👷 ${rec.cleaner}  🔍 ${rec.checker}\n⏰ ${rec.slots.join(', ')||'—'}\n${fail?'❌':'✅'} ${checks||'—'}\n${rec.note?'📝 '+rec.note+'\n':''}${photoLine}━━━━━━━━━━━━━`;
+  return `${fail?'⚠️':'✅'} *VRT Cleaning Record*\n━━━━━━━━━━━━━\n📅 ${fmtDate(rec.date)}  📍 ${locName}\n👷 ${rec.cleaner}  🔍 ${rec.checker}\n⏰ ${(rec.slots||[]).join(', ')||'—'}\n${fail?'❌':'✅'} ${checks||'—'}\n${rec.note?'📝 '+rec.note+'\n':''}${photoLine}━━━━━━━━━━━━━`;
 }
 async function sendTg(msg){
   if(!cfg.botToken||!cfg.chatId)return;
@@ -1046,7 +1064,18 @@ async function testTg(){
 // ════════════════════════════════════
 //  IMPORT MODAL (kept simple - no modal HTML, use a basic confirm flow)
 // ════════════════════════════════════
-function deleteRecord(id){if(!confirm('Delete?'))return;records=records.filter(r=>r.id!==id);saveAll();renderAll();}
+// Track deleted record IDs so Download won't re-add them
+let deletedIds = safeJSON('vrt_deleted_ids', []);
+
+function deleteRecord(id){
+  if(!confirm('Delete?'))return;
+  records=records.filter(r=>r.id!==id);
+  // Remember this ID so Download Cloud won't re-add it
+  if(!deletedIds.includes(id)) deletedIds.push(id);
+  try{ localStorage.setItem('vrt_deleted_ids', JSON.stringify(deletedIds)); }catch(e){}
+  saveAll();renderAll();
+  toast('🗑️ Deleted','');
+}
 
 // ════════════════════════════════════
 //  CSV
