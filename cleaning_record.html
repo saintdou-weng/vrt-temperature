@@ -257,12 +257,8 @@ tr:hover td{background:#F9FCF9;}
     <div class="fl2 aic jb fw g8" style="margin-bottom:12px">
       <div style="font-weight:700;font-size:15px" id="histTitle">History Records</div>
       <div class="fl2 g8 fw">
-        <button class="btn bb bsm" id="btnUpload" onclick="uploadAllUnsynced()">
-          <span id="uploadIcon">⬆️</span> <span id="uploadTxt">Upload</span>
-        </button>
-        <button class="btn bs bsm" id="btnDownload" onclick="downloadFromCloud()">
-          <span id="downloadIcon">⬇️</span> <span id="downloadTxt">Download</span>
-        </button>
+        <button class="btn bb bsm" onclick="uploadAllUnsynced()">☁️ Upload Unsynced</button>
+        <button class="btn bs bsm" onclick="downloadFromCloud()">⬇️ Download Cloud</button>
         <button class="btn ba bsm" onclick="exportCSV()">📊 CSV</button>
         <button class="btn bs bsm" onclick="window.print()">🖨️ Print</button>
       </div>
@@ -363,6 +359,10 @@ tr:hover td{background:#F9FCF9;}
         <button class="btn bs bsm" onclick="downloadSettings()">⬇️ Sync from Cloud</button>
       </div>
     </div>
+    <div style="font-size:10px;color:var(--soft);margin-bottom:8px">
+      ① 管理員電腦先按「☁️ Sync to Cloud」上傳人員名單<br>
+      ② 其他電腦再按「⬇️ Sync from Cloud」下載
+    </div>
     <div class="stags" id="cleanerTags"></div>
     <div class="ar"><input class="fi" id="newCleanerName" placeholder="Name..."><button class="btn bp bsm" onclick="addStaff('cleaner')">➕ Add</button></div>
   </div>
@@ -386,6 +386,7 @@ tr:hover td{background:#F9FCF9;}
     <div class="sct">📨 Telegram</div>
     <div class="fg" style="margin-bottom:9px"><label class="fl">Bot Token</label><input class="fi" id="cfgBotToken" placeholder="8673221735:AAH0..."></div>
     <div class="fg" style="margin-bottom:9px"><label class="fl">Chat ID</label><input class="fi" id="cfgChatId" placeholder="-717190406"></div>
+    <div class="fg" style="margin-bottom:9px"><label class="fl">System URL（Telegram 訊息底部連結）</label><input class="fi" id="cfgAppUrl" placeholder="https://saintdou-weng.github.io/vrt-temperature/cleaning_record.html"></div>
     <label style="display:flex;align-items:center;gap:7px;font-size:12px;cursor:pointer;margin-bottom:9px">
       <input type="checkbox" id="cfgTgOnSave" style="width:15px;height:15px;accent-color:var(--mint)"> Send Telegram when record saved
     </label>
@@ -425,7 +426,8 @@ const DEFAULTS = {
   gasUrl:   'https://script.google.com/macros/s/AKfycbyRmex6EmpUKGEzrswyFwO_aySAFg2d7tJuUaFBKtlAuOEwVc2TRerP7zbFilitVvZ8Sg/exec',
   botToken: '8673221735:AAH0KoC89DPLNu4D70inRfkY2xwedLkXjnw',
   chatId:   '-717190406',
-  tgOnSave: true
+  tgOnSave: true,
+  appUrl:   'https://saintdou-weng.github.io/vrt-temperature/cleaning_record.html',
 };
 const DEFAULT_SLOTS = ['07:30','08:30','09:30','10:30','12:30','13:30','14:30','15:30','16:30'];
 const MAX_PER_REC=2, MAX_PER_DAY=5, PHOTO_PX=600, PHOTO_Q=0.6;
@@ -433,7 +435,9 @@ const MAX_PER_REC=2, MAX_PER_DAY=5, PHOTO_PX=600, PHOTO_Q=0.6;
 // ════════════════════════════════════
 //  STATE — all loaded from localStorage
 // ════════════════════════════════════
-let lang = localStorage.getItem('vrt_lang') || 'en'; // validated in applyLang()
+let lang = localStorage.getItem('vrt_lang') || 'en';
+// Fix corrupted lang (e.g. '"en"' stored by old code)
+// lang validated later in applyLang() after T is defined
 let records      = safeJSON('vrt_records', []);
 let locations    = safeJSON('vrt_locations', [
   {id:'loc1',name:'Toilet A',type:'toilet'},{id:'loc2',name:'Toilet B',type:'toilet'},
@@ -494,7 +498,7 @@ function fmtDate(v) {
 // ════════════════════════════════════
 //  TRANSLATIONS
 // ════════════════════════════════════
-const T = {
+var T = {
   en:{
     hTitle:'VRT Clean Record',
     nav:['📊 Dashboard','✏️ New Record','📋 History','⭐ 6S Check','📈 Analysis','📍 Locations','⚙️ Settings'],
@@ -620,13 +624,10 @@ function setLang(l,e){
   saveAll();
 }
 function applyLang(){
-  // Validate lang - fix corrupted values like '"en"'
-  if(!T[lang]) lang = 'en';
   const ks=['hTitle','dbTitle','dbCompTitle','dbTrendTitle','dbRecentTitle','recTitle','recDateLabel','recLocLabel','recCleanerLabel','recCheckerLabel','recSlotsTitle','recItemsTitle','recNoteLabel','clearBtn','saveBtn','histTitle','sixsTitle','sixsObsLabel','sixsScoreLabel','sixsResetBtn','sixsSaveBtn','sixsHistLabel','anaTitle','anaPassTitle','anaLocTitle','anaAnomalyTitle','anaSixsTitle','locTitle','addLocBtn','addLocTitle','locNameLabel','locTypeLabel','cancelBtn','confirmAddBtn','apTitle'];
   ks.forEach(k=>{const el=document.getElementById(k);if(el)el.textContent=t(k);});
   ['nav-dashboard','nav-record','nav-history','nav-sixs','nav-analysis','nav-locations','nav-settings'].forEach((id,i)=>{const el=document.getElementById(id);if(el)el.textContent=t('nav')[i];});
-  const dbDateEl=document.getElementById('dbDate');
-  if(dbDateEl)dbDateEl.textContent=new Date().toLocaleDateString(lang==='zh'?'zh-TW':lang==='kh'?'km-KH':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  document.getElementById('dbDate').textContent=new Date().toLocaleDateString(lang==='zh'?'zh-TW':lang==='kh'?'km-KH':'en-US',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
   document.querySelectorAll('.lbtn').forEach((b,i)=>b.classList.toggle('active',['en','zh','kh'][i]===lang));
 }
 
@@ -884,45 +885,27 @@ async function uploadPhotoToDrive(base64,recId,idx){
   }
 }
 
-function setBtnState(btnId, iconId, txtId, icon, txt, disabled){
-  const btn=document.getElementById(btnId);
-  const ic=document.getElementById(iconId);
-  const tx=document.getElementById(txtId);
-  if(btn)btn.disabled=disabled;
-  if(ic)ic.textContent=icon;
-  if(tx)tx.textContent=txt;
-}
-
 async function uploadAllUnsynced(){
   const un=records.filter(r=>!r.synced&&!r.isImport);
-  if(!un.length){
-    showCloud('✅ 所有記錄已同步 All records synced','success',5000);
-    toast('✅ All synced','success');
-    return;
-  }
-  setBtnState('btnUpload','uploadIcon','uploadTxt','⏳','Uploading...',true);
+  if(!un.length){showCloud('✅ 所有記錄已同步 All synced','success',5000);toast('✅ All synced','success');return;}
   showCloud(`⏳ 上傳中 Uploading 0 / ${un.length} 筆...`,'info');
   let ok=0;
   for(const r of un){
     const s=await uploadToGas(r);
     if(s){r.synced=true;ok++;}
     showCloud(`⏳ 上傳中 Uploading ${ok} / ${un.length} 筆...`,'info');
-    setBtnState('btnUpload','uploadIcon','uploadTxt','⏳',`${ok}/${un.length}`,true);
     await new Promise(x=>setTimeout(x,400));
   }
-  setBtnState('btnUpload','uploadIcon','uploadTxt','⬆️','Upload',false);
   saveAll();renderHistory();updateSyncSummary();
-  const allOk=ok===un.length;
-  const msg=allOk
+  const msg=ok===un.length
     ? `✅ 上傳完成！成功同步 ${ok} 筆 Upload complete: ${ok} records`
     : `⚠️ 部分失敗 ${ok}/${un.length} 筆成功 Partial: ${ok}/${un.length}`;
-  showCloud(msg, allOk?'success':'warning', 6000);
-  toast(`☁️ ${ok}/${un.length} uploaded`, allOk?'success':'');
+  showCloud(msg, ok===un.length?'success':'warning', 6000);
+  toast(`☁️ ${ok}/${un.length} uploaded`,'success');
 }
 
 async function downloadFromCloud(){
   if(!cfg.gasUrl){showCloud('❌ GAS URL not set in Settings','error',5000);return;}
-  setBtnState('btnDownload','downloadIcon','downloadTxt','⏳','Downloading...',true);
   showCloud('⏳ 從雲端下載中 Downloading from cloud...','info');
   try{
     const res=await fetch(cfg.gasUrl+'?action=getCleaning');
@@ -932,7 +915,7 @@ async function downloadFromCloud(){
 
     const recs=data.records||[];
     const ids=new Set(records.map(r=>r.id));
-    const delSet=new Set(deletedIds);
+    const delSet=new Set(deletedIds); // never re-add deleted records
     let added=0,updated=0,skipped=0;
 
     recs.forEach(r=>{
@@ -941,7 +924,9 @@ async function downloadFromCloud(){
       if(!r.checks||typeof r.checks==='string'){
         r.checks=parseChecksStr(r.checks||'');
       }
+      // Skip if user deleted this record
       if(delSet.has(r.id)){skipped++;return;}
+
       if(!ids.has(r.id)){
         records.push({...r,synced:true,photos:[]});
         ids.add(r.id);added++;
@@ -952,14 +937,13 @@ async function downloadFromCloud(){
     });
 
     saveAll();
+    // Safely render history - guard against missing DOM elements
     if(document.getElementById('histThead'))renderHistory();
     updateSyncSummary();
-    setBtnState('btnDownload','downloadIcon','downloadTxt','⬇️','Download',false);
-    const skipMsg=skipped?` (${skipped} skipped)`:'';
-    showCloud(`✅ 下載完成！新增 ${added} 筆，更新 ${updated} 筆${skipMsg}`,'success',7000);
-    toast(`⬇️ +${added} new, ${updated} synced`,'success');
+    const skipMsg=skipped?` (${skipped} 筆已刪除跳過)`:'';
+    showCloud(`✅ 下載完成！新增 ${added} 筆，更新 ${updated} 筆${skipMsg} Downloaded ${added} new`,'success',7000);
+    toast(`⬇️ ${added} new, ${updated} updated`,'success');
   }catch(e){
-    setBtnState('btnDownload','downloadIcon','downloadTxt','⬇️','Download',false);
     showCloud('❌ 下載失敗 Download failed: '+e.message,'error',6000);
   }
 }
@@ -1049,7 +1033,8 @@ function recMsg(rec,driveUrls=[]){
   const locName=rec.location||getLocName(rec.locId);
   const photoLine=rec.photos&&rec.photos.length
     ?`📷 ${rec.photos.length} photo(s)${driveUrls.length?' — '+driveUrls.join(' '):''}\n`:'';
-  return `${fail?'⚠️':'✅'} *VRT Cleaning Record*\n━━━━━━━━━━━━━\n📅 ${fmtDate(rec.date)}  📍 ${locName}\n👷 ${rec.cleaner}  🔍 ${rec.checker}\n⏰ ${(rec.slots||[]).join(', ')||'—'}\n${fail?'❌':'✅'} ${checks||'—'}\n${rec.note?'📝 '+rec.note+'\n':''}${photoLine}━━━━━━━━━━━━━`;
+  const appUrl=cfg.appUrl||DEFAULTS.appUrl;
+  return `${fail?'⚠️':'✅'} *VRT Cleaning Record*\n━━━━━━━━━━━━━\n📅 ${fmtDate(rec.date)}  📍 ${locName}\n👷 ${rec.cleaner}  🔍 ${rec.checker}\n⏰ ${(rec.slots||[]).join(', ')||'—'}\n${fail?'❌':'✅'} ${checks||'—'}\n${rec.note?'📝 '+rec.note+'\n':''}${photoLine}━━━━━━━━━━━━━\n📊 [開啟 Dashboard / Open Dashboard](${appUrl})`;
 }
 async function sendTg(msg){
   if(!cfg.botToken||!cfg.chatId)return;
@@ -1150,6 +1135,7 @@ function renderSettings(){
   const gu=document.getElementById('cfgGasUrl');if(gu)gu.value=cfg.gasUrl||'';
   const bt=document.getElementById('cfgBotToken');if(bt)bt.value=cfg.botToken||'';
   const ci=document.getElementById('cfgChatId');if(ci)ci.value=cfg.chatId||'';
+  const au=document.getElementById('cfgAppUrl');if(au)au.value=cfg.appUrl||DEFAULTS.appUrl||'';
   const ts=document.getElementById('cfgTgOnSave');if(ts)ts.checked=!!cfg.tgOnSave;
   renderSlotTags();
 }
@@ -1179,6 +1165,7 @@ function saveConfig(){
   cfg.gasUrl  =document.getElementById('cfgGasUrl').value.trim()||DEFAULTS.gasUrl;
   cfg.botToken=document.getElementById('cfgBotToken').value.trim()||DEFAULTS.botToken;
   cfg.chatId  =document.getElementById('cfgChatId').value.trim()||DEFAULTS.chatId;
+  cfg.appUrl  =(document.getElementById('cfgAppUrl')||{}).value||DEFAULTS.appUrl;
   cfg.tgOnSave=document.getElementById('cfgTgOnSave').checked;
   saveAll();toast('✅ Config saved / 設定已儲存','success');
 }
