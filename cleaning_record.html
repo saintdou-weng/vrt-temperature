@@ -937,13 +937,27 @@ async function downloadFromCloud(){
     });
 
     saveAll();
-    // Safely render history - guard against missing DOM elements
-    if(document.getElementById('histThead'))renderHistory();
+
+    // Switch to Month view so downloaded records are visible regardless of date
+    histPeriod = 'month';
+    histOffset = 0;
+
+    // Navigate to History tab and render
+    showSec('history');
+
+    // Update period tab UI
+    document.querySelectorAll('#sec-history .ptab').forEach((el,i) => {
+      el.classList.toggle('active', i === 2); // index 2 = Month
+    });
+
+    renderHistory();
     updateSyncSummary();
-    const skipMsg=skipped?` (${skipped} 筆已刪除跳過)`:'';
-    showCloud(`✅ 下載完成！新增 ${added} 筆，更新 ${updated} 筆${skipMsg} Downloaded ${added} new`,'success',7000);
-    toast(`⬇️ ${added} new, ${updated} updated`,'success');
+    setBtnState('btnDownload','downloadIcon','downloadTxt','⬇️','Download',false);
+    const skipMsg=skipped?` (${skipped} skipped)`:'';
+    showCloud(`✅ 下載完成！新增 ${added} 筆，更新 ${updated} 筆${skipMsg}`,'success',7000);
+    toast(`⬇️ +${added} new, ${updated} synced`,'success');
   }catch(e){
+    setBtnState('btnDownload','downloadIcon','downloadTxt','⬇️','Download',false);
     showCloud('❌ 下載失敗 Download failed: '+e.message,'error',6000);
   }
 }
