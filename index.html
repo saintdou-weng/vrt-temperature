@@ -198,7 +198,7 @@ tbody tr:hover{background:var(--bg);}
 <body>
 <!-- HEADER -->
 <div class="hd"><div class="hd-in">
-  <div class="fl"><div class="hd-ico">🌡️</div><div><div class="hd-t" id="i-app-title">VRT 溫濕度管理系統</div><div class="hd-s" id="i-app-sub">VRT · RSK · v3 ☁️ Cloud</div></div></div>
+  <div class="fl"><div class="hd-ico">🌡️</div><div><div class="hd-t" id="i-app-title">VRT 溫濕度管理系統</div><div class="hd-s" id="i-app-sub">西港萬泰成衣有限公司</div></div></div>
   <div class="hd-r">
     <div class="clk" id="clock">--</div>
     <div class="lsw">
@@ -239,22 +239,33 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ RECORD ═══ -->
 <div class="pnl" id="pnl-rec">
-  <div class="cbar" style="flex-wrap:wrap;gap:6px">
-    <span class="clbl" id="i-date2">日期 Date</span>
-    <button class="btn bg" onclick="navRecDay(-1)" style="padding:5px 10px;font-size:15px" title="前一天">◀</button>
-    <input type="date" id="rec-date" style="width:148px" onchange="loadRecDate()">
-    <button class="btn bg" onclick="navRecDay(1)" style="padding:5px 10px;font-size:15px" title="後一天">▶</button>
-    <div class="ptog" style="margin-left:4px">
+  <div class="cbar">
+    <span class="clbl" id="i-date2">日期</span>
+    <input type="date" id="rec-date" style="width:155px" onchange="loadWXforDate(this.value);renderRec()">
+    <div class="ptog">
       <button class="pbtn on" id="rbam" onclick="setRP('morning')">早上</button>
       <button class="pbtn" id="rbpm" onclick="setRP('afternoon')">下午</button>
     </div>
-    <input type="text" id="rec-note" style="width:150px" placeholder="備註（可選）">
-    <button class="btn bp" onclick="saveAllRec()" id="i-saveall">💾 儲存</button>
+    <input type="text" id="rec-note" style="width:180px" placeholder="備註（可選）" id="i-note-ph">
+    <button class="btn bp ml" onclick="saveAllRec()" id="i-saveall">💾 全部儲存</button>
     <button class="btn bg" onclick="clearRI()" id="i-clear">清除</button>
-    <button class="btn" id="btn-missing" style="background:#7C3AED;color:#fff" onclick="checkMissing()" title="Check missing">⚠️ <span id="i-missing">漏填</span></button>
-    <button class="btn" id="btn-print" style="background:#0369a1;color:#fff" onclick="printReport()" title="Print report">🖨️ <span id="i-print">列印</span></button>
   </div>
   <div class="sm-t muted mb8" id="rec-plbl" style="margin-bottom:10px;"></div>
+  <!-- Weather selector -->
+  <div style="display:flex;align-items:center;gap:10px;background:var(--card);border-radius:var(--r);padding:10px 16px;margin-bottom:14px;box-shadow:var(--shadow-sm);border:1px solid var(--border);">
+    <span style="font-size:18px" id="rec-wx-icon">🌤️</span>
+    <label style="font-size:13px;font-weight:600;color:var(--text2);margin:0" id="i-wx-lbl">今日天氣</label>
+    <select id="rec-wx" onchange="saveWX()" style="width:200px;font-size:14px;">
+      <option value="">── 未記錄 ──</option>
+      <option value="sunny">☀️ 晴天</option>
+      <option value="pcloudy">⛅ 多雲</option>
+      <option value="cloudy">☁️ 陰天</option>
+      <option value="rainy">🌧️ 雨天</option>
+      <option value="shower">🌦️ 陣雨</option>
+      <option value="storm">⛈️ 雷雨</option>
+    </select>
+    <span class="sm-t muted" id="rec-wx-saved" style="color:var(--ok)"></span>
+  </div>
   <div class="rgrid" id="rec-zgrid"></div>
   <div class="card mt8" id="rec-today" style="display:none">
     <div class="chd"><span class="ct" id="i-today-recs">今日已記錄</span><button class="btn bg sm" onclick="clearTodayRecs()" id="i-clrtoday">清除今日</button></div>
@@ -292,9 +303,9 @@ tbody tr:hover{background:var(--bg);}
       </select>
     </div>
     <div style="display:flex;align-items:center;gap:10px;">
-      <button class="btn bg sm" id="h-prev-btn" onclick="navHist(-1)" style="padding:6px 14px;font-weight:700">◀ 前月</button>
+      <button class="btn bg sm" onclick="navHist(-1)" style="padding:6px 14px;font-size:16px;font-weight:700">‹</button>
       <div id="h-nav-label" style="font-size:14px;font-weight:700;color:var(--text);min-width:140px;text-align:center;">--</div>
-      <button class="btn bg sm" id="h-next-btn" onclick="navHist(1)" style="padding:6px 14px;font-weight:700">後月 ▶</button>
+      <button class="btn bg sm" onclick="navHist(1)" style="padding:6px 14px;font-size:16px;font-weight:700">›</button>
     </div>
     <div style="display:flex;align-items:center;gap:6px;">
       <input type="date" id="hfrom" onchange="renderHist()" style="width:130px">
@@ -308,22 +319,19 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ ANALYSIS ═══ -->
 <div class="pnl" id="pnl-anal">
-  <div class="cbar" style="flex-wrap:wrap;gap:8px;align-items:center">
+  <div class="cbar">
     <span class="clbl" id="i-filter2">篩選</span>
-    <select id="azone" onchange="renderAnal()" style="width:140px"><option value="all">全部區域</option></select>
+    <select id="azone" onchange="renderAnal()" style="width:155px"><option value="all">全部區域</option></select>
     <div class="ptog">
-      <button class="pbtn on" id="avd" onclick="setAV('day')">日 D</button>
-      <button class="pbtn" id="avw" onclick="setAV('week')">週 W</button>
-      <button class="pbtn" id="avm" onclick="setAV('month')">月 M</button>
-      <button class="pbtn" id="avy" onclick="setAV('year')">年 Y</button>
+      <button class="pbtn on" id="avd" onclick="setAV('day')">日</button>
+      <button class="pbtn" id="avw" onclick="setAV('week')">週</button>
+      <button class="pbtn" id="avm" onclick="setAV('month')">月</button>
+      <button class="pbtn" id="avy" onclick="setAV('year')">年</button>
     </div>
-    <input type="date" id="a-anchor" onchange="onAnalAnchorChange()" style="width:140px">
-    <button class="btn bg sm" id="a-prev-btn" onclick="navAnal(-1)" style="font-weight:700">◀ 前日</button>
-    <button class="btn bg sm" id="a-next-btn" onclick="navAnal(1)" style="font-weight:700">後日 ▶</button>
-    <span id="a-nav-label" style="font-size:12px;color:var(--text2);margin-left:4px"></span>
+    <input type="date" id="afrom" onchange="renderAnal()" style="width:135px">
+    <span class="muted">→</span>
+    <input type="date" id="ato" onchange="renderAnal()" style="width:135px">
   </div>
-  <!-- hidden inputs kept for renderAnal() compatibility -->
-  <input type="hidden" id="afrom"><input type="hidden" id="ato">
   <div class="sgrid" id="anal-stats" style="margin-bottom:16px"></div>
   <div class="cgrid">
     <div class="card"><div class="chd"><span class="ct" id="i-cht">🌡️ 溫度趨勢</span></div><div class="cb"><div class="chc"><canvas id="ctmp"></canvas></div></div></div>
@@ -345,20 +353,18 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ ALERTS ═══ -->
 <div class="pnl" id="pnl-alert">
-  <div class="cbar" style="flex-wrap:wrap;gap:8px;align-items:center">
+  <div class="cbar">
     <span class="clbl" id="i-filter3">篩選</span>
-    <select id="alzone" onchange="renderAlert()" style="width:140px"><option value="all">全部區域</option></select>
-    <select id="alsev" onchange="renderAlert()" style="width:110px">
+    <select id="alzone" onchange="renderAlert()" style="width:155px"><option value="all">全部區域</option></select>
+    <input type="date" id="alfrom" onchange="renderAlert()" style="width:135px">
+    <span class="muted">→</span>
+    <input type="date" id="alto" onchange="renderAlert()" style="width:135px">
+    <select id="alsev" onchange="renderAlert()" style="width:120px">
       <option value="all" id="i-allsev">全部等級</option>
       <option value="crit" id="i-crit">嚴重</option>
       <option value="warn" id="i-warn">警告</option>
     </select>
-    <input type="month" id="al-anchor" onchange="onAlertAnchorChange()" style="width:140px">
-    <button class="btn bg sm" onclick="navAlert(-1)" style="font-weight:700">◀ 上月</button>
-    <button class="btn bg sm" onclick="navAlert(1)" style="font-weight:700">下月 ▶</button>
-    <span id="al-nav-label" style="font-size:12px;color:var(--text2);margin-left:4px"></span>
   </div>
-  <input type="hidden" id="alfrom"><input type="hidden" id="alto">
   <div id="alert-list"></div>
 </div>
 
@@ -388,15 +394,11 @@ tbody tr:hover{background:var(--bg);}
       </div>
       <!-- Telegram -->
       <div class="card">
-        <div class="chd"><span class="ct">📱 Telegram</span><span class="bdg b-ok" style="margin-left:auto">☁️ 由 GAS 自動發送</span></div>
+        <div class="chd"><span class="ct">📱 Telegram</span></div>
         <div class="cb">
-          <div style="background:var(--pri-bg);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--pri);margin-bottom:12px;border-left:3px solid var(--pri)">
-            💡 儲存記錄後，GAS 後端會自動推送 Telegram 通知至群組，無需在此設定 Bot Token。<br>
-            如需從瀏覽器手動發送報告，可在下方填入 Token（選填）。
-          </div>
           <div class="g2" style="margin-bottom:10px">
-            <div class="fg"><label>Bot Token（選填，手動發送用）</label><input type="password" id="tg-tok" placeholder="123456:ABC..." oninput="saveTGcfg()"></div>
-            <div class="fg"><label>Chat ID（選填）</label><input type="text" id="tg-chat" placeholder="-100..." oninput="saveTGcfg()"></div>
+            <div class="fg"><label>Bot Token</label><input type="password" id="tg-tok" placeholder="123456:ABC..." oninput="saveTGcfg()"></div>
+            <div class="fg"><label>Chat ID</label><input type="text" id="tg-chat" placeholder="-100..." oninput="saveTGcfg()"></div>
           </div>
           <div class="g2" style="margin-bottom:10px">
             <div class="fg"><label id="i-tgtype">報告類型</label><select id="tg-type"><option value="daily" id="i-tgd">每日摘要</option><option value="anomaly" id="i-tga">異常報告</option><option value="full" id="i-tgf">完整報告</option></select></div>
@@ -404,7 +406,7 @@ tbody tr:hover{background:var(--bg);}
           </div>
           <div class="flw" style="gap:6px">
             <button class="btn bg sm" onclick="prevTG()" id="i-prev">👁 預覽</button>
-            <button class="btn bp sm" onclick="sendTG()" id="i-send">📤 手動發送</button>
+            <button class="btn bp sm" onclick="sendTG()" id="i-send">📤 發送</button>
           </div>
           <pre id="tg-prev" style="display:none;background:var(--bg);border-radius:8px;padding:11px;font-size:11px;margin-top:9px;white-space:pre-wrap;word-break:break-all;max-height:180px;overflow-y:auto;color:var(--text2)"></pre>
         </div>
@@ -413,18 +415,6 @@ tbody tr:hover{background:var(--bg);}
     <div>
       <!-- GAS -->
       <div class="card" style="margin-bottom:16px">
-      <!-- 檢查人員設定 -->
-      <div class="card" style="margin-bottom:16px">
-        <div class="chd"><span class="ct">👤 檢查人員 / Inspector</span></div>
-        <div class="cb">
-          <div class="g2" style="margin-bottom:10px">
-            <div class="fg"><label>早上 Morning Inspector</label><input type="text" id="insp-am" placeholder="姓名 / Name" oninput="saveInspectors()"></div>
-            <div class="fg"><label>下午 Afternoon Inspector</label><input type="text" id="insp-pm" placeholder="姓名 / Name" oninput="saveInspectors()"></div>
-          </div>
-          <div class="fg" style="max-width:320px"><label>主管 Supervisor</label><input type="text" id="insp-sup" placeholder="姓名 / Name" oninput="saveInspectors()"></div>
-        </div>
-      </div>
-
         <div class="chd"><span class="ct">☁️ Google Sheets 雲端同步</span></div>
         <div class="cb">
           <div class="fg" style="margin-bottom:10px"><label>GAS Web App URL</label><input type="text" id="gas-url" placeholder="https://script.google.com/macros/s/..." oninput="saveGAScfg()"></div>
@@ -573,13 +563,14 @@ zh:{
   an_cnt:'記錄',an_avgt:'均溫°C',an_maxt:'最高°C',an_mint:'最低°C',an_avgh:'均濕%',an_maxh:'最高%',an_minh:'最低%',an_anom:'異常',
   rplbl_note_ph:'備註（可選）',today_recs:'今日已記錄',
   view_day:'日',view_week:'週',view_month:'月',view_year:'年',
+  wx_label:'天氣',wx_none:'未記錄',
+  wx_sunny:'☀️ 晴天',wx_pcloudy:'⛅ 多雲',wx_cloudy:'☁️ 陰天',
+  wx_rainy:'🌧️ 雨天',wx_shower:'🌦️ 陣雨',wx_storm:'⛈️ 雷雨',
   months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
 },
 en:{
   'app-title':'VRT Temp & Humidity Monitor','app-sub':'Vantage River Textiles Co., Ltd.',
-  'tab-dash':'Dashboard','tab-rec':'Record','tab-hist':'History','tab-anal':'Analysis','tab-zones':'Zones','tab-alert':'Anomaly','tab-set':'Settings',
-  months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
-    missing:'Missing',print:'Print',
+  'tab-dash':'Dashboard','tab-rec':'Record','tab-hist':'History','tab-anal':'Analysis','tab-zones':'Zones','tab-alert':'Alerts','tab-set':'Settings',
   am:'Morning 08:00~09:00',pm:'Afternoon 15:30~16:30',all:'All Day',
   cold:'Cold',cool:'Cool',ok:'Normal',warm:'Warm',hot:'Hot',dry:'Dry',humid:'Humid',vhum:'Very Humid',
   date:'Date',zone:'Zone',per:'Period',note:'Notes',act:'Actions',
@@ -609,6 +600,9 @@ en:{
   an_cnt:'Records',an_avgt:'Avg°C',an_maxt:'Max°C',an_mint:'Min°C',an_avgh:'Avg%',an_maxh:'Max%',an_minh:'Min%',an_anom:'Anomalies',
   rplbl_note_ph:'Optional notes',today_recs:"Today's Records",
   view_day:'Day',view_week:'Week',view_month:'Month',view_year:'Year',
+  wx_label:'Weather',wx_none:'Not recorded',
+  wx_sunny:'☀️ Sunny',wx_pcloudy:'⛅ Partly Cloudy',wx_cloudy:'☁️ Overcast',
+  wx_rainy:'🌧️ Rainy',wx_shower:'🌦️ Showers',wx_storm:'⛈️ Stormy',
   months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
 },
 km:{
@@ -643,6 +637,9 @@ km:{
   an_cnt:'កំណត់ត្រា',an_avgt:'មធ្យម°C',an_maxt:'ខ្ពស់°C',an_mint:'ទាប°C',an_avgh:'មធ្យម%',an_maxh:'ខ្ពស់%',an_minh:'ទាប%',an_anom:'ខុសប្រក្រតី',
   rplbl_note_ph:'កំណត់ចំណាំ',today_recs:'ការកត់ត្រាថ្ងៃនេះ',
   view_day:'ថ្ងៃ',view_week:'សប្តាហ៍',view_month:'ខែ',view_year:'ឆ្នាំ',
+  wx_label:'អាកាសធាតុ',wx_none:'មិនបានកត់ត្រា',
+  wx_sunny:'☀️ ថ្ងៃ​ច្បាស់',wx_pcloudy:'⛅ មានពពក',wx_cloudy:'☁️ 흐린',
+  wx_rainy:'🌧️ ភ្លៀង',wx_shower:'🌦️ ភ្លៀងខ្លះ',wx_storm:'⛈️ ព្យុះ',
   months:['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'],
 }};
 
@@ -652,10 +649,7 @@ km:{
 let LANG='zh', DP='morning', RP='morning', HV='month', AV='month', HP=1;
 const PER_PAGE=30;
 let editZID=null, cfCB=null;
-const TG_DEFAULT_TOKEN='8673221735:AAH0KoC89DPLNu4D70inRfkY2xwedLkXjnw';
-const TG_DEFAULT_CHAT='-717190406';
-const GAS_DEFAULT_URL='https://script.google.com/macros/s/AKfycbyRmex6EmpUKGEzrswyFwO_aySAFg2d7tJuUaFBKtlAuOEwVc2TRerP7zbFilitVvZ8Sg/exec';
-const LSZ='vrt_th_z', LSR='vrt_th_r', LSTH='vrt_th_th', LSTG='vrt_th_tg', LSGAS='vrt_th_gas';
+const LSZ='vrt_th_z', LSR='vrt_th_r', LSTH='vrt_th_th', LSTG='vrt_th_tg', LSGAS='vrt_th_gas', LSW='vrt_th_wx';
 
 const DZ=[
   {id:'za',zh:'A廠車間',en:'Building A Workshop',km:'អគារ A (រោងចក្រ)',col:'#4f6ef7',desc:'',on:true},
@@ -671,10 +665,14 @@ const getR=()=>{try{const d=localStorage.getItem(LSR);return d?JSON.parse(d):[];
 const setR=r=>localStorage.setItem(LSR,JSON.stringify(r));
 const getTH=()=>{try{const d=localStorage.getItem(LSTH);return d?JSON.parse(d):JSON.parse(JSON.stringify(DTH));}catch{return JSON.parse(JSON.stringify(DTH));}};
 const setTH=t=>localStorage.setItem(LSTH,JSON.stringify(t));
-const getTG=()=>{try{const d=localStorage.getItem(LSTG);const p=d?JSON.parse(d):{};return {tok:p.tok||TG_DEFAULT_TOKEN,chat:p.chat||TG_DEFAULT_CHAT};}catch{return {tok:TG_DEFAULT_TOKEN,chat:TG_DEFAULT_CHAT};}}
+const getTG=()=>{try{const d=localStorage.getItem(LSTG);return d?JSON.parse(d):{tok:'',chat:''};}catch{return {tok:'',chat:''};}}
 const setTG=c=>localStorage.setItem(LSTG,JSON.stringify(c));
-const getGAS=()=>{try{const d=localStorage.getItem(LSGAS);const p=d?JSON.parse(d):{url:''};return (p&&p.url)?p:{url:GAS_DEFAULT_URL};}catch{return {url:GAS_DEFAULT_URL};}}
+const getGAS=()=>{try{const d=localStorage.getItem(LSGAS);return d?JSON.parse(d):{url:''};}catch{return {url:''};}}
 const setGAS=c=>localStorage.setItem(LSGAS,JSON.stringify(c));
+const getWX=()=>{try{const d=localStorage.getItem(LSW);return d?JSON.parse(d):{};} catch{return {};}}
+const setWX=w=>localStorage.setItem(LSW,JSON.stringify(w));
+const WX_KEYS=['sunny','pcloudy','cloudy','rainy','shower','storm'];
+const wxLabel=k=>k?T('wx_'+k):'';
 
 // ══════════════════════════════════════════
 // STATUS HELPERS
@@ -848,11 +846,14 @@ function renderDash(){
   const tStat=at.length?tSt(avg(at)):null;
   const hStat=ah.length?hSt(avg(ah)):null;
 
+  const wxToday=getWX()[sel]||'';
+  const wxIcons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
   document.getElementById('dash-stats').innerHTML=`
     <div class="scard" style="border-left-color:#4f6ef7"><div class="sl">${T('zone')}</div><div class="sv">${zones.length}</div><div class="ss">${T('tab-zones')}</div></div>
     <div class="scard" style="border-left-color:${tStat?tStat.col:'#94a3b8'}"><div class="sl">🌡️ ${T('clbl_tmp')}</div><div class="sv">${avg(at)}${at.length?'°C':''}</div><div class="ss">${at.length?'Max '+Math.max(...at).toFixed(1)+'° · Min '+Math.min(...at).toFixed(1)+'°':sel}</div></div>
     <div class="scard" style="border-left-color:${hStat?hStat.col:'#94a3b8'}"><div class="sl">💧 ${T('clbl_hum')}</div><div class="sv">${avg(ah)}${ah.length?'%':''}</div><div class="ss">${ah.length?'Max '+Math.max(...ah).toFixed(1)+'% · Min '+Math.min(...ah).toFixed(1)+'%':sel}</div></div>
     <div class="scard" style="border-left-color:${crit.length?'var(--hot)':anom.length?'var(--warm)':'var(--ok)'}"><div class="sl">⚠️ ${T('tab-alert')}</div><div class="sv">${anom.length}</div><div class="ss">${crit.length?'🔴 '+T('crit')+': '+crit.length:'✅ '+T('ok')}</div></div>
+    <div class="scard" style="border-left-color:#06b6d4"><div class="sl">${T('wx_label')}</div><div class="sv" style="font-size:28px">${wxToday?(wxIcons[wxToday]||'🌤️'):'--'}</div><div class="ss">${wxToday?T('wx_'+wxToday):T('wx_none')}</div></div>
   `;
 
   const zhtml=zones.map(z=>{
@@ -918,6 +919,15 @@ function renderRec(){
   if(!rd.value)rd.value=today();
   const zones=getZ().filter(z=>z.on);
   document.getElementById('rec-plbl').textContent=`📅 ${rd.value} · ${RP==='morning'?T('am'):T('pm')}`;
+  // Update weather select options text for current language
+  const wxSel=document.getElementById('rec-wx');
+  if(wxSel){
+    const prev=wxSel.value;
+    wxSel.innerHTML=`<option value="">── ${T('wx_none')} ──</option>`+
+      WX_KEYS.map(k=>`<option value="${k}">${T('wx_'+k)}</option>`).join('');
+    wxSel.value=prev;
+  }
+  loadWXforDate(rd.value);
 
   document.getElementById('rec-zgrid').innerHTML=zones.map(z=>`
     <div class="rzcard">
@@ -958,57 +968,40 @@ function prvSt(zid){
   el.innerHTML=html;
 }
 
+function saveWX(){
+  const date=document.getElementById('rec-date').value;if(!date)return;
+  const val=document.getElementById('rec-wx').value;
+  const wx=getWX();
+  if(val)wx[date]=val;else delete wx[date];
+  setWX(wx);
+  const icons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
+  document.getElementById('rec-wx-icon').textContent=val?(icons[val]||'🌤️'):'🌤️';
+  const sv=document.getElementById('rec-wx-saved');if(sv)sv.textContent=val?'✓ '+T('saved'):'';
+}
+
+function loadWXforDate(date){
+  const wx=getWX();const val=wx[date]||'';
+  const sel=document.getElementById('rec-wx');if(sel)sel.value=val;
+  const icons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
+  const ico=document.getElementById('rec-wx-icon');if(ico)ico.textContent=val?(icons[val]||'🌤️'):'🌤️';
+  const sv=document.getElementById('rec-wx-saved');if(sv)sv.textContent='';
+}
+
 function saveAllRec(){
-  const rd=document.getElementById('rec-date');
   const sel=rd.value;if(!sel){toast('請選擇日期','err');return;}
   const note=document.getElementById('rec-note').value;
   const zones=getZ().filter(z=>z.on);
-  let recs=getR();const newRecs=[];
+  let recs=getR();let saved=0;
   zones.forEach(z=>{
     const t=document.getElementById('ri-t-'+z.id)?.value;
     const h=document.getElementById('ri-h-'+z.id)?.value;
     if((t===''||t===undefined)&&(h===''||h===undefined))return;
     recs=recs.filter(r=>!(r.d===sel&&r.p===RP&&r.z===z.id));
-    const rec={id:'r'+Date.now()+Math.random().toString(36).slice(2,5),z:z.id,d:sel,p:RP,
-      t:t!==''&&t!==undefined?parseFloat(t):'',h:h!==''&&h!==undefined?parseFloat(h):'',note,ts:new Date().toISOString()};
-    recs.push(rec);newRecs.push(rec);
+    recs.push({id:'r'+Date.now()+Math.random().toString(36).slice(2,5),z:z.id,d:sel,p:RP,
+      t:t!==''&&t!==undefined?parseFloat(t):'',h:h!==''&&h!==undefined?parseFloat(h):'',note,ts:new Date().toISOString()});
+    saved++;
   });
-  setR(recs);renderTodayCard(sel);updBadge();
-  if(!newRecs.length){toast('沒有填寫任何數值','inf');return;}
-  // 只儲存本機，不自動送 Telegram 或雲端
-  // 儲存後顯示操作選項
-  showSaveActions(sel,newRecs);
-}
-
-function showSaveActions(date,newRecs){
-  toast('✅ 已儲存 '+newRecs.length+' 筆 — 選擇後續動作','ok');
-  // 顯示操作浮層
-  const existing=document.getElementById('save-action-bar');
-  if(existing)existing.remove();
-  const bar=document.createElement('div');
-  bar.id='save-action-bar';
-  bar.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);background:#1E3A8A;color:#fff;border-radius:12px;padding:12px 18px;display:flex;gap:10px;align-items:center;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,0.3);font-size:13px;flex-wrap:wrap;max-width:90vw';
-  bar.innerHTML=`
-    <span>📅 ${date} · ${RP==='morning'?'早上 Morning':'下午 Afternoon'} · ${newRecs.length}筆已儲存</span>
-    <button onclick="doCloudSync(${JSON.stringify(newRecs).replace(/"/g,'&quot;')})" style="background:#10B981;color:#fff;border:none;border-radius:7px;padding:6px 13px;cursor:pointer;font-size:13px">☁️ 同步雲端</button>
-    <button onclick="doSendTG(${JSON.stringify(newRecs).replace(/"/g,'&quot;')})" style="background:#7C3AED;color:#fff;border:none;border-radius:7px;padding:6px 13px;cursor:pointer;font-size:13px">📤 發 Telegram</button>
-    <button onclick="this.parentElement.remove()" style="background:rgba(255,255,255,0.2);color:#fff;border:none;border-radius:7px;padding:6px 10px;cursor:pointer;font-size:13px">✕</button>
-  `;
-  document.body.appendChild(bar);
-  setTimeout(()=>{if(bar.parentElement)bar.remove();},20000);
-}
-
-async function doCloudSync(recs){
-  document.getElementById('save-action-bar')?.remove();
-  await gasAutoSync(recs);
-  toast('☁️ 已同步到雲端','ok');
-}
-
-async function doSendTG(recs){
-  document.getElementById('save-action-bar')?.remove();
-  // 先同步雲端（GAS 會自動發 Telegram 通知）
-  await gasAutoSync(recs);
-  toast('📤 已發送 Telegram 通知','ok');
+  setR(recs);toast(T('saved'),'ok');renderTodayCard(sel);updBadge();
 }
 
 function renderTodayCard(date){
@@ -1016,6 +1009,11 @@ function renderTodayCard(date){
   const tc=document.getElementById('rec-today'),tb=document.getElementById('rec-today-body');
   if(!recs.length){tc.style.display='none';return;}
   tc.style.display='block';
+  const wx=getWX();const w=wx[date]||'';
+  const wxIcons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
+  const wDisp=w?` ${wxIcons[w]} ${T('wx_'+w)}`:'';
+  const tHead=document.querySelector('#rec-today .chd .ct');
+  if(tHead)tHead.textContent=T('today_recs')+wDisp;
   const zones=getZ();
   tb.innerHTML=`<div class="twrap"><table><thead><tr><th>${T('clbl_zone')}</th><th>${T('per')}</th><th>${T('clbl_tmp')}</th><th>${T('clbl_hum')}</th><th>${T('clbl_stat')}</th></tr></thead>
   <tbody>${recs.map(r=>{const z=zones.find(z=>z.id===r.z);const ts=tSt(r.t),hs=hSt(r.h);
@@ -1037,7 +1035,7 @@ function openREfromDash(zid,date){const r=getR().filter(r=>r.z===zid&&r.d===date
 function setHV(v){
   HV=v;HP=1;
   const sel=document.getElementById('hview');if(sel)sel.value=v;
-  updateHistBtnLabel();renderHNavLabel();renderHist();
+  renderHNavLabel();renderHist();
 }
 
 function syncZoneFilter(){
@@ -1113,12 +1111,16 @@ function renderHist(){
 
 function renderHistTbl(recs,zones){
   const total=recs.length,start=(HP-1)*PER_PAGE,page=recs.slice(start,start+PER_PAGE);
-  document.getElementById('h-thead').innerHTML=`<tr><th>${T('clbl_date')}</th><th>${T('clbl_zone')}</th><th>${T('per')}</th><th>${T('clbl_tmp')}</th><th>${T('clbl_hum')}</th><th>${T('clbl_stat')}</th><th>${T('clbl_note')}</th><th>${T('act')}</th></tr>`;
-  if(!page.length){document.getElementById('h-tbody').innerHTML=`<tr class="nodata-row"><td colspan="8">${T('nodata')}</td></tr>`;document.getElementById('h-pagi').innerHTML='';return;}
+  const wx=getWX();
+  const wxIcons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
+  document.getElementById('h-thead').innerHTML=`<tr><th>${T('clbl_date')}</th><th>${T('wx_label')}</th><th>${T('clbl_zone')}</th><th>${T('per')}</th><th>${T('clbl_tmp')}</th><th>${T('clbl_hum')}</th><th>${T('clbl_stat')}</th><th>${T('clbl_note')}</th><th>${T('act')}</th></tr>`;
+  if(!page.length){document.getElementById('h-tbody').innerHTML=`<tr class="nodata-row"><td colspan="9">${T('nodata')}</td></tr>`;document.getElementById('h-pagi').innerHTML='';return;}
   document.getElementById('h-tbody').innerHTML=page.map(r=>{
     const z=zones.find(z=>z.id===r.z),ts=tSt(r.t),hs=hSt(r.h),an=isAnom(r),cr=isCrit(r);
+    const w=wx[r.d]||'';
     return `<tr style="${cr?'background:var(--hot-bg)':an?'background:var(--warm-bg)':''}">
       <td style="white-space:nowrap">${r.d}</td>
+      <td style="text-align:center;font-size:16px" title="${w?T('wx_'+w):T('wx_none')}">${w?wxIcons[w]:'─'}</td>
       <td><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:${z?z.col:'#ccc'};display:inline-block"></span>${z?znm(z):'?'}</span></td>
       <td>${r.p==='morning'?T('am').slice(0,2):T('pm').slice(0,2)}</td>
       <td class="${ts?ts.tc:''}">${r.t!==''?r.t+'°C':'--'}</td>
@@ -1132,17 +1134,24 @@ function renderHistTbl(recs,zones){
 }
 
 function renderHistAgg(groups,zones){
-  const kLabel=HV==='week'?T('an_cnt')+'/W':HV==='month'?T('an_cnt')+'/M':T('an_cnt')+'/Y';
-  document.getElementById('h-thead').innerHTML=`<tr><th>${HV}</th><th>${T('an_cnt')}</th><th>${T('an_avgt')}</th><th>${T('an_maxt')}</th><th>${T('an_mint')}</th><th>${T('an_avgh')}</th><th>${T('an_maxh')}</th><th>${T('an_minh')}</th><th>${T('an_anom')}</th></tr>`;
-  if(!groups.length){document.getElementById('h-tbody').innerHTML=`<tr class="nodata-row"><td colspan="9">${T('nodata')}</td></tr>`;document.getElementById('h-pagi').innerHTML='';return;}
+  document.getElementById('h-thead').innerHTML=`<tr><th>${HV}</th><th>${T('wx_label')}</th><th>${T('an_cnt')}</th><th>${T('an_avgt')}</th><th>${T('an_maxt')}</th><th>${T('an_mint')}</th><th>${T('an_avgh')}</th><th>${T('an_maxh')}</th><th>${T('an_minh')}</th><th>${T('an_anom')}</th></tr>`;
+  if(!groups.length){document.getElementById('h-tbody').innerHTML=`<tr class="nodata-row"><td colspan="10">${T('nodata')}</td></tr>`;document.getElementById('h-pagi').innerHTML='';return;}
   const av=a=>a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):'--';
+  const wx=getWX();
+  const wxIcons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
   document.getElementById('h-tbody').innerHTML=groups.map(g=>{
     const ts2=g.recs.filter(r=>r.t!==''&&!isNaN(r.t)).map(r=>+r.t);
     const hs2=g.recs.filter(r=>r.h!==''&&!isNaN(r.h)).map(r=>+r.h);
     const an=g.recs.filter(r=>isAnom(r)).length;
     const tAvg=tSt(av(ts2)),hAvg=hSt(av(hs2));
+    // Weather: get unique dates in this group's records, count each weather type
+    const dates=[...new Set(g.recs.map(r=>r.d))];
+    const wxCounts={};dates.forEach(d=>{if(wx[d]){wxCounts[wx[d]]=(wxCounts[wx[d]]||0)+1;}});
+    const wxSummary=Object.entries(wxCounts).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k])=>wxIcons[k]||'').join(' ');
     return `<tr>
-      <td class="fw7">${g.k}</td><td>${g.recs.length}</td>
+      <td class="fw7">${g.k}</td>
+      <td style="font-size:15px;letter-spacing:2px">${wxSummary||'─'}</td>
+      <td>${g.recs.length}</td>
       <td class="${tAvg?tAvg.tc:''}">${av(ts2)}${ts2.length?'°C':''}</td>
       <td style="color:var(--hot)">${ts2.length?Math.max(...ts2).toFixed(1)+'°C':'--'}</td>
       <td style="color:var(--cold)">${ts2.length?Math.min(...ts2).toFixed(1)+'°C':'--'}</td>
@@ -1171,12 +1180,9 @@ function renderPagi(total,elId,cb){
 // ANALYSIS
 // ══════════════════════════════════════════
 let chT=null,chH=null,chA=null;
-function setAV(v){AV=v;['day','week','month','year'].forEach(x=>document.getElementById('av'+x[0]).classList.toggle('on',x===v));updateAnalBtnLabel();updateAnalRange();renderAnal();}
-
-
+function setAV(v){AV=v;['day','week','month','year'].forEach(x=>document.getElementById('av'+x[0]).classList.toggle('on',x===v));renderAnal();}
 
 function renderAnal(){
-  renderANavLabel();
   const zf=document.getElementById('azone').value;
   const af=document.getElementById('afrom').value,at2=document.getElementById('ato').value;
   let recs=getR();
@@ -1300,7 +1306,6 @@ function resetZones(){confirmAction(T('crstzone'),()=>{setZ(JSON.parse(JSON.stri
 // ALERTS
 // ══════════════════════════════════════════
 function renderAlert(){
-  renderAlNavLabel();
   const zf=document.getElementById('alzone').value,sf=document.getElementById('alsev').value;
   const af=document.getElementById('alfrom').value,at2=document.getElementById('alto').value;
   let recs=getR().filter(r=>isAnom(r));
@@ -1335,9 +1340,9 @@ function renderSet(){
   setSlider('th-tw',th.t.warm,'°C');setSlider('th-th',th.t.hot,'°C');
   setSlider('th-hd',th.h.dry,'%');setSlider('th-hh',th.h.humid,'%');setSlider('th-hv',th.h.vhum,'%');
   renderThLegend();
-  const tg=getTG();document.getElementById('tg-tok').value=tg.tok||TG_DEFAULT_TOKEN;document.getElementById('tg-chat').value=tg.chat||TG_DEFAULT_CHAT;
+  const tg=getTG();document.getElementById('tg-tok').value=tg.tok||'';document.getElementById('tg-chat').value=tg.chat||'';
   document.getElementById('tg-date').value=today();
-  document.getElementById('gas-url').value=getGAS().url||GAS_DEFAULT_URL||'';
+  document.getElementById('gas-url').value=getGAS().url||'';
   const recs=getR();const dates=recs.map(r=>r.d).sort();
   document.getElementById('inf-rc').textContent=recs.length;
   document.getElementById('inf-zn').textContent=getZ().filter(z=>z.on).length;
@@ -1411,12 +1416,9 @@ function saveREedit(){
     recs.push({id:'r'+Date.now()+Math.random().toString(36).slice(2,5),d:document.getElementById('re-date').value,p:document.getElementById('re-per').value,z:document.getElementById('re-zon').value,t:t!==''?parseFloat(t):'',h:h!==''?parseFloat(h):'',note:document.getElementById('re-note').value,ts:new Date().toISOString()});
   }
   setR(recs);closeMod('re-over');toast(T('saved'),'ok');renderAll();updBadge();
-  // 雲端同步
-  const syncRec=recs.find(r=>r.id===(id||recs[recs.length-1]?.id));
-  if(syncRec) gasAutoSync([syncRec]);
 }
 
-function delRec(id){confirmAction(T('cdelrec'),()=>{setR(getR().filter(r=>r.id!==id));toast(T('deleted'),'inf');renderAll();updBadge();gasDelete(id);});}
+function delRec(id){confirmAction(T('cdelrec'),()=>{setR(getR().filter(r=>r.id!==id));toast(T('deleted'),'inf');renderAll();updBadge();});}
 
 // ══════════════════════════════════════════
 // IMPORT / EXPORT
@@ -1462,7 +1464,6 @@ function importXL(evt){
       const wb=XLSX.read(e.target.result,{type:'binary',cellDates:false,raw:true});
       const mnMap={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
       let recs=getR();const existIds=new Set(recs.map(r=>r.d+'|'+r.p+'|'+r.z));
-      const newRecs=[];
       let added=0,skipped=0;
       const zones=getZ();
       // Helper: safely parse a numeric value from a cell (number or string)
@@ -1498,8 +1499,7 @@ function importXL(evt){
               if(tv===''&&hv==='')return;
               const key=ds+'|'+p+'|'+z.id;
               if(existIds.has(key)){skipped++;return;}
-              const nrec={id:'r'+Date.now()+Math.random().toString(36).slice(2,6),z:z.id,d:ds,p,t:tv,h:hv,note:'',ts:new Date().toISOString()};
-              recs.push(nrec);newRecs.push(nrec);
+              recs.push({id:'r'+Date.now()+Math.random().toString(36).slice(2,6),z:z.id,d:ds,p,t:tv,h:hv,note:'',ts:new Date().toISOString()});
               existIds.add(key);added++;
             });
           });
@@ -1507,8 +1507,6 @@ function importXL(evt){
       });
       setR(recs);log.textContent=`✅ 完成：新增 ${added} 筆，跳過重複 ${skipped} 筆`;
       toast(T('impok')+' ('+added+'筆)','ok');renderAll();updBadge();
-      // 批量同步歷史資料到雲端
-      if(newRecs.length>0) gasBulkSync(newRecs);
     }catch(ex){log.textContent='❌ 匯入失敗: '+ex.message+' | '+ex.stack;toast('匯入失敗','err');}
   };
   reader.readAsBinaryString(file);evt.target.value='';
@@ -1529,544 +1527,61 @@ function importJSON(evt){
 // ══════════════════════════════════════════
 // TELEGRAM
 // ══════════════════════════════════════════
-function tWarn(t){const n=parseFloat(t);if(isNaN(n))return'';if(n>=35)return'[HIGH/高溫]';if(n<18)return'[LOW/低溫]';if(n>=32)return'[WARM/偏熱]';return'';}
-function hWarn(h){const n=parseFloat(h);if(isNaN(n))return'';if(n>90)return'[V.HUMID/過濕]';if(n<40)return'[DRY/過乾]';if(n>80)return'[HUMID/偏濕]';return'';}
 function buildTGmsg(type,date){
-  const d2=date.replace(/\//g,'-');
-  const recs=getR().filter(r=>r.d===d2);
-  const zones=getZ(),now=new Date().toLocaleString();
-  if(!recs.length)return 'VRT Temp & Humidity / 溫濕度\nDate: '+d2+'\n\nNo records for this date. / 此日期無記錄。';
-  const LINE='─'.repeat(26);
+  const recs=getR().filter(r=>r.d===date),zones=getZ(),now=new Date().toLocaleString();
   if(type==='daily'){
-    let m='VRT Daily Report / 溫濕度日報\n';
-    m+='Date / 日期: '+d2+'\n'+LINE+'\n';
-    let anom=0;
+    let m=`🌡️ *VRT 溫濕度日報 — ${date}*\n\n`;
     zones.filter(z=>z.on).forEach(z=>{
       const zr=recs.filter(r=>r.z===z.id),mr=zr.find(r=>r.p==='morning'),ar=zr.find(r=>r.p==='afternoon');
-      const lbl=(z.en?z.en+' / ':'')+z.zh;
-      m+='['+lbl+']\n';
-      if(mr){const tw=tWarn(mr.t),hw=hWarn(mr.h);if(tw||hw)anom++;m+='  AM/早: '+( mr.t!==''?mr.t+'C':'--')+tw+'  '+(mr.h!==''?mr.h+'%':'--')+hw+'\n';}
-      if(ar){const tw=tWarn(ar.t),hw=hWarn(ar.h);if(tw||hw)anom++;m+='  PM/午: '+(ar.t!==''?ar.t+'C':'--')+tw+'  '+(ar.h!==''?ar.h+'%':'--')+hw+'\n';}
+      m+=`*${z.zh} / ${z.en}*\n`;
+      if(mr)m+=`  🌅 早上: ${mr.t!==''?mr.t+'°C':'--'} / ${mr.h!==''?mr.h+'%':'--'}\n`;
+      if(ar)m+=`  🌇 下午: ${ar.t!==''?ar.t+'°C':'--'} / ${ar.h!==''?ar.h+'%':'--'}\n`;
+      if(!mr&&!ar)m+=`  ─ 無記錄\n`;m+='\n';
     });
-    m+=LINE+'\n';
-    m+=anom>0?'Anomaly/異常: '+anom+' zone(s)\n':'All Normal / 全部正常\n';
-    m+=now;return m;
+    m+=`⚠️ 異常: ${recs.filter(r=>isAnom(r)).length} 筆\n_${now}_`;return m;
   }else if(type==='anomaly'){
     const an=recs.filter(r=>isAnom(r));
-    if(!an.length)return 'VRT Anomaly Report / 異常報告\nDate: '+d2+'\n\nAll Normal / 無異常\n'+now;
-    let m='VRT Anomaly Report / 異常報告\nDate / 日期: '+d2+'\n'+LINE+'\n';
-    an.forEach(r=>{
-      const z=zones.find(z=>z.id===r.z);
-      const lbl=z?((z.en?z.en+'/':'')+z.zh):'?';
-      const per=r.p==='morning'?'Morning/早':'Afternoon/午';
-      const tw=tWarn(r.t),hw=hWarn(r.h);
-      m+=(isCrit(r)?'[CRITICAL/高危] ':'[WARNING/警告] ')+lbl+'\n';
-      m+='  '+per+': Temp '+(r.t!==''?r.t+'C':'--')+tw+'  Hum '+(r.h!==''?r.h+'%':'--')+hw+'\n';
-    });
-    m+=LINE+'\n'+now;return m;
+    if(!an.length)return `✅ *VRT 異常報告 — ${date}*\n\n無異常\n_${now}_`;
+    let m=`⚠️ *VRT 異常報告 — ${date}*\n\n`;
+    an.forEach(r=>{const z=zones.find(z=>z.id===r.z);m+=`${isCrit(r)?'🔴':'⚠️'} ${z?z.zh:'?'} · ${r.p==='morning'?'早上':'下午'}: 🌡️${r.t!==''?r.t+'°C':'--'} 💧${r.h!==''?r.h+'%':'--'}\n`;});
+    m+=`\n_${now}_`;return m;
   }else{
-    let m='VRT Full Records / 完整記錄\nDate / 日期: '+d2+'\n'+LINE+'\n';
-    m+='Date | Zone | Period | Temp | Hum\n';
-    recs.forEach(r=>{
-      const z=zones.find(z=>z.id===r.z);
-      const lbl=z?(z.en||z.zh):'?';
-      m+=r.d+' | '+lbl+' | '+(r.p==='morning'?'AM':'PM')+' | '+(r.t!==''?r.t+'C':'--')+' | '+(r.h!==''?r.h+'%':'--')+'\n';
-    });
-    m+=now;return m;
+    let m=`📊 *VRT 完整報告 — ${date}*\n\n日期 | 區域 | 時段 | 溫度 | 濕度\n${'─'.repeat(35)}\n`;
+    recs.forEach(r=>{const z=zones.find(z=>z.id===r.z);m+=`${r.d} | ${z?z.zh:'?'} | ${r.p==='morning'?'早上':'下午'} | ${r.t!==''?r.t+'°C':'--'} | ${r.h!==''?r.h+'%':'--'}\n`;});
+    m+=`\n_${now}_`;return m;
   }
 }
 function prevTG(){const msg=buildTGmsg(document.getElementById('tg-type').value,document.getElementById('tg-date').value||today());const p=document.getElementById('tg-prev');p.textContent=msg;p.style.display='block';}
 async function sendTG(){
   const cfg=getTG();if(!cfg.tok||!cfg.chat){toast('請設定 Bot Token 和 Chat ID','err');return;}
   const msg=buildTGmsg(document.getElementById('tg-type').value,document.getElementById('tg-date').value||today());
-  if(!msg||!msg.trim()){toast('訊息內容為空，請確認日期有記錄','err');return;}
-  try{
-    // Telegram API 要用 application/json（不是 text/plain）
-    const r=await fetch('https://api.telegram.org/bot'+cfg.tok+'/sendMessage',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({chat_id:cfg.chat, text:msg})
-      // 不加 parse_mode，用純文字避免特殊字元報錯
-    });
-    const d=await r.json();
-    d.ok?toast('Telegram 發送成功 ✅','ok'):toast('Telegram 錯誤: '+(d.description||''),'err');
-  }catch(ex){toast('網路錯誤: '+ex.message,'err');}
+  try{const r=await fetch(`https://api.telegram.org/bot${cfg.tok}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:cfg.chat,text:msg,parse_mode:'Markdown'})});
+    const d=await r.json();d.ok?toast('Telegram 發送成功','ok'):toast('Telegram 錯誤: '+(d.description||''),'err');
+  }catch{toast('網路錯誤','err');}
 }
 
 // ══════════════════════════════════════════
-// 日期導航 ◀ ▶
+// GAS SYNC
 // ══════════════════════════════════════════
-function navRecDay(dir){
-  const rd=document.getElementById('rec-date');
-  if(!rd.value){rd.value=today();return;}
-  const d=new Date(rd.value+'T00:00:00');
-  d.setDate(d.getDate()+dir);
-  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
-  rd.value=`${y}-${m}-${day}`;
-  loadRecDate();
-}
-
-function loadRecDate(){
-  const sel=document.getElementById('rec-date').value;
-  if(!sel)return;
-  renderRecZones();
-  renderTodayCard(sel);
-  const amCount=getR().filter(r=>r.d===sel&&r.p==='morning').length;
-  const pmCount=getR().filter(r=>r.d===sel&&r.p==='afternoon').length;
-  document.getElementById('rec-plbl').textContent=
-    `📅 ${sel} · ${RP==='morning'?T('am'):T('pm')} · 早上${amCount}筆 / 下午${pmCount}筆`;
-}
-
-// ══════════════════════════════════════════
-// 漏填檢查 Missing Check
-// ══════════════════════════════════════════
-function checkMissing(){
-  const sel=document.getElementById('rec-date').value;
-  if(!sel){toast('請先選擇日期','err');return;}
-  const zones=getZ().filter(z=>z.on);
-  const recs=getR().filter(r=>r.d===sel);
-  const missing=[];
-  zones.forEach(z=>{
-    const znm=z.zh+(z.en?' / '+z.en:'');
-    const am=recs.find(r=>r.p==='morning'&&r.z===z.id);
-    const pm=recs.find(r=>r.p==='afternoon'&&r.z===z.id);
-    if(!am||am.t===''||am.h==='') missing.push(`早上 Morning · ${znm}`);
-    if(!pm||pm.t===''||pm.h==='') missing.push(`下午 Afternoon · ${znm}`);
-  });
-  if(!missing.length){
-    toast('✅ '+sel+' 全部區域已填寫完畢 All zones complete','ok');
-    return;
-  }
-  const msg='⚠️ 以下項目尚未填寫 / Missing:\n\n'+missing.map((m,i)=>`${i+1}. ${m}`).join('\n');
-  alert(msg);
-  toast('⚠️ 有 '+missing.length+' 項未填寫','err');
-}
-
-// ══════════════════════════════════════════
-// 列印報告 Print Report
-// ══════════════════════════════════════════
-function printReport(){
-  const sel=document.getElementById('rec-date').value||today();
-  const recs=getR().filter(r=>r.d===sel);
-  const zones=getZ().filter(z=>z.on);
-  const inspectors=getInspectors();
-
-  const rows=zones.map(z=>{
-    const znm=z.zh+(z.en?' / '+z.en:'');
-    const am=recs.find(r=>r.p==='morning'&&r.z===z.id);
-    const pm=recs.find(r=>r.p==='afternoon'&&r.z===z.id);
-    const tFmt=(v)=>v!==''&&v!==undefined?v+'°C':'—';
-    const hFmt=(v)=>v!==''&&v!==undefined?v+'%':'—';
-    const warn=(t,h)=>{
-      const tn=parseFloat(t),hn=parseFloat(h);
-      let w='';
-      if(tn>=35)w+=' 🔴High';else if(tn>=32)w+=' 🟡Warm';else if(tn<18)w+=' 🔵Low';
-      if(hn>90)w+=' 🔴V.Humid';else if(hn>80)w+=' 🟠Humid';else if(hn<40)w+=' 🟡Dry';
-      return w;
-    };
-    return `<tr>
-      <td style="padding:6px 10px;border:1px solid #ddd">${znm}</td>
-      <td style="padding:6px 10px;border:1px solid #ddd;text-align:center">${am?tFmt(am.t):'—'}</td>
-      <td style="padding:6px 10px;border:1px solid #ddd;text-align:center">${am?hFmt(am.h):'—'}</td>
-      <td style="padding:6px 10px;border:1px solid #ddd;font-size:11px;color:#dc2626">${am?warn(am.t,am.h):''}</td>
-      <td style="padding:6px 10px;border:1px solid #ddd;text-align:center">${pm?tFmt(pm.t):'—'}</td>
-      <td style="padding:6px 10px;border:1px solid #ddd;text-align:center">${pm?hFmt(pm.h):'—'}</td>
-      <td style="padding:6px 10px;border:1px solid #ddd;font-size:11px;color:#dc2626">${pm?warn(pm.t,pm.h):''}</td>
-      <td style="padding:6px 10px;border:1px solid #ddd;font-size:11px;color:#6b7280">${am&&am.note?am.note:pm&&pm.note?pm.note:''}</td>
-    </tr>`;
-  }).join('');
-
-  const anomCount=recs.filter(r=>{
-    const t=parseFloat(r.t),h=parseFloat(r.h);
-    return(!isNaN(t)&&(t>=35||t<18))||(!isNaN(h)&&(h>90||h<40));
-  }).length;
-
-  const html=`<!DOCTYPE html><html><head><meta charset="UTF-8">
-  <title>VRT Temperature Report ${sel}</title>
-  <style>
-    body{font-family:Arial,sans-serif;margin:20px;font-size:13px;color:#1a1a1a}
-    h2{color:#1E3A8A;margin-bottom:4px}
-    .meta{font-size:12px;color:#6b7280;margin-bottom:16px}
-    table{width:100%;border-collapse:collapse;margin-bottom:20px}
-    th{background:#1E3A8A;color:#fff;padding:7px 10px;border:1px solid #1E3A8A;font-size:12px;text-align:center}
-    .sign{margin-top:30px;display:flex;gap:60px}
-    .sign-box{border-top:1px solid #666;padding-top:6px;min-width:160px;font-size:12px;color:#374151}
-    .summary{background:#f0f4ff;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:12px}
-    @media print{body{margin:10px}}
-  </style>
-  </head><body>
-  <h2>🌡️ VRT Temperature & Humidity Daily Report / 溫濕度日報</h2>
-  <div class="meta">Date / 日期：<b>${sel}</b> &nbsp;|&nbsp; Printed / 列印：${new Date().toLocaleString()}</div>
-  <div class="summary">
-    📋 Records / 記錄：<b>${recs.length}</b> 筆 &nbsp;|&nbsp;
-    ⚠️ Anomaly / 異常：<b>${anomCount}</b> 筆 &nbsp;|&nbsp;
-    🏭 Zones / 區域：<b>${zones.length}</b> 個
-  </div>
-  <table>
-    <thead><tr>
-      <th rowspan="2" style="text-align:left;min-width:120px">Zone / 區域</th>
-      <th colspan="3" style="background:#1d4ed8">🌅 Morning / 早上 (08:00~09:00)</th>
-      <th colspan="3" style="background:#2563eb">🌇 Afternoon / 下午 (15:30~16:30)</th>
-      <th rowspan="2">Note / 備註</th>
-    </tr><tr>
-      <th>Temp / 溫度</th><th>Hum / 濕度</th><th>Status</th>
-      <th>Temp / 溫度</th><th>Hum / 濕度</th><th>Status</th>
-    </tr></thead>
-    <tbody>${rows}</tbody>
-  </table>
-  <div class="sign">
-    <div class="sign-box">Morning Inspector / 早上檢查<br><b>${inspectors.am||'_______________'}</b></div>
-    <div class="sign-box">Afternoon Inspector / 下午檢查<br><b>${inspectors.pm||'_______________'}</b></div>
-    <div class="sign-box">Supervisor / 主管<br><b>${inspectors.sup||'_______________'}</b></div>
-  </div>
-  </body></html>`;
-
-  const w=window.open('','_blank');
-  w.document.write(html);
-  w.document.close();
-  w.focus();
-  setTimeout(()=>w.print(),400);
-}
-
-// ══════════════════════════════════════════
-// 檢查人員 Inspector storage
-// ══════════════════════════════════════════
-const LS_INSP='vrt_th_inspectors';
-function getInspectors(){try{return JSON.parse(localStorage.getItem(LS_INSP)||'{}');}catch{return {};}}
-function saveInspectors(){
-  const d={
-    am:document.getElementById('insp-am')?.value||'',
-    pm:document.getElementById('insp-pm')?.value||'',
-    sup:document.getElementById('insp-sup')?.value||''
-  };
-  localStorage.setItem(LS_INSP,JSON.stringify(d));
-}
-function loadInspectors(){
-  const d=getInspectors();
-  const am=document.getElementById('insp-am');
-  const pm=document.getElementById('insp-pm');
-  const sup=document.getElementById('insp-sup');
-  if(am)am.value=d.am||'';
-  if(pm)pm.value=d.pm||'';
-  if(sup)sup.value=d.sup||'';
-}
-
-// ══════════════════════════════════════════
-// DATE NAV — Cutting style: anchor + [◀ 前X] [後X ▶]
-// ══════════════════════════════════════════
-
-function fmtDate(d){
-  const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');
-  return y+'-'+m+'-'+day;
-}
-
-// ── ANALYSIS anchor logic ──────────────────
-// One anchor date → compute from/to based on AV, update hidden inputs, render
-
-function getAnalAnchor(){
-  const el=document.getElementById('a-anchor');
-  if(!el||!el.value) return new Date();
-  return new Date(el.value+'T00:00:00');
-}
-
-function setAnalAnchor(d){
-  const el=document.getElementById('a-anchor');
-  if(el) el.value=fmtDate(d);
-  updateAnalRange();
-}
-
-function onAnalAnchorChange(){
-  updateAnalRange();
-  renderAnal();
-}
-
-function updateAnalRange(){
-  const anchor=getAnalAnchor();
-  let from=new Date(anchor), to=new Date(anchor);
-  if(AV==='day'){
-    // from=to=anchor
-  } else if(AV==='week'){
-    const dow=anchor.getDay()||7; // Mon=1
-    from.setDate(anchor.getDate()-(dow-1));
-    to.setDate(from.getDate()+6);
-  } else if(AV==='month'){
-    from=new Date(anchor.getFullYear(),anchor.getMonth(),1);
-    to=new Date(anchor.getFullYear(),anchor.getMonth()+1,0);
-  } else if(AV==='year'){
-    from=new Date(anchor.getFullYear(),0,1);
-    to=new Date(anchor.getFullYear(),11,31);
-  }
-  const fi=document.getElementById('afrom'),ti=document.getElementById('ato');
-  if(fi)fi.value=fmtDate(from);
-  if(ti)ti.value=fmtDate(to);
-  updateAnalBtnLabel();
-  renderANavLabel();
-}
-
-function updateAnalBtnLabel(){
-  const prev=document.getElementById('a-prev-btn'), next=document.getElementById('a-next-btn');
-  const labels={day:['◀ 前日','後日 ▶'],week:['◀ 上週','下週 ▶'],month:['◀ 上月','下月 ▶'],year:['◀ 上年','下年 ▶']};
-  const l=labels[AV]||['◀','▶'];
-  if(prev)prev.textContent=l[0];
-  if(next)next.textContent=l[1];
-}
-
-function navAnal(dir){
-  const anchor=getAnalAnchor();
-  if(AV==='day')   anchor.setDate(anchor.getDate()+dir);
-  else if(AV==='week')  anchor.setDate(anchor.getDate()+dir*7);
-  else if(AV==='month') anchor.setMonth(anchor.getMonth()+dir);
-  else if(AV==='year')  anchor.setFullYear(anchor.getFullYear()+dir);
-  setAnalAnchor(anchor);
-  renderAnal();
-}
-
-function renderANavLabel(){
-  const f=document.getElementById('afrom')?.value;
-  const t=document.getElementById('ato')?.value;
-  const el=document.getElementById('a-nav-label');if(!el)return;
-  if(!f){el.textContent='';return;}
-  const mns=T('months')||['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  if(AV==='day'){
-    el.textContent=f;
-  } else if(AV==='week'){
-    el.textContent=f+' → '+t;
-  } else if(AV==='month'){
-    const fd=new Date(f);
-    el.textContent=mns[fd.getMonth()]+' '+fd.getFullYear();
-  } else if(AV==='year'){
-    el.textContent=f.slice(0,4);
-  }
-}
-
-// ── ANOMALY anchor logic ───────────────────
-
-function getAlertAnchor(){
-  const el=document.getElementById('al-anchor');
-  if(!el||!el.value) return new Date();
-  const parts=el.value.split('-');
-  return new Date(parseInt(parts[0]),parseInt(parts[1])-1,1);
-}
-
-function setAlertAnchor(d){
-  const el=document.getElementById('al-anchor');
-  if(el) el.value=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
-  updateAlertRange();
-}
-
-function onAlertAnchorChange(){
-  updateAlertRange();
-  renderAlert();
-}
-
-function updateAlertRange(){
-  const d=getAlertAnchor();
-  const from=new Date(d.getFullYear(),d.getMonth(),1);
-  const to=new Date(d.getFullYear(),d.getMonth()+1,0);
-  const fi=document.getElementById('alfrom'),ti=document.getElementById('alto');
-  if(fi)fi.value=fmtDate(from);
-  if(ti)ti.value=fmtDate(to);
-  renderAlNavLabel();
-}
-
-function navAlert(dir){
-  const d=getAlertAnchor();
-  d.setMonth(d.getMonth()+dir);
-  setAlertAnchor(d);
-  renderAlert();
-}
-
-function renderAlNavLabel(){
-  const el=document.getElementById('al-nav-label');if(!el)return;
-  const d=getAlertAnchor();
-  const mns=T('months')||['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  el.textContent=mns[d.getMonth()]+' '+d.getFullYear();
-}
-
-// ── HISTORY button label update when HV changes ─
-function updateHistBtnLabel(){
-  const labels={day:['◀ 前日','後日 ▶'],week:['◀ 上週','下週 ▶'],month:['◀ 上月','下月 ▶'],year:['◀ 上年','下年 ▶']};
-  const l=labels[HV]||['◀ 前月','後月 ▶'];
-  const p=document.getElementById('h-prev-btn'),n=document.getElementById('h-next-btn');
-  if(p)p.textContent=l[0];if(n)n.textContent=l[1];
-}
-
-// ══════════════════════════════════════════
-// GAS CLOUD SYNC (v3 — POST-only)
-// ══════════════════════════════════════════
-
-// 把 HTML 短欄位（z,d,p,t,h）轉成 GAS 長欄位，並夾入 zone 名稱
-function enrichRec(r){
-  const z=getZ().find(zz=>zz.id===r.z)||{zh:'',en:''};
-  return {
-    id:          r.id,
-    date:        r.d,
-    period:      r.p,
-    zoneId:      r.z,
-    zoneName:    z.zh,
-    zoneEn:      z.en,
-    temperature: r.t!==''&&r.t!==undefined?r.t:'',
-    humidity:    r.h!==''&&r.h!==undefined?r.h:'',
-    note:        r.note||'',
-    submittedAt: r.ts||new Date().toISOString()
-  };
-}
-
-// 把 GAS 長欄位回傳的記錄正規化成 HTML 內部格式
-function normalizeRec(r){
-  const t=r.temperature!==undefined&&r.temperature!==''?parseFloat(r.temperature):'';
-  const h=r.humidity   !==undefined&&r.humidity   !==''?parseFloat(r.humidity)   :'';
-  return {
-    id:   r.id||'',
-    z:    r.zoneId||'',
-    d:    (r.date||'').slice(0,10),
-    p:    r.period||'',
-    t:    isNaN(t)?'':t,
-    h:    isNaN(h)?'':h,
-    note: r.note||'',
-    ts:   r.submittedAt||''
-  };
-}
-
-// 測試 GAS 連線
-// GAS Web App 的 CORS 限制：用 no-cors 送出後無法讀回應
-// 改用 doGet (GET request) 做 ping，GET 不受 CORS preflight 影響
 async function testGAS(){
-  const url=document.getElementById('gas-url').value.trim();
-  if(!url){toast('請輸入 GAS URL','err');return;}
-  document.getElementById('sdot').className='syncdt sd-idle';
-  document.getElementById('sstatus').textContent='測試中...';
-  try{
-    // GET request：GAS doGet 回傳 JSON，瀏覽器可以直接讀
-    const r=await fetch(url+'?ping=1',{method:'GET',redirect:'follow'});
-    if(r.ok){
-      document.getElementById('sdot').className='syncdt sd-ok';
-      document.getElementById('sstatus').textContent='✅ 已連接';
-      toast('GAS 連接成功 ✅','ok');
-    } else {
-      throw new Error('HTTP '+r.status);
-    }
-  }catch(ex){
-    document.getElementById('sdot').className='syncdt sd-err';
-    document.getElementById('sstatus').textContent='❌ 連接失敗';
-    toast('連接失敗: '+ex.message,'err');
-  }
+  const url=document.getElementById('gas-url').value.trim();if(!url){toast('請輸入 GAS URL','err');return;}
+  document.getElementById('sdot').className='syncdt sd-idle';document.getElementById('sstatus').textContent='測試中...';
+  try{const r=await fetch(url+'?action=ping');const d=await r.json();
+    if(d.ok){document.getElementById('sdot').className='syncdt sd-ok';document.getElementById('sstatus').textContent='✅ 已連接';toast('GAS 連接成功','ok');}
+    else throw new Error(d.msg||'fail');
+  }catch(ex){document.getElementById('sdot').className='syncdt sd-err';document.getElementById('sstatus').textContent='❌ 連接失敗';toast('連接失敗: '+ex.message,'err');}
 }
-
-// 全量上傳（手動，不觸發 TG 通知）
 async function syncUp(){
   const url=getGAS().url;if(!url){toast('請設定 GAS URL','err');return;}
-  const recs=getR();
-  document.getElementById('sdot').className='syncdt sd-idle';
-  document.getElementById('sstatus').textContent='上傳中...';
-  try{
-    await fetch(url,{method:'POST',mode:'no-cors',
-      body:JSON.stringify({type:'tempSync',records:recs.map(enrichRec),zones:getZ(),full:true})});
-    document.getElementById('sdot').className='syncdt sd-ok';
-    document.getElementById('sstatus').textContent='✅ 已連接';
-    toast('✅ 已送出 '+recs.length+' 筆（no-cors模式，資料已送達GAS）','ok');
-  }catch(ex){
-    document.getElementById('sdot').className='syncdt sd-err';
-    document.getElementById('sstatus').textContent='❌ 同步失敗';
-    toast('上傳失敗: '+ex.message,'err');
-  }
+  try{const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'action=sync&payload='+encodeURIComponent(JSON.stringify({records:getR(),zones:getZ()}))});
+    const d=await r.json();d.ok?toast('同步成功','ok'):toast('同步失敗','err');
+  }catch{toast('網路錯誤','err');}
 }
-
-// 從雲端拉取記錄（合併到本機，雲端為主）
 async function syncDown(){
   const url=getGAS().url;if(!url){toast('請設定 GAS URL','err');return;}
-  document.getElementById('sdot').className='syncdt sd-idle';
-  document.getElementById('sstatus').textContent='拉取中...';
-  try{
-    // Pull 用 GET + query param，避免 CORS 問題
-    const r=await fetch(url+'?type=tempList',{method:'GET',redirect:'follow'});
-    const d=await r.json();
-    if(d.ok&&d.records){
-      const cloudRecs=d.records.map(normalizeRec);
-      const cloudIds=new Set(cloudRecs.map(r=>r.id));
-      const onlyLocal=getR().filter(r=>!cloudIds.has(r.id));
-      const merged=[...cloudRecs,...onlyLocal];
-      setR(merged);
-      document.getElementById('sdot').className='syncdt sd-ok';
-      document.getElementById('sstatus').textContent='✅ 已連接';
-      toast(`拉取成功：雲端 ${cloudRecs.length} 筆，本機獨有 ${onlyLocal.length} 筆`,'ok');
-      renderAll();
-    } else throw new Error(d.error||'fail');
-  }catch(ex){
-    document.getElementById('sdot').className='syncdt sd-err';
-    document.getElementById('sstatus').textContent='❌ 拉取失敗';
-    toast('拉取失敗: '+ex.message,'err');
-  }
-}
-
-// 自動同步（儲存時靜默觸發，不阻塞 UI）
-async function gasAutoSync(newRecs){
-  const url=getGAS().url;if(!url)return;
-  try{
-    // no-cors: GAS CORS 限制，用 fire-and-forget 模式
-    await fetch(url,{method:'POST',mode:'no-cors',
-      body:JSON.stringify({type:'tempSync',records:newRecs.map(enrichRec),zones:getZ()})});
-    document.getElementById('sdot').className='syncdt sd-ok';
-    document.getElementById('sstatus').textContent='✅ 已同步';
-  }catch(ex){
-    document.getElementById('sdot').className='syncdt sd-err';
-    console.warn('gasAutoSync failed:',ex.message);
-  }
-}
-
-// 批量匯入到雲端（Excel 歷史資料匯入時使用）
-async function gasBulkSync(newRecs){
-  const url=getGAS().url;if(!url)return;
-  try{
-    await fetch(url,{method:'POST',mode:'no-cors',
-      body:JSON.stringify({type:'tempImport',records:newRecs.map(enrichRec),zones:getZ()})});
-    if(true){
-      document.getElementById('sdot').className='syncdt sd-ok';
-      document.getElementById('sstatus').textContent='✅ 已同步';
-      toast(`☁️ 雲端匯入完成：新增 ${d.added} 筆，跳過重複 ${d.skipped} 筆`,'ok');
-    } else {
-      document.getElementById('sdot').className='syncdt sd-err';
-      toast('☁️ 雲端匯入失敗: '+(d.error||''),'err');
-    }
-  }catch(ex){
-    document.getElementById('sdot').className='syncdt sd-err';
-    console.warn('gasBulkSync failed:',ex.message);
-    toast('☁️ 雲端網路錯誤','err');
-  }
-}
-
-// 刪除雲端記錄（靜默）
-async function gasDelete(id){
-  const url=getGAS().url;if(!url)return;
-  try{
-    await fetch(url,{method:'POST',mode:'no-cors',
-      body:JSON.stringify({type:'tempDelete',id})});
-  }catch(ex){console.warn('gasDelete failed:',ex.message);}
-}
-
-// 啟動時從雲端拉取（靜默合併）
-async function gasPullOnInit(){
-  const url=getGAS().url;if(!url)return;
-  try{
-    const r=await fetch(url+'?type=tempList',{method:'GET',redirect:'follow'});
-    const d=await r.json();
-    if(d.ok&&d.records&&d.records.length>0){
-      const cloudRecs=d.records.map(normalizeRec);
-      const cloudIds=new Set(cloudRecs.map(r=>r.id));
-      const local=getR();
-      const onlyLocal=local.filter(r=>!cloudIds.has(r.id));
-      const merged=[...cloudRecs,...onlyLocal];
-      if(merged.length!==local.length){
-        setR(merged);
-        renderAll();
-        toast(`☁️ 已從雲端同步 ${cloudRecs.length} 筆記錄`,'inf');
-      }
-      document.getElementById('sdot').className='syncdt sd-ok';
-      document.getElementById('sstatus').textContent='✅ 已連接';
-    }
-  }catch(ex){
-    // 靜默失敗：本機資料照常使用
-  }
+  try{const r=await fetch(url+'?action=pull');const d=await r.json();
+    if(d.ok&&d.records){setR(d.records);toast('拉取成功 '+d.records.length+'筆','ok');renderAll();}else toast('拉取失敗','err');
+  }catch{toast('網路錯誤','err');}
 }
 
 // ══════════════════════════════════════════
@@ -2138,26 +1653,6 @@ function init(){
   ['hto','ato','alto'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
   popSelects();applyI18n();renderDash();updBadge();renderHNavLabel();
   setInterval(tick,1000);tick();
-  // 啟動時靜默從雲端拉取最新資料
-  setTimeout(gasPullOnInit, 800);
-  loadInspectors();
-  // 初始化時設定今天的日期
-  const rdInit=document.getElementById('rec-date');if(rdInit&&!rdInit.value){rdInit.value=today();loadRecDate();}
-  // 初始化 nav anchors
-  setTimeout(()=>{
-    // Analysis anchor: 今天
-    const aAnchor=document.getElementById('a-anchor');
-    if(aAnchor&&!aAnchor.value){aAnchor.value=today();}
-    updateAnalBtnLabel();updateAnalRange();
-    // Anomaly anchor: 今月
-    const alAnchor=document.getElementById('al-anchor');
-    if(alAnchor&&!alAnchor.value){
-      const n=new Date();
-      alAnchor.value=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0');
-    }
-    updateAlertRange();
-    updateHistBtnLabel();renderHNavLabel();
-  },200);
 }
 window.addEventListener('load',init);
 </script></body></html>
