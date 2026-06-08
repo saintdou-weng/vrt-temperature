@@ -191,8 +191,37 @@ tbody tr:hover{background:var(--bg);}
   .zper{grid-template-columns:1fr;}
   .zp:first-child{border-right:none;border-bottom:1px solid var(--border);}
   .sgrid{grid-template-columns:1fr 1fr;}
+  .dnav-mid{min-width:90px;}.vtab .vt-sub{display:none;}
+  .sync-bar{gap:6px;}
 }
 .nodata-row td{text-align:center;padding:32px;color:var(--text3);}
+/* ─── DATE NAVIGATOR ─── */
+.date-nav{display:flex;align-items:center;background:var(--card);border-radius:10px;border:1.5px solid var(--border);overflow:hidden;box-shadow:var(--shadow-sm);}
+.dnav-arr{width:46px;height:46px;border:none;background:transparent;cursor:pointer;font-size:22px;font-weight:700;color:var(--text2);transition:.15s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.dnav-arr:hover{background:var(--pri-bg);color:var(--pri);}
+.dnav-arr:active{background:var(--pri);color:#fff;transform:scale(.9);}
+.dnav-mid{flex:1;min-width:140px;border:none;background:transparent;cursor:pointer;padding:0 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:46px;border-left:1px solid var(--border);border-right:1px solid var(--border);transition:.15s;position:relative;}
+.dnav-mid:hover{background:var(--pri-bg);}
+.dnav-date{font-size:15px;font-weight:700;color:var(--text);line-height:1.1;}
+.dnav-day{font-size:10px;color:var(--text3);font-weight:500;}
+.dnav-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:2;}
+/* ─── VIEW TABS ─── */
+.vtabs{display:flex;gap:3px;background:var(--bg);border-radius:10px;padding:3px;border:1px solid var(--border);}
+.vtab{flex:1;padding:6px 6px 4px;border:none;background:transparent;border-radius:8px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:0;line-height:1;transition:.2s;color:var(--text3);}
+.vtab .vt-main{font-size:17px;font-weight:700;}
+.vtab .vt-sub{font-size:9px;text-transform:uppercase;letter-spacing:.3px;margin-top:2px;font-weight:600;}
+.vtab.on{background:var(--pri);color:#fff;box-shadow:var(--shadow);}
+.vtab:hover:not(.on){background:var(--card);color:var(--pri);}
+/* ─── SYNC BAR ─── */
+.sync-bar{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:var(--r);padding:8px 14px;margin-bottom:12px;border:1px solid var(--border);box-shadow:var(--shadow-sm);flex-wrap:wrap;}
+.sync-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--border);background:var(--bg);}
+.sc-ok{background:#dcfce7;border-color:#bbf7d0;color:#15803d;}
+.sc-err{background:#fee2e2;border-color:#fecaca;color:#dc2626;}
+.sc-busy{background:var(--pri-bg);border-color:#c7d2fe;color:var(--pri);}
+.sc-idle{color:var(--text3);}
+.sync-ico{font-size:14px;transition:.3s;}
+.sync-ico.spinning{animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
 </style>
 </head>
 <body>
@@ -224,15 +253,32 @@ tbody tr:hover{background:var(--bg);}
 <!-- ═══ DASHBOARD ═══ -->
 <div class="pnl on" id="pnl-dash">
   <div class="sgrid" id="dash-stats"></div>
-  <div class="cbar">
-    <span class="clbl" id="i-date">日期</span>
-    <input type="date" id="dash-date" style="width:155px" onchange="renderDash()">
-    <div class="ptog">
-      <button class="pbtn on" id="dbam" onclick="setDP('morning')" id="i-am">早上</button>
-      <button class="pbtn" id="dbpm" onclick="setDP('afternoon')" id="i-pm">下午</button>
-      <button class="pbtn" id="dball" onclick="setDP('all')" id="i-all">全天</button>
+  <!-- Sync bar -->
+  <div class="sync-bar">
+    <div class="sync-chip sc-idle" id="sync-chip-up"><span class="sync-ico" id="sync-ico-up">⬆️</span><span id="sync-up-info">未同步</span></div>
+    <div class="sync-chip sc-idle" id="sync-chip-dn"><span class="sync-ico" id="sync-ico-dn">⬇️</span><span id="sync-dn-info">未拉取</span></div>
+    <button class="btn bp sm" onclick="syncUp()">⬆ 上傳</button>
+    <button class="btn bg sm" onclick="syncDown()">⬇ 拉取</button>
+    <div class="ml" style="display:flex;align-items:center;gap:6px">
+      <div class="vtabs" style="gap:2px">
+        <button class="vtab on" id="dbam" onclick="setDP('morning')"><span class="vt-main">早</span><span class="vt-sub">AM</span></button>
+        <button class="vtab" id="dbpm" onclick="setDP('afternoon')"><span class="vt-main">午</span><span class="vt-sub">PM</span></button>
+        <button class="vtab" id="dball" onclick="setDP('all')"><span class="vt-main">全</span><span class="vt-sub">All</span></button>
+      </div>
+      <button class="btn bp sm" onclick="showTab('rec')" id="i-addrec">＋ 記錄</button>
     </div>
-    <button class="btn bp sm ml" onclick="showTab('rec')" id="i-addrec">＋ 新增記錄</button>
+  </div>
+  <!-- Date navigator -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+    <div class="date-nav">
+      <button class="dnav-arr" onclick="shiftDate('dash-date',-1)" title="前一天">‹</button>
+      <div class="dnav-mid">
+        <input type="date" id="dash-date" class="dnav-input" onchange="updateDateLabel('dash');renderDash()">
+        <div class="dnav-date" id="dash-date-label">--</div>
+        <div class="dnav-day" id="dash-date-day">點擊選擇日期</div>
+      </div>
+      <button class="dnav-arr" onclick="shiftDate('dash-date',1)" title="後一天">›</button>
+    </div>
   </div>
   <div class="zgrid" id="dash-zones"></div>
   <div id="dash-anom"></div>
@@ -240,16 +286,31 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ RECORD ═══ -->
 <div class="pnl" id="pnl-rec">
-  <div class="cbar">
-    <span class="clbl" id="i-date2">日期</span>
-    <input type="date" id="rec-date" style="width:155px" onchange="loadWXforDate(this.value);renderRec()">
-    <div class="ptog">
-      <button class="pbtn on" id="rbam" onclick="setRP('morning')">早上</button>
-      <button class="pbtn" id="rbpm" onclick="setRP('afternoon')">下午</button>
+  <!-- Sync bar -->
+  <div class="sync-bar">
+    <div class="sync-chip sc-idle" id="sync-chip-up-rec"><span class="sync-ico" id="sync-ico-up-rec">⬆️</span><span id="sync-up-info-rec">未同步</span></div>
+    <div class="sync-chip sc-idle" id="sync-chip-dn-rec"><span class="sync-ico" id="sync-ico-dn-rec">⬇️</span><span id="sync-dn-info-rec">未拉取</span></div>
+    <button class="btn bp sm" onclick="syncUp()">⬆ 上傳</button>
+    <button class="btn bg sm" onclick="syncDown()">⬇ 拉取</button>
+  </div>
+  <!-- Date nav + period + actions -->
+  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
+    <div class="date-nav">
+      <button class="dnav-arr" onclick="shiftDate('rec-date',-1)">‹</button>
+      <div class="dnav-mid">
+        <input type="date" id="rec-date" class="dnav-input" onchange="loadWXforDate(this.value);updateDateLabel('rec');renderRec()">
+        <div class="dnav-date" id="rec-date-label">--</div>
+        <div class="dnav-day" id="rec-date-day">點擊選擇日期</div>
+      </div>
+      <button class="dnav-arr" onclick="shiftDate('rec-date',1)">›</button>
     </div>
-    <input type="text" id="rec-note" style="width:180px" placeholder="備註（可選）" id="i-note-ph">
-    <button class="btn bp ml" onclick="saveAllRec()" id="i-saveall">💾 全部儲存</button>
-    <button class="btn bg" onclick="clearRI()" id="i-clear">清除</button>
+    <div class="vtabs">
+      <button class="vtab on" id="rbam" onclick="setRP('morning')"><span class="vt-main">早</span><span class="vt-sub">AM</span></button>
+      <button class="vtab" id="rbpm" onclick="setRP('afternoon')"><span class="vt-main">午</span><span class="vt-sub">PM</span></button>
+    </div>
+    <input type="text" id="rec-note" style="flex:1;min-width:120px;max-width:200px" placeholder="備註（可選）">
+    <button class="btn bp" onclick="saveAllRec()" id="i-saveall">💾 儲存</button>
+    <button class="btn bg" onclick="clearRI()">清除</button>
   </div>
   <div class="sm-t muted mb8" id="rec-plbl" style="margin-bottom:10px;"></div>
   <!-- Weather selector -->
@@ -276,39 +337,37 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ HISTORY ═══ -->
 <div class="pnl" id="pnl-hist">
-  <div class="cbar">
-    <span class="clbl" id="i-filter">篩選</span>
-    <select id="hzone" onchange="renderHist()" style="width:155px"><option value="all" id="i-allz">全部區域</option></select>
-    <select id="hperiod" onchange="renderHist()" style="width:120px">
-      <option value="all" id="i-allp">全部時段</option>
-      <option value="morning" id="i-am2">早上</option>
-      <option value="afternoon" id="i-pm2">下午</option>
-    </select>
-    <select id="hview" onchange="setHV(this.value)" style="width:110px">
-      <option value="day" id="i-hvd">日 Day</option>
-      <option value="week" id="i-hvw">週 Week</option>
-      <option value="month" id="i-hvm" selected>月 Month</option>
-      <option value="year" id="i-hvy">年 Year</option>
-    </select>
-    <button class="btn bg sm" onclick="exportXL()" id="i-expxl">📥 Excel</button>
+  <!-- Sync bar -->
+  <div class="sync-bar">
+    <div class="sync-chip sc-idle" id="sync-chip-up-hist"><span class="sync-ico" id="sync-ico-up-hist">⬆️</span><span id="sync-up-info-hist">未同步</span></div>
+    <div class="sync-chip sc-idle" id="sync-chip-dn-hist"><span class="sync-ico" id="sync-ico-dn-hist">⬇️</span><span id="sync-dn-info-hist">未拉取</span></div>
+    <button class="btn bp sm" onclick="syncUp()">⬆ 上傳</button>
+    <button class="btn bg sm" onclick="syncDown()">⬇ 拉取</button>
+    <button class="btn bg sm ml" onclick="exportXL()">📥 Excel</button>
   </div>
-  <!-- Navigation bar -->
-  <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:var(--r);padding:10px 16px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--border);">
-    <div style="display:flex;align-items:center;gap:8px;">
-      <span class="clbl" id="i-filter-lbl">篩選</span>
-      <select id="hzone2" onchange="syncZoneFilter();renderHist()" style="width:150px"><option value="all">全部區域</option></select>
-      <select id="hperiod2" onchange="syncPeriodFilter();renderHist()" style="width:115px">
-        <option value="all">全部時段</option>
-        <option value="morning">早上</option>
-        <option value="afternoon">下午</option>
-      </select>
+  <!-- View tabs -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+    <div class="vtabs">
+      <button class="vtab" id="hvd" onclick="setHV('day')"><span class="vt-main">日</span><span class="vt-sub">Day</span></button>
+      <button class="vtab" id="hvw" onclick="setHV('week')"><span class="vt-main">週</span><span class="vt-sub">Week</span></button>
+      <button class="vtab on" id="hvm" onclick="setHV('month')"><span class="vt-main">月</span><span class="vt-sub">Month</span></button>
+      <button class="vtab" id="hvy" onclick="setHV('year')"><span class="vt-main">年</span><span class="vt-sub">Year</span></button>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;">
-      <button class="btn bg sm" onclick="navHist(-1)" style="padding:6px 14px;font-size:16px;font-weight:700">‹</button>
-      <div id="h-nav-label" style="font-size:14px;font-weight:700;color:var(--text);min-width:140px;text-align:center;">--</div>
-      <button class="btn bg sm" onclick="navHist(1)" style="padding:6px 14px;font-size:16px;font-weight:700">›</button>
-    </div>
-    <div style="display:flex;align-items:center;gap:6px;">
+    <select id="hzone2" onchange="syncZoneFilter();renderHist()" style="width:140px"><option value="all">全部區域</option></select>
+    <select id="hperiod2" onchange="syncPeriodFilter();renderHist()" style="width:100px">
+      <option value="all">全部時段</option><option value="morning">早上</option><option value="afternoon">下午</option>
+    </select>
+    <!-- Legacy hidden selects for sync compatibility -->
+    <select id="hzone" onchange="renderHist()" style="display:none"><option value="all">全部區域</option></select>
+    <select id="hperiod" onchange="renderHist()" style="display:none"><option value="all">全部時段</option></select>
+    <select id="hview" onchange="setHV(this.value)" style="display:none"></select>
+  </div>
+  <!-- Date navigator -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+    <button class="btn bg sm" onclick="navHist(-1)" style="font-size:18px;font-weight:700;padding:8px 16px">‹</button>
+    <div id="h-nav-label" style="font-size:15px;font-weight:700;color:var(--text);min-width:160px;text-align:center;background:var(--card);padding:8px 16px;border-radius:8px;border:1px solid var(--border)">--</div>
+    <button class="btn bg sm" onclick="navHist(1)" style="font-size:18px;font-weight:700;padding:8px 16px">›</button>
+    <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap;">
       <input type="date" id="hfrom" onchange="renderHist()" style="width:130px">
       <span class="muted">→</span>
       <input type="date" id="hto" onchange="renderHist()" style="width:130px">
@@ -864,8 +923,44 @@ const moKey=d=>d.slice(0,7);
 const yrKey=d=>d.slice(0,4);
 
 // ══════════════════════════════════════════
-// TABS
+// DATE NAVIGATOR HELPERS
 // ══════════════════════════════════════════
+const WEEKDAYS_SHORT=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+const WEEKDAYS_ZH=['日','一','二','三','四','五','六'];
+function updateDateLabel(prefix){
+  const input=document.getElementById(prefix+'-date');if(!input||!input.value)return;
+  const dt=new Date(input.value+'T00:00:00');
+  const wd=LANG==='zh'?'週'+WEEKDAYS_ZH[dt.getDay()]:WEEKDAYS_SHORT[dt.getDay()];
+  const mns=T('months')||['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  const lbl=LANG==='zh'?`${dt.getFullYear()}年${mns[dt.getMonth()]}${dt.getDate()}日`:`${dt.getDate()} ${mns[dt.getMonth()]} ${dt.getFullYear()}`;
+  const lbEl=document.getElementById(prefix+'-date-label');if(lbEl)lbEl.textContent=lbl;
+  const dyEl=document.getElementById(prefix+'-date-day');if(dyEl)dyEl.textContent=wd+(input.value===today()?' · 今天 Today':'');
+}
+function shiftDate(inputId,dir){
+  const el=document.getElementById(inputId);if(!el)return;
+  const dt=new Date((el.value||today())+'T00:00:00');
+  dt.setDate(dt.getDate()+dir);
+  el.value=dt.toISOString().slice(0,10);
+  const prefix=inputId.replace('-date','');
+  updateDateLabel(prefix);
+  if(prefix==='dash')renderDash();
+  else if(prefix==='rec'){loadWXforDate(el.value);renderRec();}
+}
+
+// ══════════════════════════════════════════
+// SYNC CHIP UPDATER
+// ══════════════════════════════════════════
+function setSyncChip(type,state,text){
+  // type: 'up' | 'dn'  state: 'busy'|'ok'|'err'|'idle'
+  const ids=type==='up'?['sync-chip-up','sync-chip-up-rec','sync-chip-up-hist']:['sync-chip-dn','sync-chip-dn-rec','sync-chip-dn-hist'];
+  const icoIds=type==='up'?['sync-ico-up','sync-ico-up-rec','sync-ico-up-hist']:['sync-ico-dn','sync-ico-dn-rec','sync-ico-dn-hist'];
+  const infoIds=type==='up'?['sync-up-info','sync-up-info-rec','sync-up-info-hist']:['sync-dn-info','sync-dn-info-rec','sync-dn-info-hist'];
+  const ico=type==='up'?(state==='busy'?'🔄':state==='ok'?'✅':state==='err'?'❌':'⬆️'):(state==='busy'?'🔄':state==='ok'?'✅':state==='err'?'❌':'⬇️');
+  const cls='sync-chip sc-'+(state==='busy'?'busy':state==='ok'?'ok':state==='err'?'err':'idle');
+  ids.forEach(id=>{const el=document.getElementById(id);if(el){el.className=cls;}});
+  icoIds.forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=ico;el.classList.toggle('spinning',state==='busy');}});
+  infoIds.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=text;});
+}
 function showTab(n){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
@@ -1100,6 +1195,10 @@ function openREfromDash(zid,date){const r=getR().filter(r=>r.z===zid&&r.d===date
 // ══════════════════════════════════════════
 function setHV(v){
   HV=v;HP=1;
+  ['day','week','month','year'].forEach(x=>{
+    const el=document.getElementById('hv'+x[0]);
+    if(el)el.classList.toggle('on',x===v);
+  });
   const sel=document.getElementById('hview');if(sel)sel.value=v;
   renderHNavLabel();renderHist();
 }
@@ -1690,6 +1789,7 @@ async function testGAS(){
 async function syncUp(){
   const url=getGAS().url;if(!url){toast('請設定 GAS URL','err');return;}
   const payload={records:getR(),zones:getZ(),weather:getWX(),thresholds:getTH(),tg:getTG()};
+  setSyncChip('up','busy','上傳中…');
   const btnEl=document.getElementById('sync-up-btn');if(btnEl)btnEl.disabled=true;
   try{
     const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
@@ -1697,12 +1797,14 @@ async function syncUp(){
     const text=await r.text();
     let d;try{d=JSON.parse(text);}catch{throw new Error('非 JSON: '+text.slice(0,120));}
     if(d.ok){
-      const cnt=payload.records.length;
+      const cnt=payload.records.length;const t=new Date().toLocaleTimeString();
+      setSyncChip('up','ok',`✓ ${cnt}筆 ${t}`);
       toast(`上傳成功 ${cnt}筆記錄`,'ok');
       addSyncLog('upload','ok',`Records:${cnt} Zones:${payload.zones.length}`,cnt);
-      document.getElementById('last-up-time').textContent='Last Upload: '+new Date().toLocaleTimeString();
+      const lut=document.getElementById('last-up-time');if(lut)lut.textContent='Last Upload: '+t;
     }else throw new Error(d.msg||'GAS 回應 ok=false');
   }catch(ex){
+    setSyncChip('up','err',ex.message.slice(0,30));
     toast('上傳失敗: '+ex.message,'err');
     addSyncLog('upload','err',ex.message);
   }finally{if(btnEl)btnEl.disabled=false;}
@@ -1732,18 +1834,22 @@ async function syncDown(){
     const localCnt=getR().length;const cloudCnt=d.records?.length||0;
     const syncOk=localCnt===cloudCnt;
     const detail=restored.join(' | ');
-    const verifyMsg=syncOk?`✓ Synced (${localCnt} records)`:`⚠ Difference: local ${localCnt} ≠ cloud ${cloudCnt}`;
+    const verifyMsg=syncOk?`✓ Synced (${localCnt}筆)`:`⚠ Diff local ${localCnt} ≠ cloud ${cloudCnt}`;
+    const t=new Date().toLocaleTimeString();
+    setSyncChip('dn',syncOk?'ok':'err',verifyMsg+' '+t);
     toast('拉取成功 · '+verifyMsg,'ok');
     addSyncLog('download',syncOk?'ok':'warn',detail+' · '+verifyMsg,cloudCnt);
     if(logEl)logEl.textContent='✅ '+detail+'\n'+verifyMsg;
+    const ldt=document.getElementById('last-dn-time');if(ldt)ldt.textContent='Last Pull: '+t;
     renderAll();
   }catch(ex){
     const msg=ex.message;
+    setSyncChip('dn','err',msg.slice(0,35));
     toast('拉取失敗: '+msg,'err');
     addSyncLog('download','err',msg);
     if(logEl)logEl.textContent='❌ '+msg;
     console.error('[VRT syncDown]',ex);
-  }finally{if(btnEl)btnEl.disabled=false;document.getElementById('last-dn-time').textContent='Last Pull: '+new Date().toLocaleTimeString();}
+  }finally{if(btnEl)btnEl.disabled=false;}
 }
 
 // ══════════════════════════════════════════
@@ -1887,6 +1993,7 @@ const _origRenderSet=typeof renderSet==='function'?renderSet:null;
 function init(){
   const td=today();
   ['dash-date','rec-date','tg-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
+  updateDateLabel('dash');updateDateLabel('rec');
   const d30=new Date();d30.setDate(d30.getDate()-30);const d30s=d30.toISOString().slice(0,10);
   ['hfrom','afrom','alfrom'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=d30s;});
   ['hto','ato','alto'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
