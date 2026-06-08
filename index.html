@@ -216,6 +216,7 @@ tbody tr:hover{background:var(--bg);}
   <button class="tab" id="tab-anal" onclick="showTab('anal')">📈 <span id="i-tab-anal">分析</span></button>
   <button class="tab" id="tab-zones" onclick="showTab('zones')">🏭 <span id="i-tab-zones">區域</span></button>
   <button class="tab" id="tab-alert" onclick="showTab('alert')">⚠️ <span id="i-tab-alert">異常</span> <span class="tbadge" id="abadge" style="display:none">0</span></button>
+  <button class="tab" id="tab-synclog" onclick="showTab('synclog')">☁️ <span>Sync Log</span> <span class="tbadge" id="sl-badge" style="display:none">!</span></button>
   <button class="tab" id="tab-set" onclick="showTab('set')">⚙️ <span id="i-tab-set">設定</span></button>
 </div>
 <div class="main">
@@ -368,6 +369,27 @@ tbody tr:hover{background:var(--bg);}
   <div id="alert-list"></div>
 </div>
 
+<!-- ═══ SYNC LOG ═══ -->
+<div class="pnl" id="pnl-synclog">
+  <div class="flw" style="margin-bottom:14px">
+    <h2 style="font-size:15px;font-weight:700">☁️ Cloud Sync Log</h2>
+    <div style="display:flex;gap:8px;align-items:center;margin-left:auto">
+      <span id="last-up-time" class="sm-t muted">Last Upload: --</span>
+      <span id="last-dn-time" class="sm-t muted" style="margin-left:8px">Last Pull: --</span>
+      <span id="next-up-time" class="sm-t muted" style="margin-left:8px">Next Upload: --</span>
+      <button class="btn bg sm" onclick="clearSyncLog()">🗑 清除日誌</button>
+    </div>
+  </div>
+  <!-- Inline sync result -->
+  <div id="sync-log-inline" style="background:var(--bg);border-radius:8px;padding:11px 14px;font-size:12px;color:var(--text2);border:1px solid var(--border);margin-bottom:14px;min-height:36px;white-space:pre-wrap;font-family:monospace"></div>
+  <div class="twrap">
+    <table>
+      <thead><tr><th>Time</th><th>Action</th><th>Status</th><th>Detail</th><th>Count</th></tr></thead>
+      <tbody id="sl-table-body"></tbody>
+    </table>
+  </div>
+</div>
+
 <!-- ═══ SETTINGS ═══ -->
 <div class="pnl" id="pnl-set">
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
@@ -418,11 +440,34 @@ tbody tr:hover{background:var(--bg);}
         <div class="chd"><span class="ct">☁️ Google Sheets 雲端同步</span></div>
         <div class="cb">
           <div class="fg" style="margin-bottom:10px"><label>GAS Web App URL</label><input type="text" id="gas-url" placeholder="https://script.google.com/macros/s/..." oninput="saveGAScfg()"></div>
+          <div class="fg" style="margin-bottom:10px"><label>Dashboard URL (for Telegram button)</label><input type="text" id="gas-dash-url" placeholder="https://yourname.github.io/vrt_temperature.html" oninput="saveGAScfg()"></div>
+          <div class="flw" style="gap:6px;margin-bottom:10px">
+            <div class="fl" style="gap:5px"><div class="syncdt sd-idle" id="sdot"></div><span class="sm-t muted" id="sstatus">未連接</span></div>
+            <button class="btn bg sm" onclick="testGAS()">🔗 測試</button>
+            <button class="btn bp sm" id="sync-up-btn" onclick="syncUp()">⬆ 上傳全部</button>
+            <button class="btn bg sm" id="sync-dn-btn" onclick="syncDown()">⬇ 拉取全部</button>
+          </div>
+          <div class="sep"></div>
+          <div class="sttit">⏰ 自動同步 Auto Sync</div>
+          <div class="g2" style="margin-bottom:8px">
+            <div class="fg"><label>上傳間隔 (分)</label><input type="number" id="as-up" min="5" max="120" value="15" style="width:80px"></div>
+            <div class="fg"><label>拉取間隔 (分)</label><input type="number" id="as-dn" min="15" max="240" value="60" style="width:80px"></div>
+          </div>
+          <div class="fl" style="gap:8px;margin-bottom:8px">
+            <input type="checkbox" id="as-enable" style="width:18px;height:18px">
+            <label style="margin:0;font-size:13px">啟用自動同步</label>
+            <button class="btn bp sm" onclick="saveASconfig()">套用</button>
+          </div>
+        </div>
+      </div>
+      <!-- Auto Weather -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="chd"><span class="ct">🌍 自動天氣 (Open-Meteo · Sihanoukville)</span></div>
+        <div class="cb">
+          <p class="sm-t muted" style="margin-bottom:10px">免費 · 無需 API Key · 自動填入今日天氣</p>
           <div class="flw" style="gap:6px">
-            <div class="fl" style="gap:5px"><div class="syncdt sd-idle" id="sdot"></div><span class="sm-t muted" id="sstatus" id="i-idle">未連接</span></div>
-            <button class="btn bg sm" onclick="testGAS()" id="i-testcon">🔗 測試</button>
-            <button class="btn bp sm" onclick="syncUp()" id="i-syncup">⬆ 上傳</button>
-            <button class="btn bg sm" onclick="syncDown()" id="i-pull">⬇ 拉取</button>
+            <button class="btn bp sm" onclick="fetchAutoWeather(today())">🌤️ 立即更新</button>
+            <span class="sm-t muted" id="aw-status">--</span>
           </div>
         </div>
       </div>
@@ -649,7 +694,8 @@ km:{
 let LANG='zh', DP='morning', RP='morning', HV='month', AV='month', HP=1;
 const PER_PAGE=30;
 let editZID=null, cfCB=null;
-const LSZ='vrt_th_z', LSR='vrt_th_r', LSTH='vrt_th_th', LSTG='vrt_th_tg', LSGAS='vrt_th_gas', LSW='vrt_th_wx';
+const LSZ='vrt_th_z', LSR='vrt_th_r', LSTH='vrt_th_th', LSTG='vrt_th_tg', LSGAS='vrt_th_gas', LSW='vrt_th_wx',
+      LSSL='vrt_th_sl', LSAW='vrt_th_aw', LSAS='vrt_th_as';
 
 const DZ=[
   {id:'za',zh:'A廠車間',en:'Building A Workshop',km:'អគារ A (រោងចក្រ)',col:'#4f6ef7',desc:'',on:true},
@@ -671,8 +717,27 @@ const getGAS=()=>{try{const d=localStorage.getItem(LSGAS);return d?JSON.parse(d)
 const setGAS=c=>localStorage.setItem(LSGAS,JSON.stringify(c));
 const getWX=()=>{try{const d=localStorage.getItem(LSW);return d?JSON.parse(d):{};} catch{return {};}}
 const setWX=w=>localStorage.setItem(LSW,JSON.stringify(w));
+const getSL=()=>{try{const d=localStorage.getItem(LSSL);return d?JSON.parse(d):[];}catch{return [];}}
+const setSL=l=>{const trimmed=l.slice(-100);localStorage.setItem(LSSL,JSON.stringify(trimmed));}
+const getAW=()=>{try{const d=localStorage.getItem(LSAW);return d?JSON.parse(d):{enabled:false,cache:{},lastFetch:''};}catch{return {enabled:false,cache:{},lastFetch:''};}}
+const setAW=a=>localStorage.setItem(LSAW,JSON.stringify(a));
+const getAS=()=>{try{const d=localStorage.getItem(LSAS);return d?JSON.parse(d):{upMin:15,dnMin:60,enabled:false};}catch{return {upMin:15,dnMin:60,enabled:false};}}
+const setAS=a=>localStorage.setItem(LSAS,JSON.stringify(a));
 const WX_KEYS=['sunny','pcloudy','cloudy','rainy','shower','storm'];
 const wxLabel=k=>k?T('wx_'+k):'';
+const wmoToWx=c=>{if(c<=1)return 'sunny';if(c===2)return 'pcloudy';if(c===3)return 'cloudy';if(c>=51&&c<=82)return c>=70?'rainy':'shower';if(c>=95)return 'storm';return 'cloudy';};
+const wxScore=k=>({sunny:5,pcloudy:4,cloudy:3,shower:2,rainy:2,storm:1}[k]||3);
+const wxScoreLabel=s=>s>=5?'☀️ Excellent':s>=4?'⛅ Good':s>=3?'🌦 Normal':s>=2?'🌧 Poor':'⛈ Severe';
+let autoSyncTimer=null;
+
+// Sync log helper
+function addSyncLog(action,status,detail='',count=''){
+  const log=getSL();
+  log.push({ts:new Date().toISOString(),action,status,detail,count});
+  setSL(log);
+  const el=document.getElementById('sl-badge');
+  if(el&&status==='err'){el.style.display='inline';el.textContent='!';}
+}
 
 // ══════════════════════════════════════════
 // STATUS HELPERS
@@ -812,6 +877,7 @@ function showTab(n){
   if(n==='anal')renderAnal();
   if(n==='zones')renderZones();
   if(n==='alert')renderAlert();
+  if(n==='synclog')renderSyncLog();
   if(n==='set')renderSet();
 }
 
@@ -1343,6 +1409,11 @@ function renderSet(){
   const tg=getTG();document.getElementById('tg-tok').value=tg.tok||'';document.getElementById('tg-chat').value=tg.chat||'';
   document.getElementById('tg-date').value=today();
   document.getElementById('gas-url').value=getGAS().url||'';
+  const dashUrlEl=document.getElementById('gas-dash-url');if(dashUrlEl)dashUrlEl.value=getGAS().dashUrl||'';
+  const as=getAS();
+  const ase=document.getElementById('as-enable');if(ase)ase.checked=as.enabled;
+  const asu=document.getElementById('as-up');if(asu)asu.value=as.upMin;
+  const asd=document.getElementById('as-dn');if(asd)asd.value=as.dnMin;
   const recs=getR();const dates=recs.map(r=>r.d).sort();
   document.getElementById('inf-rc').textContent=recs.length;
   document.getElementById('inf-zn').textContent=getZ().filter(z=>z.on).length;
@@ -1373,7 +1444,7 @@ function renderThLegend(){
 function updateThV(id,v,u){document.getElementById(id).textContent=v+u;}
 function saveTH(){setTH({t:{cold:+document.getElementById('th-tc').value,cool:+document.getElementById('th-tl').value,warm:+document.getElementById('th-tw').value,hot:+document.getElementById('th-th').value},h:{dry:+document.getElementById('th-hd').value,humid:+document.getElementById('th-hh').value,vhum:+document.getElementById('th-hv').value}});renderThLegend();}
 function saveTGcfg(){setTG({tok:document.getElementById('tg-tok').value,chat:document.getElementById('tg-chat').value});}
-function saveGAScfg(){setGAS({url:document.getElementById('gas-url').value});}
+function saveGAScfg(){setGAS({url:document.getElementById('gas-url').value,dashUrl:(document.getElementById('gas-dash-url')?.value||'')});}
 function clearAll(){confirmAction(T('cclrall'),()=>{setR([]);toast(T('deleted'),'inf');renderAll();updBadge();});}
 
 // ══════════════════════════════════════════
@@ -1528,35 +1599,76 @@ function importJSON(evt){
 // TELEGRAM
 // ══════════════════════════════════════════
 function buildTGmsg(type,date){
-  const recs=getR().filter(r=>r.d===date),zones=getZ(),now=new Date().toLocaleString();
-  if(type==='daily'){
-    let m=`🌡️ *VRT 溫濕度日報 — ${date}*\n\n`;
+  const recs=getR().filter(r=>r.d===date),zones=getZ();
+  const wxMap=getWX();const w=wxMap[date]||'';
+  const wxIcons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
+  const now=new Date();
+  const nowStr=now.toLocaleString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  const azone=zones.filter(z=>z.on&&recs.some(r=>r.z===z.id&&isAnom(r)));
+
+  if(type==='daily'||type==='full'){
+    let m=`📊 VRT Daily Report / 溫濕度日報\nDate / 日期: ${date}`;
+    if(w)m+=`\n${wxIcons[w]||'🌤️'} Weather / 天氣: ${T('wx_'+w)} · ${wxScoreLabel(wxScore(w))}`;
+    m+='\n'+('─'.repeat(30))+'\n';
     zones.filter(z=>z.on).forEach(z=>{
-      const zr=recs.filter(r=>r.z===z.id),mr=zr.find(r=>r.p==='morning'),ar=zr.find(r=>r.p==='afternoon');
-      m+=`*${z.zh} / ${z.en}*\n`;
-      if(mr)m+=`  🌅 早上: ${mr.t!==''?mr.t+'°C':'--'} / ${mr.h!==''?mr.h+'%':'--'}\n`;
-      if(ar)m+=`  🌇 下午: ${ar.t!==''?ar.t+'°C':'--'} / ${ar.h!==''?ar.h+'%':'--'}\n`;
-      if(!mr&&!ar)m+=`  ─ 無記錄\n`;m+='\n';
+      const zr=recs.filter(r=>r.z===z.id);
+      const mr=zr.find(r=>r.p==='morning'),ar=zr.find(r=>r.p==='afternoon');
+      m+=`\n[${z.en} / ${z.zh}]\n`;
+      if(mr){
+        const ts=tSt(mr.t),hs=hSt(mr.h);
+        const ta=ts&&ts.k!=='ok'?`[${ts.k.toUpperCase()}/${T(ts.k)}]`:'';
+        const ha=hs&&hs.k!=='ok'?`[${hs.k.toUpperCase()}/${T(hs.k)}]`:'';
+        m+=`  AM/早: ${mr.t!==''?mr.t+'C':'--'}  ${mr.h!==''?mr.h+'%':'--'}${ta}${ha}\n`;
+      }
+      if(ar){
+        const ts=tSt(ar.t),hs=hSt(ar.h);
+        const ta=ts&&ts.k!=='ok'?`[${ts.k.toUpperCase()}/${T(ts.k)}]`:'';
+        const ha=hs&&hs.k!=='ok'?`[${hs.k.toUpperCase()}/${T(hs.k)}]`:'';
+        m+=`  PM/午: ${ar.t!==''?ar.t+'C':'--'}  ${ar.h!==''?ar.h+'%':'--'}${ta}${ha}\n`;
+      }
+      if(!mr&&!ar)m+=`  ─ No record / 無記錄\n`;
     });
-    m+=`⚠️ 異常: ${recs.filter(r=>isAnom(r)).length} 筆\n_${now}_`;return m;
+    m+='\n'+('─'.repeat(30))+'\n';
+    const anomCnt=azone.length;
+    m+=`Anomaly/異常: ${anomCnt} zone(s)\n${nowStr}`;
+    return m;
   }else if(type==='anomaly'){
     const an=recs.filter(r=>isAnom(r));
-    if(!an.length)return `✅ *VRT 異常報告 — ${date}*\n\n無異常\n_${now}_`;
-    let m=`⚠️ *VRT 異常報告 — ${date}*\n\n`;
-    an.forEach(r=>{const z=zones.find(z=>z.id===r.z);m+=`${isCrit(r)?'🔴':'⚠️'} ${z?z.zh:'?'} · ${r.p==='morning'?'早上':'下午'}: 🌡️${r.t!==''?r.t+'°C':'--'} 💧${r.h!==''?r.h+'%':'--'}\n`;});
-    m+=`\n_${now}_`;return m;
-  }else{
-    let m=`📊 *VRT 完整報告 — ${date}*\n\n日期 | 區域 | 時段 | 溫度 | 濕度\n${'─'.repeat(35)}\n`;
-    recs.forEach(r=>{const z=zones.find(z=>z.id===r.z);m+=`${r.d} | ${z?z.zh:'?'} | ${r.p==='morning'?'早上':'下午'} | ${r.t!==''?r.t+'°C':'--'} | ${r.h!==''?r.h+'%':'--'}\n`;});
-    m+=`\n_${now}_`;return m;
+    if(!an.length)return `✅ VRT No Anomaly / 無異常\nDate: ${date}\n${nowStr}`;
+    let m=`⚠️ VRT Anomaly Report / 異常報告\nDate / 日期: ${date}\n${'─'.repeat(30)}\n`;
+    an.forEach(r=>{
+      const z=zones.find(z=>z.id===r.z);
+      const ts=tSt(r.t),hs=hSt(r.h);
+      m+=`${isCrit(r)?'🔴':'⚠️'} [${z?z.en:'?'}] ${r.p==='morning'?'AM':'PM'}: `;
+      if(r.t!=='')m+=`${r.t}C${ts&&ts.k!=='ok'?' ['+T(ts.k)+']':''}  `;
+      if(r.h!=='')m+=`${r.h}%${hs&&hs.k!=='ok'?' ['+T(hs.k)+']':''}`;
+      m+='\n';
+    });
+    m+=`\n${nowStr}`;return m;
   }
+  return buildTGmsg('daily',date);
 }
-function prevTG(){const msg=buildTGmsg(document.getElementById('tg-type').value,document.getElementById('tg-date').value||today());const p=document.getElementById('tg-prev');p.textContent=msg;p.style.display='block';}
+
+function prevTG(){
+  const msg=buildTGmsg(document.getElementById('tg-type').value,document.getElementById('tg-date').value||today());
+  const p=document.getElementById('tg-prev');p.textContent=msg;p.style.display='block';
+}
+
 async function sendTG(){
   const cfg=getTG();if(!cfg.tok||!cfg.chat){toast('請設定 Bot Token 和 Chat ID','err');return;}
-  const msg=buildTGmsg(document.getElementById('tg-type').value,document.getElementById('tg-date').value||today());
-  try{const r=await fetch(`https://api.telegram.org/bot${cfg.tok}/sendMessage`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({chat_id:cfg.chat,text:msg,parse_mode:'Markdown'})});
-    const d=await r.json();d.ok?toast('Telegram 發送成功','ok'):toast('Telegram 錯誤: '+(d.description||''),'err');
+  const type=document.getElementById('tg-type').value;
+  const date=document.getElementById('tg-date').value||today();
+  const msg=buildTGmsg(type,date);
+  const dashUrl=getGAS().dashUrl||'';
+  // Build inline keyboard if dashboard URL is configured
+  const ikb=dashUrl?{inline_keyboard:[[{text:'📊 開啟 Dashboard / Open Dashboard',url:dashUrl}]]}:undefined;
+  try{
+    const body={chat_id:cfg.chat,text:msg};
+    if(ikb)body.reply_markup=ikb;
+    const r=await fetch(`https://api.telegram.org/bot${cfg.tok}/sendMessage`,{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const d=await r.json();
+    d.ok?toast('Telegram 發送成功','ok'):toast('Telegram 錯誤: '+(d.description||''),'err');
   }catch{toast('網路錯誤','err');}
 }
 
@@ -1566,22 +1678,72 @@ async function sendTG(){
 async function testGAS(){
   const url=document.getElementById('gas-url').value.trim();if(!url){toast('請輸入 GAS URL','err');return;}
   document.getElementById('sdot').className='syncdt sd-idle';document.getElementById('sstatus').textContent='測試中...';
-  try{const r=await fetch(url+'?action=ping');const d=await r.json();
-    if(d.ok){document.getElementById('sdot').className='syncdt sd-ok';document.getElementById('sstatus').textContent='✅ 已連接';toast('GAS 連接成功','ok');}
-    else throw new Error(d.msg||'fail');
-  }catch(ex){document.getElementById('sdot').className='syncdt sd-err';document.getElementById('sstatus').textContent='❌ 連接失敗';toast('連接失敗: '+ex.message,'err');}
+  try{
+    const r=await fetch(url+'?action=ping',{redirect:'follow'});
+    const text=await r.text();
+    let d;try{d=JSON.parse(text);}catch{d={ok:false,msg:'非 JSON 回應: '+text.slice(0,80)};}
+    if(d.ok){document.getElementById('sdot').className='syncdt sd-ok';document.getElementById('sstatus').textContent='✅ 已連接 v'+(d.version||'?');toast('GAS 連接成功','ok');}
+    else throw new Error(d.msg||'GAS 回應 ok=false');
+  }catch(ex){document.getElementById('sdot').className='syncdt sd-err';document.getElementById('sstatus').textContent='❌ 失敗';toast('連接失敗: '+ex.message,'err');}
 }
+
 async function syncUp(){
   const url=getGAS().url;if(!url){toast('請設定 GAS URL','err');return;}
-  try{const r=await fetch(url,{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:'action=sync&payload='+encodeURIComponent(JSON.stringify({records:getR(),zones:getZ()}))});
-    const d=await r.json();d.ok?toast('同步成功','ok'):toast('同步失敗','err');
-  }catch{toast('網路錯誤','err');}
+  const payload={records:getR(),zones:getZ(),weather:getWX(),thresholds:getTH(),tg:getTG()};
+  const btnEl=document.getElementById('sync-up-btn');if(btnEl)btnEl.disabled=true;
+  try{
+    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify({action:'syncAll',payload})});
+    const text=await r.text();
+    let d;try{d=JSON.parse(text);}catch{throw new Error('非 JSON: '+text.slice(0,120));}
+    if(d.ok){
+      const cnt=payload.records.length;
+      toast(`上傳成功 ${cnt}筆記錄`,'ok');
+      addSyncLog('upload','ok',`Records:${cnt} Zones:${payload.zones.length}`,cnt);
+      document.getElementById('last-up-time').textContent='Last Upload: '+new Date().toLocaleTimeString();
+    }else throw new Error(d.msg||'GAS 回應 ok=false');
+  }catch(ex){
+    toast('上傳失敗: '+ex.message,'err');
+    addSyncLog('upload','err',ex.message);
+  }finally{if(btnEl)btnEl.disabled=false;}
 }
+
 async function syncDown(){
   const url=getGAS().url;if(!url){toast('請設定 GAS URL','err');return;}
-  try{const r=await fetch(url+'?action=pull');const d=await r.json();
-    if(d.ok&&d.records){setR(d.records);toast('拉取成功 '+d.records.length+'筆','ok');renderAll();}else toast('拉取失敗','err');
-  }catch{toast('網路錯誤','err');}
+  const logEl=document.getElementById('sync-log-inline');
+  if(logEl)logEl.textContent='⏳ 拉取中...';
+  const btnEl=document.getElementById('sync-dn-btn');if(btnEl)btnEl.disabled=true;
+  try{
+    const r=await fetch(url+'?action=pullAll',{redirect:'follow'});
+    const text=await r.text();
+    console.log('[VRT GAS Pull raw]',text.slice(0,500));
+    let d;
+    try{d=JSON.parse(text);}
+    catch(e){throw new Error('GAS 回傳非 JSON。原始內容: '+text.slice(0,200));}
+    if(!d.ok)throw new Error('GAS ok=false。msg: '+(d.msg||'無說明')+'。raw: '+JSON.stringify(d).slice(0,200));
+    // Restore all data
+    let restored=[];
+    if(d.records&&Array.isArray(d.records)){setR(d.records);restored.push(`Records: ${d.records.length}`);}
+    if(d.zones&&Array.isArray(d.zones)&&d.zones.length){setZ(d.zones);restored.push(`Zones: ${d.zones.length}`);}
+    if(d.weather&&typeof d.weather==='object'){setWX(d.weather);restored.push(`Weather: ${Object.keys(d.weather).length}`);}
+    if(d.thresholds&&d.thresholds.t){setTH(d.thresholds);restored.push('Thresholds: ✓');}
+    if(d.tg&&d.tg.tok){setTG(d.tg);restored.push('Telegram: ✓');}
+    // Sync verification
+    const localCnt=getR().length;const cloudCnt=d.records?.length||0;
+    const syncOk=localCnt===cloudCnt;
+    const detail=restored.join(' | ');
+    const verifyMsg=syncOk?`✓ Synced (${localCnt} records)`:`⚠ Difference: local ${localCnt} ≠ cloud ${cloudCnt}`;
+    toast('拉取成功 · '+verifyMsg,'ok');
+    addSyncLog('download',syncOk?'ok':'warn',detail+' · '+verifyMsg,cloudCnt);
+    if(logEl)logEl.textContent='✅ '+detail+'\n'+verifyMsg;
+    renderAll();
+  }catch(ex){
+    const msg=ex.message;
+    toast('拉取失敗: '+msg,'err');
+    addSyncLog('download','err',msg);
+    if(logEl)logEl.textContent='❌ '+msg;
+    console.error('[VRT syncDown]',ex);
+  }finally{if(btnEl)btnEl.disabled=false;document.getElementById('last-dn-time').textContent='Last Pull: '+new Date().toLocaleTimeString();}
 }
 
 // ══════════════════════════════════════════
@@ -1643,8 +1805,85 @@ function renderAll(){
 }
 
 // ══════════════════════════════════════════
-// INIT
+// AUTO WEATHER (Open-Meteo, free, no key)
 // ══════════════════════════════════════════
+async function fetchAutoWeather(dateStr){
+  try{
+    const url='https://api.open-meteo.com/v1/forecast?latitude=10.6236&longitude=103.5228&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FPhnom_Penh&forecast_days=3';
+    const r=await fetch(url);const d=await r.json();
+    const aw=getAW();
+    if(d.daily&&d.daily.time){
+      d.daily.time.forEach((dt,i)=>{
+        const code=d.daily.weather_code[i];
+        aw.cache[dt]={wx:wmoToWx(code),code,tMax:d.daily.temperature_2m_max[i],tMin:d.daily.temperature_2m_min[i],rain:d.daily.precipitation_probability_max[i]};
+      });
+    }
+    aw.lastFetch=new Date().toISOString();
+    // Apply today's weather if not already set
+    const wx=getWX();
+    if(d.daily&&d.daily.time){
+      d.daily.time.forEach((dt,i)=>{
+        if(!wx[dt]){wx[dt]=aw.cache[dt]?.wx||'cloudy';}
+      });
+      setWX(wx);
+    }
+    setAW(aw);
+    const ael=document.getElementById('aw-status');if(ael)ael.textContent='✅ Updated: '+new Date().toLocaleTimeString();
+    toast('天氣自動更新完成','ok');
+  }catch(ex){
+    const ael=document.getElementById('aw-status');if(ael)ael.textContent='❌ '+ex.message;
+    toast('天氣更新失敗: '+ex.message,'err');
+  }
+}
+
+// ══════════════════════════════════════════
+// AUTO SYNC SCHEDULER
+// ══════════════════════════════════════════
+function startAutoSync(){
+  if(autoSyncTimer)clearInterval(autoSyncTimer);
+  const as=getAS();if(!as.enabled)return;
+  const upMs=as.upMin*60*1000,dnMs=as.dnMin*60*1000;
+  let lastUp=Date.now(),lastDn=Date.now();
+  autoSyncTimer=setInterval(()=>{
+    const now=Date.now();
+    if(now-lastUp>=upMs){syncUp();lastUp=now;document.getElementById('next-up-time').textContent='Next Upload: '+new Date(now+upMs).toLocaleTimeString();}
+    if(now-lastDn>=dnMs){syncDown();lastDn=now;document.getElementById('next-dn-time').textContent='Next Pull: '+new Date(now+dnMs).toLocaleTimeString();}
+  },60000);
+  toast('自動同步已啟動','ok');
+}
+
+function saveASconfig(){
+  const as={enabled:document.getElementById('as-enable').checked,upMin:+(document.getElementById('as-up').value||15),dnMin:+(document.getElementById('as-dn').value||60)};
+  setAS(as);
+  if(as.enabled)startAutoSync();else{if(autoSyncTimer)clearInterval(autoSyncTimer);autoSyncTimer=null;}
+  toast('自動同步設定已儲存','ok');
+}
+
+// ══════════════════════════════════════════
+// SYNC LOG RENDER
+// ══════════════════════════════════════════
+function renderSyncLog(){
+  const logs=getSL().slice().reverse();
+  const el=document.getElementById('sl-table-body');if(!el)return;
+  if(!logs.length){el.innerHTML=`<tr class="nodata-row"><td colspan="5">No sync logs</td></tr>`;return;}
+  const icons={'ok':'✅','err':'❌','warn':'⚠️'};
+  el.innerHTML=logs.map(l=>{
+    const dt=new Date(l.ts).toLocaleString('en-GB',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
+    return `<tr>
+      <td style="white-space:nowrap;font-size:12px">${dt}</td>
+      <td><span class="bdg ${l.action==='upload'?'b-cool':'b-ok'}">${l.action==='upload'?'⬆ Up':'⬇ Down'}</span></td>
+      <td>${icons[l.status]||'?'} ${l.status}</td>
+      <td style="font-size:12px;color:var(--text2)">${l.detail||''}</td>
+      <td style="font-size:12px">${l.count||''}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('sl-badge').style.display='none';
+}
+
+function clearSyncLog(){setSL([]);renderSyncLog();}
+
+// Update settings render to load new fields
+const _origRenderSet=typeof renderSet==='function'?renderSet:null;
 function init(){
   const td=today();
   ['dash-date','rec-date','tg-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
@@ -1652,6 +1891,7 @@ function init(){
   ['hfrom','afrom','alfrom'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=d30s;});
   ['hto','ato','alto'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
   popSelects();applyI18n();renderDash();updBadge();renderHNavLabel();
+  startAutoSync();
   setInterval(tick,1000);tick();
 }
 window.addEventListener('load',init);
