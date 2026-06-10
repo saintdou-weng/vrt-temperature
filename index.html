@@ -196,15 +196,17 @@ tbody tr:hover{background:var(--bg);}
 }
 .nodata-row td{text-align:center;padding:32px;color:var(--text3);}
 /* ─── DATE NAVIGATOR ─── */
-.date-nav{display:flex;align-items:center;background:var(--card);border-radius:10px;border:1.5px solid var(--border);overflow:hidden;box-shadow:var(--shadow-sm);}
-.dnav-arr{width:46px;height:46px;border:none;background:transparent;cursor:pointer;font-size:22px;font-weight:700;color:var(--text2);transition:.15s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.dnav-arr:hover{background:var(--pri-bg);color:var(--pri);}
-.dnav-arr:active{background:var(--pri);color:#fff;transform:scale(.9);}
-.dnav-mid{flex:1;min-width:140px;border:none;background:transparent;cursor:pointer;padding:0 12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;height:46px;border-left:1px solid var(--border);border-right:1px solid var(--border);transition:.15s;position:relative;}
-.dnav-mid:hover{background:var(--pri-bg);}
-.dnav-date{font-size:15px;font-weight:700;color:var(--text);line-height:1.1;}
-.dnav-day{font-size:10px;color:var(--text3);font-weight:500;}
-.dnav-input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;z-index:2;}
+/* ─── DATE NAVIGATOR (attendance-style) ─── */
+.date-nav{display:flex;align-items:center;gap:6px;}
+.dnav-arr{width:38px;height:38px;border:1.5px solid var(--border);background:var(--card);border-radius:9px;cursor:pointer;font-size:18px;font-weight:700;color:var(--text2);transition:.15s;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:var(--shadow-sm);}
+.dnav-arr:hover{background:var(--pri);color:#fff;border-color:var(--pri);}
+.dnav-arr:active{transform:scale(.88);}
+.dnav-lbl{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
+.date-sel{height:38px;border:1.5px solid var(--border);border-radius:9px;padding:0 10px;font-size:14px;font-weight:700;background:var(--card);color:var(--text);cursor:pointer;font-family:inherit;outline:none;box-shadow:var(--shadow-sm);min-width:160px;transition:.15s;}
+.date-sel:focus{border-color:var(--pri);box-shadow:0 0 0 3px var(--pri-bg);}
+.date-sel option{font-weight:600;padding:4px;}
+.date-sel option.has-data{color:var(--pri);}
+.dnav-count{font-size:11px;color:var(--text3);white-space:nowrap;}
 /* ─── VIEW TABS ─── */
 .vtabs{display:flex;gap:3px;background:var(--bg);border-radius:10px;padding:3px;border:1px solid var(--border);}
 .vtab{flex:1;padding:6px 6px 4px;border:none;background:transparent;border-radius:8px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:0;line-height:1;transition:.2s;color:var(--text3);}
@@ -271,14 +273,12 @@ tbody tr:hover{background:var(--bg);}
   <!-- Date navigator -->
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
     <div class="date-nav">
-      <button class="dnav-arr" onclick="shiftDate('dash-date',-1)" title="前一天">‹</button>
-      <div class="dnav-mid">
-        <input type="date" id="dash-date" class="dnav-input" onchange="updateDateLabel('dash');renderDash()">
-        <div class="dnav-date" id="dash-date-label">--</div>
-        <div class="dnav-day" id="dash-date-day">點擊選擇日期</div>
-      </div>
-      <button class="dnav-arr" onclick="shiftDate('dash-date',1)" title="後一天">›</button>
+      <button class="dnav-arr" onclick="shiftDate('dash-date',-1)" title="前一天">◀</button>
+      <span class="dnav-lbl">日期</span>
+      <select id="dash-date" class="date-sel" onchange="renderDash()"></select>
+      <button class="dnav-arr" onclick="shiftDate('dash-date',1)" title="後一天">▶</button>
     </div>
+    <span class="dnav-count" id="dash-rec-count"></span>
   </div>
   <div class="zgrid" id="dash-zones"></div>
   <div id="dash-anom"></div>
@@ -296,13 +296,10 @@ tbody tr:hover{background:var(--bg);}
   <!-- Date nav + period + actions -->
   <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
     <div class="date-nav">
-      <button class="dnav-arr" onclick="shiftDate('rec-date',-1)">‹</button>
-      <div class="dnav-mid">
-        <input type="date" id="rec-date" class="dnav-input" onchange="loadWXforDate(this.value);updateDateLabel('rec');renderRec()">
-        <div class="dnav-date" id="rec-date-label">--</div>
-        <div class="dnav-day" id="rec-date-day">點擊選擇日期</div>
-      </div>
-      <button class="dnav-arr" onclick="shiftDate('rec-date',1)">›</button>
+      <button class="dnav-arr" onclick="shiftDate('rec-date',-1)">◀</button>
+      <span class="dnav-lbl">日期</span>
+      <select id="rec-date" class="date-sel" onchange="loadWXforDate(this.value);renderRec()"></select>
+      <button class="dnav-arr" onclick="shiftDate('rec-date',1)">▶</button>
     </div>
     <div class="vtabs">
       <button class="vtab on" id="rbam" onclick="setRP('morning')"><span class="vt-main">早</span><span class="vt-sub">AM</span></button>
@@ -917,34 +914,63 @@ function tick(){
 // ══════════════════════════════════════════
 // DATE UTILS
 // ══════════════════════════════════════════
-const today=()=>new Date().toISOString().slice(0,10);
+const today=()=>fmtDate(new Date());
 const wkKey=d=>{const dt=new Date(d),j1=new Date(dt.getFullYear(),0,1),w=Math.ceil(((dt-j1)/86400000+j1.getDay()+1)/7);return `${dt.getFullYear()}-W${String(w).padStart(2,'0')}`;};
 const moKey=d=>d.slice(0,7);
 const yrKey=d=>d.slice(0,4);
 
 // ══════════════════════════════════════════
-// DATE NAVIGATOR HELPERS
+// DATE SELECT HELPERS (attendance-style)
 // ══════════════════════════════════════════
-const WEEKDAYS_SHORT=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-const WEEKDAYS_ZH=['日','一','二','三','四','五','六'];
-function updateDateLabel(prefix){
-  const input=document.getElementById(prefix+'-date');if(!input||!input.value)return;
-  const dt=new Date(input.value+'T00:00:00');
-  const wd=LANG==='zh'?'週'+WEEKDAYS_ZH[dt.getDay()]:WEEKDAYS_SHORT[dt.getDay()];
-  const mns=T('months')||['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  const lbl=LANG==='zh'?`${dt.getFullYear()}年${mns[dt.getMonth()]}${dt.getDate()}日`:`${dt.getDate()} ${mns[dt.getMonth()]} ${dt.getFullYear()}`;
-  const lbEl=document.getElementById(prefix+'-date-label');if(lbEl)lbEl.textContent=lbl;
-  const dyEl=document.getElementById(prefix+'-date-day');if(dyEl)dyEl.textContent=wd+(input.value===today()?' · 今天 Today':'');
+function fmtDate(dt){
+  const y=dt.getFullYear(),m=String(dt.getMonth()+1).padStart(2,'0'),d=String(dt.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
 }
+function parseLocalDate(s){
+  if(!s)return new Date();
+  const [y,m,d]=(s.replace(/\//g,'-')).split('-').map(Number);
+  return new Date(y,m-1,d);
+}
+function populateDateSel(selId, currentVal){
+  const sel=document.getElementById(selId);if(!sel)return;
+  const prev=currentVal||sel.value||today();
+
+  // All dates with records
+  const recDates=new Set(getR().map(r=>r.d));
+  // Last 60 days always visible
+  const allDates=new Set(recDates);
+  for(let i=0;i<60;i++){const dt=new Date();dt.setDate(dt.getDate()-i);allDates.add(fmtDate(dt));}
+  // Always include prev (in case older than 60 days)
+  if(prev)allDates.add(prev);
+
+  const sorted=[...allDates].sort((a,b)=>b.localeCompare(a));
+  const recMap={};getR().forEach(r=>{recMap[r.d]=(recMap[r.d]||0)+1;});
+
+  sel.innerHTML=sorted.map(d=>{
+    const cnt=recMap[d]||0;
+    const mark=cnt>0?` ✦${cnt}`:'';
+    const isToday=d===today();
+    const lbl=isToday?`${d}  ◆今天${mark}`:`${d}${mark}`;
+    return `<option value="${d}">${lbl}</option>`;
+  }).join('');
+
+  sel.value=sorted.includes(prev)?prev:sorted[0];
+}
+
+// updateDateLabel kept as no-op (select shows date itself now)
+function updateDateLabel(prefix){}
+
 function shiftDate(inputId,dir){
-  const el=document.getElementById(inputId);if(!el)return;
-  const dt=new Date((el.value||today())+'T00:00:00');
-  dt.setDate(dt.getDate()+dir);
-  el.value=dt.toISOString().slice(0,10);
+  const sel=document.getElementById(inputId);if(!sel)return;
+  const opts=[...sel.options];
+  const idx=opts.findIndex(o=>o.value===sel.value);
+  // Options sorted descending: dir=-1 (back/older) → higher index; dir=+1 (forward/newer) → lower index
+  const newIdx=idx-dir;
+  if(newIdx<0||newIdx>=opts.length)return;
+  sel.value=opts[newIdx].value;
   const prefix=inputId.replace('-date','');
-  updateDateLabel(prefix);
   if(prefix==='dash')renderDash();
-  else if(prefix==='rec'){loadWXforDate(el.value);renderRec();}
+  else if(prefix==='rec'){loadWXforDate(sel.value);renderRec();}
 }
 
 // ══════════════════════════════════════════
@@ -988,12 +1014,12 @@ function setDP(p){
 }
 
 function renderDash(){
-  const dd=document.getElementById('dash-date');
-  if(!dd.value)dd.value=today();
-  const sel=dd.value;
+  populateDateSel('dash-date');
+  const sel=document.getElementById('dash-date');
+  const selDate=sel?sel.value:today();
   const zones=getZ().filter(z=>z.on);
   const recs=getR();
-  const dr=recs.filter(r=>r.d===sel);
+  const dr=recs.filter(r=>r.d===selDate);
   const anom=dr.filter(r=>isAnom(r));
   const crit=dr.filter(r=>isCrit(r));
 
@@ -1007,12 +1033,12 @@ function renderDash(){
   const tStat=at.length?tSt(avg(at)):null;
   const hStat=ah.length?hSt(avg(ah)):null;
 
-  const wxToday=getWX()[sel]||'';
+  const wxToday=getWX()[selDate]||'';
   const wxIcons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
   document.getElementById('dash-stats').innerHTML=`
     <div class="scard" style="border-left-color:#4f6ef7"><div class="sl">${T('zone')}</div><div class="sv">${zones.length}</div><div class="ss">${T('tab-zones')}</div></div>
-    <div class="scard" style="border-left-color:${tStat?tStat.col:'#94a3b8'}"><div class="sl">🌡️ ${T('clbl_tmp')}</div><div class="sv">${avg(at)}${at.length?'°C':''}</div><div class="ss">${at.length?'Max '+Math.max(...at).toFixed(1)+'° · Min '+Math.min(...at).toFixed(1)+'°':sel}</div></div>
-    <div class="scard" style="border-left-color:${hStat?hStat.col:'#94a3b8'}"><div class="sl">💧 ${T('clbl_hum')}</div><div class="sv">${avg(ah)}${ah.length?'%':''}</div><div class="ss">${ah.length?'Max '+Math.max(...ah).toFixed(1)+'% · Min '+Math.min(...ah).toFixed(1)+'%':sel}</div></div>
+    <div class="scard" style="border-left-color:${tStat?tStat.col:'#94a3b8'}"><div class="sl">🌡️ ${T('clbl_tmp')}</div><div class="sv">${avg(at)}${at.length?'°C':''}</div><div class="ss">${at.length?'Max '+Math.max(...at).toFixed(1)+'° · Min '+Math.min(...at).toFixed(1)+'°':selDate}</div></div>
+    <div class="scard" style="border-left-color:${hStat?hStat.col:'#94a3b8'}"><div class="sl">💧 ${T('clbl_hum')}</div><div class="sv">${avg(ah)}${ah.length?'%':''}</div><div class="ss">${ah.length?'Max '+Math.max(...ah).toFixed(1)+'% · Min '+Math.min(...ah).toFixed(1)+'%':selDate}</div></div>
     <div class="scard" style="border-left-color:${crit.length?'var(--hot)':anom.length?'var(--warm)':'var(--ok)'}"><div class="sl">⚠️ ${T('tab-alert')}</div><div class="sv">${anom.length}</div><div class="ss">${crit.length?'🔴 '+T('crit')+': '+crit.length:'✅ '+T('ok')}</div></div>
     <div class="scard" style="border-left-color:#06b6d4"><div class="sl">${T('wx_label')}</div><div class="sv" style="font-size:28px">${wxToday?(wxIcons[wxToday]||'🌤️'):'--'}</div><div class="ss">${wxToday?T('wx_'+wxToday):T('wx_none')}</div></div>
   `;
@@ -1045,7 +1071,7 @@ function renderDash(){
         <div class="zdot" style="background:${z.col}"></div>
         <div class="znm">${znm(z)}</div>
         ${za?`<span class="bdg b-hot" style="margin-left:auto">⚠️${za}</span>`:'<span class="bdg b-ok" style="margin-left:auto">✅</span>'}
-        <button class="btn bg xs" onclick="openREfromDash('${z.id}','${sel}')">＋</button>
+        <button class="btn bg xs" onclick="openREfromDash('${z.id}','${selDate}')">＋</button>
       </div>
       <div class="zper">
         ${sm?perH(mr,T('am')):''}${sa?perH(ar,T('pm')):''}
@@ -1057,7 +1083,7 @@ function renderDash(){
   // Anomaly summary
   if(anom.length){
     const zones2=getZ();
-    document.getElementById('dash-anom').innerHTML=`<div class="card"><div class="chd"><span class="ct">⚠️ ${sel} ${T('tab-alert')}</span><button class="btn bg sm" onclick="showTab('alert')">${T('tab-alert')} →</button></div><div class="cb">
+    document.getElementById('dash-anom').innerHTML=`<div class="card"><div class="chd"><span class="ct">⚠️ ${selDate} ${T('tab-alert')}</span><button class="btn bg sm" onclick="showTab('alert')">${T('tab-alert')} →</button></div><div class="cb">
     ${anom.slice(0,6).map(r=>{const z=zones2.find(z=>z.id===r.z);const ts=tSt(r.t),hs=hSt(r.h);const c=isCrit(r);
     return `<div class="aitm ${c?'crit':'warn'}"><div class="aico">${c?'🔴':'⚠️'}</div><div class="atxt"><strong>${z?znm(z):'?'} · ${r.p==='morning'?T('am'):T('pm')}</strong>
     ${r.t!==''?`🌡️${r.t}°C <span class="bdg ${ts?ts.cls:''}">${ts?T(ts.k):''}</span>`:''} ${r.h!==''?`💧${r.h}% <span class="bdg ${hs?hs.cls:''}">${hs?T(hs.k):''}</span>`:''}</div></div>`;}).join('')}
@@ -1076,10 +1102,11 @@ function setRP(p){
 }
 
 function renderRec(){
-  const rd=document.getElementById('rec-date');
-  if(!rd.value)rd.value=today();
+  populateDateSel('rec-date');
+  const sel=document.getElementById('rec-date');
+  const selDate=sel?sel.value:today();
   const zones=getZ().filter(z=>z.on);
-  document.getElementById('rec-plbl').textContent=`📅 ${rd.value} · ${RP==='morning'?T('am'):T('pm')}`;
+  document.getElementById('rec-plbl').textContent=`📅 ${selDate} · ${RP==='morning'?T('am'):T('pm')}`;
   // Update weather select options text for current language
   const wxSel=document.getElementById('rec-wx');
   if(wxSel){
@@ -1088,7 +1115,7 @@ function renderRec(){
       WX_KEYS.map(k=>`<option value="${k}">${T('wx_'+k)}</option>`).join('');
     wxSel.value=prev;
   }
-  loadWXforDate(rd.value);
+  loadWXforDate(selDate);
 
   document.getElementById('rec-zgrid').innerHTML=zones.map(z=>`
     <div class="rzcard">
@@ -1109,14 +1136,14 @@ function renderRec(){
     </div>`).join('');
 
   // Pre-fill existing
-  const recs=getR();const sel=rd.value;
+  const recs2=getR();
   zones.forEach(z=>{
-    const ex=recs.filter(r=>r.d===sel&&r.p===RP&&r.z===z.id);
+    const ex=recs2.filter(r=>r.d===selDate&&r.p===RP&&r.z===z.id);
     if(ex.length){const r=ex[ex.length-1];
       const ti=document.getElementById('ri-t-'+z.id),hi=document.getElementById('ri-h-'+z.id);
       if(ti&&r.t!=='')ti.value=r.t;if(hi&&r.h!=='')hi.value=r.h;prvSt(z.id);}
   });
-  renderTodayCard(sel);
+  renderTodayCard(selDate);
 }
 
 function prvSt(zid){
@@ -1149,7 +1176,8 @@ function loadWXforDate(date){
 }
 
 function saveAllRec(){
-  const sel=rd.value;if(!sel){toast('請選擇日期','err');return;}
+  const rd=document.getElementById('rec-date');
+  const sel=rd?rd.value:'';if(!sel){toast('請選擇日期','err');return;}
   const note=document.getElementById('rec-note').value;
   const zones=getZ().filter(z=>z.on);
   let recs=getR();let saved=0;
@@ -1213,15 +1241,15 @@ function syncPeriodFilter(){
 }
 
 function navHist(dir){
-  // Shift hfrom/hto by one period in given direction (+1 forward, -1 back)
   const f=document.getElementById('hfrom'),t=document.getElementById('hto');
   if(!f.value||!t.value)return;
-  const shift=(d,n)=>{const dt=new Date(d);
-    if(HV==='day'){dt.setDate(dt.getDate()+n);}
-    else if(HV==='week'){dt.setDate(dt.getDate()+n*7);}
-    else if(HV==='month'){dt.setMonth(dt.getMonth()+n);}
-    else if(HV==='year'){dt.setFullYear(dt.getFullYear()+n);}
-    return dt.toISOString().slice(0,10);
+  const shift=(dateStr,n)=>{
+    const dt=parseLocalDate(dateStr);
+    if(HV==='day')dt.setDate(dt.getDate()+n);
+    else if(HV==='week')dt.setDate(dt.getDate()+n*7);
+    else if(HV==='month')dt.setMonth(dt.getMonth()+n);
+    else if(HV==='year')dt.setFullYear(dt.getFullYear()+n);
+    return fmtDate(dt);
   };
   f.value=shift(f.value,dir);
   t.value=shift(t.value,dir);
@@ -1898,6 +1926,8 @@ function updBadge(){
 }
 
 function renderAll(){
+  populateDateSel('dash-date');
+  populateDateSel('rec-date');
   popSelects();
   const active=document.querySelector('.tab.on')?.id?.replace('tab-','');
   if(active==='dash')renderDash();
@@ -1992,9 +2022,10 @@ function clearSyncLog(){setSL([]);renderSyncLog();}
 const _origRenderSet=typeof renderSet==='function'?renderSet:null;
 function init(){
   const td=today();
-  ['dash-date','rec-date','tg-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
-  updateDateLabel('dash');updateDateLabel('rec');
-  const d30=new Date();d30.setDate(d30.getDate()-30);const d30s=d30.toISOString().slice(0,10);
+  ['tg-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
+  populateDateSel('dash-date',td);
+  populateDateSel('rec-date',td);
+  const d30=new Date();d30.setDate(d30.getDate()-30);const d30s=fmtDate(d30);
   ['hfrom','afrom','alfrom'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=d30s;});
   ['hto','ato','alto'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
   popSelects();applyI18n();renderDash();updBadge();renderHNavLabel();
