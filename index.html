@@ -1679,33 +1679,64 @@ function buildTGmsg(type,date){
 function prevTG(){const msg=buildTGmsg(document.getElementById('tg-type').value,document.getElementById('tg-date').value||today());const p=document.getElementById('tg-prev');p.textContent=msg;p.style.display='block';}
 async function sendTG(){
   const date=document.getElementById('tg-date').value||today();
-  const url=getGAS().url;
-  // 優先走 GAS（Token 留在後端 + 自動附帶 Dashboard 按鈕）
+  const type=document.getElementById('tg-type').value;
+  const msg=buildTGmsg(type,date);
+  if(!msg||!msg.trim()){toast('訊息內容為空，請確認該日期有記錄','err');return;}
+
+  const gas=getGAS();
+  const url=(gas.url||'').trim();
+
+  // ── 方式 A：交給 GAS 轉發（Token 留後端 + 自動附 Dashboard 按鈕）──
   if(url){
     toast('發送中...','inf');
     try{
-      const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+      const r=await fetch(url,{
+        method:'POST',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},
         redirect:'follow',
-        body:JSON.stringify({type:'tempReport',date:date})});
+        body:JSON.stringify({type:'tempSend',text:msg})
+      });
       const txt=await r.text();
-      let d;try{d=JSON.parse(txt);}catch{throw new Error('GAS 回傳非 JSON: '+txt.slice(0,120));}
-      if(d.ok){toast('Telegram 發送成功 ✅ (含 Dashboard 連結)','ok');return;}
+      let d;
+      try{d=JSON.parse(txt);}
+      catch{
+        // 常見狀況：GAS 未重新部署，回傳的是 HTML 錯誤頁
+        const hint=txt.indexOf('<')===0
+          ? 'GAS 回傳 HTML 而非 JSON — 通常代表未重新部署，或存取權限不是「任何人」'
+          : 'GAS 回傳非 JSON: '+txt.slice(0,150);
+        throw new Error(hint);
+      }
+      if(d.ok){
+        toast('✅ Telegram 發送成功（含 Dashboard 連結）','ok');
+        return;
+      }
       throw new Error(d.error||'GAS 回應 ok=false');
     }catch(ex){
-      console.warn('[GAS send failed]',ex.message);
+      console.error('[GAS send failed]',ex);
       toast('GAS 發送失敗: '+ex.message,'err');
-      // 有填 Token 才降級為瀏覽器直送
+      const el=document.getElementById('tg-prev');
+      if(el){
+        el.style.display='block';
+        el.textContent='❌ GAS 發送失敗\n'+ex.message+
+          '\n\n排查步驟：\n'+
+          '1. 瀏覽器開啟：'+url+'?type=diag\n'+
+          '   → 應顯示 version: v2.1 及各項設定狀態\n'+
+          '2. 若顯示 v1 或 404 → GAS 需「編輯部署」選新版本\n'+
+          '3. 瀏覽器開啟：'+url+'?type=testsend\n'+
+          '   → 直接測試群組能否收到訊息\n'+
+          '4. 若回報 chat not found → 群組已升級 supergroup\n'+
+          '   在 GAS 執行 fixChatId()，或在群組輸入 /id 取得正確 ID';
+      }
       const cfg=getTG();
       if(!cfg.tok||!cfg.chat)return;
       toast('改用瀏覽器直送...','inf');
     }
   }
-  // 備援：瀏覽器直接呼叫 Telegram API
+
+  // ── 方式 B：瀏覽器直送 Telegram API（備援）──
   const cfg=getTG();
-  if(!cfg.tok||!cfg.chat){toast('請先設定 GAS URL，或填入 Bot Token 與 Chat ID','err');return;}
-  const msg=buildTGmsg(document.getElementById('tg-type').value,date);
-  if(!msg||!msg.trim()){toast('訊息內容為空，請確認日期有記錄','err');return;}
-  const dashUrl=(getGAS().dashUrl||'').trim();
+  if(!cfg.tok||!cfg.chat){toast('請設定 GAS URL，或填入 Bot Token 與 Chat ID','err');return;}
+  const dashUrl=(gas.dashUrl||'').trim();
   const body={chat_id:cfg.chat,text:msg,disable_web_page_preview:true};
   if(dashUrl&&dashUrl.indexOf('http')===0){
     body.reply_markup={inline_keyboard:[[{text:'📊 開啟 Dashboard / Open Dashboard',url:dashUrl}]]};
@@ -1714,7 +1745,21 @@ async function sendTG(){
     const r=await fetch('https://api.telegram.org/bot'+cfg.tok+'/sendMessage',{
       method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const d=await r.json();
-    d.ok?toast('Telegram 發送成功 ✅','ok'):toast('Telegram 錯誤: '+(d.description||''),'err');
+    if(d.ok){toast('✅ Telegram 發送成功（瀏覽器直送）','ok');return;}
+    // supergroup 遷移自動修正
+    if(d.parameters&&d.parameters.migrate_to_chat_id){
+      const nid=String(d.parameters.migrate_to_chat_id);
+      setTG({tok:cfg.tok,chat:nid});
+      document.getElementById('tg-chat').value=nid;
+      body.chat_id=nid;
+      const r2=await fetch('https://api.telegram.org/bot'+cfg.tok+'/sendMessage',{
+        method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+      const d2=await r2.json();
+      d2.ok?toast('✅ 已自動修正群組 ID 並發送成功','ok')
+           :toast('Telegram 錯誤: '+(d2.description||''),'err');
+      return;
+    }
+    toast('Telegram 錯誤: '+(d.description||''),'err');
   }catch(ex){toast('網路錯誤: '+ex.message,'err');}
 }
 
