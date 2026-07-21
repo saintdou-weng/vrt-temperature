@@ -191,45 +191,22 @@ tbody tr:hover{background:var(--bg);}
   .zper{grid-template-columns:1fr;}
   .zp:first-child{border-right:none;border-bottom:1px solid var(--border);}
   .sgrid{grid-template-columns:1fr 1fr;}
-  .dnav-mid{min-width:90px;}.vtab .vt-sub{display:none;}
-  .sync-bar{gap:6px;}
 }
 .nodata-row td{text-align:center;padding:32px;color:var(--text3);}
-/* ─── DATE NAVIGATOR ─── */
-/* ─── DATE NAVIGATOR (attendance-style) ─── */
-.date-nav{display:flex;align-items:center;gap:6px;}
-.dnav-arr{width:38px;height:38px;border:1.5px solid var(--border);background:var(--card);border-radius:9px;cursor:pointer;font-size:18px;font-weight:700;color:var(--text2);transition:.15s;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:var(--shadow-sm);}
-.dnav-arr:hover{background:var(--pri);color:#fff;border-color:var(--pri);}
-.dnav-arr:active{transform:scale(.88);}
-.dnav-lbl{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;}
-.date-sel{height:38px;border:1.5px solid var(--border);border-radius:9px;padding:0 10px;font-size:14px;font-weight:700;background:var(--card);color:var(--text);cursor:pointer;font-family:inherit;outline:none;box-shadow:var(--shadow-sm);min-width:160px;transition:.15s;}
-.date-sel:focus{border-color:var(--pri);box-shadow:0 0 0 3px var(--pri-bg);}
-.date-sel option{font-weight:600;padding:4px;}
-.date-sel option.has-data{color:var(--pri);}
-.dnav-count{font-size:11px;color:var(--text3);white-space:nowrap;}
-/* ─── VIEW TABS ─── */
-.vtabs{display:flex;gap:3px;background:var(--bg);border-radius:10px;padding:3px;border:1px solid var(--border);}
-.vtab{flex:1;padding:6px 6px 4px;border:none;background:transparent;border-radius:8px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:0;line-height:1;transition:.2s;color:var(--text3);}
-.vtab .vt-main{font-size:17px;font-weight:700;}
-.vtab .vt-sub{font-size:9px;text-transform:uppercase;letter-spacing:.3px;margin-top:2px;font-weight:600;}
-.vtab.on{background:var(--pri);color:#fff;box-shadow:var(--shadow);}
-.vtab:hover:not(.on){background:var(--card);color:var(--pri);}
-/* ─── SYNC BAR ─── */
-.sync-bar{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:var(--r);padding:8px 14px;margin-bottom:12px;border:1px solid var(--border);box-shadow:var(--shadow-sm);flex-wrap:wrap;}
-.sync-chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid var(--border);background:var(--bg);}
-.sc-ok{background:#dcfce7;border-color:#bbf7d0;color:#15803d;}
-.sc-err{background:#fee2e2;border-color:#fecaca;color:#dc2626;}
-.sc-busy{background:var(--pri-bg);border-color:#c7d2fe;color:var(--pri);}
-.sc-idle{color:var(--text3);}
-.sync-ico{font-size:14px;transition:.3s;}
-.sync-ico.spinning{animation:spin .7s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
 </style>
+  <!-- AC_GASCHECK Shared System -->
+  <link rel="stylesheet" href="./shared/ac_nav.css">
+  <script src="./shared/ac_config.js"></script>
+  <script src="./shared/ac_i18n.js"></script>
+  <script src="./shared/ac_date_engine.js"></script>
+  <script src="./shared/ac_cloud.js"></script>
+  <script src="./shared/ac_telegram.js"></script>
+  <script src="./shared/ac_nav.js"></script>
 </head>
 <body>
 <!-- HEADER -->
 <div class="hd"><div class="hd-in">
-  <div class="fl"><div class="hd-ico">🌡️</div><div><div class="hd-t" id="i-app-title">VRT 溫濕度管理系統</div><div class="hd-s" id="i-app-sub">西港萬泰成衣有限公司</div></div></div>
+  <div class="fl"><div class="hd-ico">🌡️</div><div><div class="hd-t" id="i-app-title">VRT 溫濕度管理系統</div><div class="hd-s" id="i-app-sub">VRT · RSK · v3 ☁️ Cloud</div></div></div>
   <div class="hd-r">
     <div class="clk" id="clock">--</div>
     <div class="lsw">
@@ -247,7 +224,6 @@ tbody tr:hover{background:var(--bg);}
   <button class="tab" id="tab-anal" onclick="showTab('anal')">📈 <span id="i-tab-anal">分析</span></button>
   <button class="tab" id="tab-zones" onclick="showTab('zones')">🏭 <span id="i-tab-zones">區域</span></button>
   <button class="tab" id="tab-alert" onclick="showTab('alert')">⚠️ <span id="i-tab-alert">異常</span> <span class="tbadge" id="abadge" style="display:none">0</span></button>
-  <button class="tab" id="tab-synclog" onclick="showTab('synclog')">☁️ <span>Sync Log</span> <span class="tbadge" id="sl-badge" style="display:none">!</span></button>
   <button class="tab" id="tab-set" onclick="showTab('set')">⚙️ <span id="i-tab-set">設定</span></button>
 </div>
 <div class="main">
@@ -255,30 +231,15 @@ tbody tr:hover{background:var(--bg);}
 <!-- ═══ DASHBOARD ═══ -->
 <div class="pnl on" id="pnl-dash">
   <div class="sgrid" id="dash-stats"></div>
-  <!-- Sync bar -->
-  <div class="sync-bar">
-    <div class="sync-chip sc-idle" id="sync-chip-up"><span class="sync-ico" id="sync-ico-up">⬆️</span><span id="sync-up-info">未同步</span></div>
-    <div class="sync-chip sc-idle" id="sync-chip-dn"><span class="sync-ico" id="sync-ico-dn">⬇️</span><span id="sync-dn-info">未拉取</span></div>
-    <button class="btn bp sm" onclick="syncUp()">⬆ 上傳</button>
-    <button class="btn bg sm" onclick="syncDown()">⬇ 拉取</button>
-    <div class="ml" style="display:flex;align-items:center;gap:6px">
-      <div class="vtabs" style="gap:2px">
-        <button class="vtab on" id="dbam" onclick="setDP('morning')"><span class="vt-main">早</span><span class="vt-sub">AM</span></button>
-        <button class="vtab" id="dbpm" onclick="setDP('afternoon')"><span class="vt-main">午</span><span class="vt-sub">PM</span></button>
-        <button class="vtab" id="dball" onclick="setDP('all')"><span class="vt-main">全</span><span class="vt-sub">All</span></button>
-      </div>
-      <button class="btn bp sm" onclick="showTab('rec')" id="i-addrec">＋ 記錄</button>
+  <div class="cbar">
+    <span class="clbl" id="i-date">日期</span>
+    <input type="date" id="dash-date" style="width:155px" onchange="renderDash()">
+    <div class="ptog">
+      <button class="pbtn on" id="dbam" onclick="setDP('morning')" id="i-am">早上</button>
+      <button class="pbtn" id="dbpm" onclick="setDP('afternoon')" id="i-pm">下午</button>
+      <button class="pbtn" id="dball" onclick="setDP('all')" id="i-all">全天</button>
     </div>
-  </div>
-  <!-- Date navigator -->
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
-    <div class="date-nav">
-      <button class="dnav-arr" onclick="shiftDate('dash-date',-1)" title="前一天">◀</button>
-      <span class="dnav-lbl">日期</span>
-      <select id="dash-date" class="date-sel" onchange="renderDash()"></select>
-      <button class="dnav-arr" onclick="shiftDate('dash-date',1)" title="後一天">▶</button>
-    </div>
-    <span class="dnav-count" id="dash-rec-count"></span>
+    <button class="btn bp sm ml" onclick="showTab('rec')" id="i-addrec">＋ 新增記錄</button>
   </div>
   <div class="zgrid" id="dash-zones"></div>
   <div id="dash-anom"></div>
@@ -286,45 +247,18 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ RECORD ═══ -->
 <div class="pnl" id="pnl-rec">
-  <!-- Sync bar -->
-  <div class="sync-bar">
-    <div class="sync-chip sc-idle" id="sync-chip-up-rec"><span class="sync-ico" id="sync-ico-up-rec">⬆️</span><span id="sync-up-info-rec">未同步</span></div>
-    <div class="sync-chip sc-idle" id="sync-chip-dn-rec"><span class="sync-ico" id="sync-ico-dn-rec">⬇️</span><span id="sync-dn-info-rec">未拉取</span></div>
-    <button class="btn bp sm" onclick="syncUp()">⬆ 上傳</button>
-    <button class="btn bg sm" onclick="syncDown()">⬇ 拉取</button>
-  </div>
-  <!-- Date nav + period + actions -->
-  <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;">
-    <div class="date-nav">
-      <button class="dnav-arr" onclick="shiftDate('rec-date',-1)">◀</button>
-      <span class="dnav-lbl">日期</span>
-      <select id="rec-date" class="date-sel" onchange="loadWXforDate(this.value);renderRec()"></select>
-      <button class="dnav-arr" onclick="shiftDate('rec-date',1)">▶</button>
+  <div class="cbar">
+    <span class="clbl" id="i-date2">日期</span>
+    <input type="date" id="rec-date" style="width:155px">
+    <div class="ptog">
+      <button class="pbtn on" id="rbam" onclick="setRP('morning')">早上</button>
+      <button class="pbtn" id="rbpm" onclick="setRP('afternoon')">下午</button>
     </div>
-    <div class="vtabs">
-      <button class="vtab on" id="rbam" onclick="setRP('morning')"><span class="vt-main">早</span><span class="vt-sub">AM</span></button>
-      <button class="vtab" id="rbpm" onclick="setRP('afternoon')"><span class="vt-main">午</span><span class="vt-sub">PM</span></button>
-    </div>
-    <input type="text" id="rec-note" style="flex:1;min-width:120px;max-width:200px" placeholder="備註（可選）">
-    <button class="btn bp" onclick="saveAllRec()" id="i-saveall">💾 儲存</button>
-    <button class="btn bg" onclick="clearRI()">清除</button>
+    <input type="text" id="rec-note" style="width:180px" placeholder="備註（可選）" id="i-note-ph">
+    <button class="btn bp ml" onclick="saveAllRec()" id="i-saveall">💾 全部儲存</button>
+    <button class="btn bg" onclick="clearRI()" id="i-clear">清除</button>
   </div>
   <div class="sm-t muted mb8" id="rec-plbl" style="margin-bottom:10px;"></div>
-  <!-- Weather selector -->
-  <div style="display:flex;align-items:center;gap:10px;background:var(--card);border-radius:var(--r);padding:10px 16px;margin-bottom:14px;box-shadow:var(--shadow-sm);border:1px solid var(--border);">
-    <span style="font-size:18px" id="rec-wx-icon">🌤️</span>
-    <label style="font-size:13px;font-weight:600;color:var(--text2);margin:0" id="i-wx-lbl">今日天氣</label>
-    <select id="rec-wx" onchange="saveWX()" style="width:200px;font-size:14px;">
-      <option value="">── 未記錄 ──</option>
-      <option value="sunny">☀️ 晴天</option>
-      <option value="pcloudy">⛅ 多雲</option>
-      <option value="cloudy">☁️ 陰天</option>
-      <option value="rainy">🌧️ 雨天</option>
-      <option value="shower">🌦️ 陣雨</option>
-      <option value="storm">⛈️ 雷雨</option>
-    </select>
-    <span class="sm-t muted" id="rec-wx-saved" style="color:var(--ok)"></span>
-  </div>
   <div class="rgrid" id="rec-zgrid"></div>
   <div class="card mt8" id="rec-today" style="display:none">
     <div class="chd"><span class="ct" id="i-today-recs">今日已記錄</span><button class="btn bg sm" onclick="clearTodayRecs()" id="i-clrtoday">清除今日</button></div>
@@ -334,37 +268,39 @@ tbody tr:hover{background:var(--bg);}
 
 <!-- ═══ HISTORY ═══ -->
 <div class="pnl" id="pnl-hist">
-  <!-- Sync bar -->
-  <div class="sync-bar">
-    <div class="sync-chip sc-idle" id="sync-chip-up-hist"><span class="sync-ico" id="sync-ico-up-hist">⬆️</span><span id="sync-up-info-hist">未同步</span></div>
-    <div class="sync-chip sc-idle" id="sync-chip-dn-hist"><span class="sync-ico" id="sync-ico-dn-hist">⬇️</span><span id="sync-dn-info-hist">未拉取</span></div>
-    <button class="btn bp sm" onclick="syncUp()">⬆ 上傳</button>
-    <button class="btn bg sm" onclick="syncDown()">⬇ 拉取</button>
-    <button class="btn bg sm ml" onclick="exportXL()">📥 Excel</button>
-  </div>
-  <!-- View tabs -->
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
-    <div class="vtabs">
-      <button class="vtab" id="hvd" onclick="setHV('day')"><span class="vt-main">日</span><span class="vt-sub">Day</span></button>
-      <button class="vtab" id="hvw" onclick="setHV('week')"><span class="vt-main">週</span><span class="vt-sub">Week</span></button>
-      <button class="vtab on" id="hvm" onclick="setHV('month')"><span class="vt-main">月</span><span class="vt-sub">Month</span></button>
-      <button class="vtab" id="hvy" onclick="setHV('year')"><span class="vt-main">年</span><span class="vt-sub">Year</span></button>
-    </div>
-    <select id="hzone2" onchange="syncZoneFilter();renderHist()" style="width:140px"><option value="all">全部區域</option></select>
-    <select id="hperiod2" onchange="syncPeriodFilter();renderHist()" style="width:100px">
-      <option value="all">全部時段</option><option value="morning">早上</option><option value="afternoon">下午</option>
+  <div class="cbar">
+    <span class="clbl" id="i-filter">篩選</span>
+    <select id="hzone" onchange="renderHist()" style="width:155px"><option value="all" id="i-allz">全部區域</option></select>
+    <select id="hperiod" onchange="renderHist()" style="width:120px">
+      <option value="all" id="i-allp">全部時段</option>
+      <option value="morning" id="i-am2">早上</option>
+      <option value="afternoon" id="i-pm2">下午</option>
     </select>
-    <!-- Legacy hidden selects for sync compatibility -->
-    <select id="hzone" onchange="renderHist()" style="display:none"><option value="all">全部區域</option></select>
-    <select id="hperiod" onchange="renderHist()" style="display:none"><option value="all">全部時段</option></select>
-    <select id="hview" onchange="setHV(this.value)" style="display:none"></select>
+    <select id="hview" onchange="setHV(this.value)" style="width:110px">
+      <option value="day" id="i-hvd">日 Day</option>
+      <option value="week" id="i-hvw">週 Week</option>
+      <option value="month" id="i-hvm" selected>月 Month</option>
+      <option value="year" id="i-hvy">年 Year</option>
+    </select>
+    <button class="btn bg sm" onclick="exportXL()" id="i-expxl">📥 Excel</button>
   </div>
-  <!-- Date navigator -->
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
-    <button class="btn bg sm" onclick="navHist(-1)" style="font-size:18px;font-weight:700;padding:8px 16px">‹</button>
-    <div id="h-nav-label" style="font-size:15px;font-weight:700;color:var(--text);min-width:160px;text-align:center;background:var(--card);padding:8px 16px;border-radius:8px;border:1px solid var(--border)">--</div>
-    <button class="btn bg sm" onclick="navHist(1)" style="font-size:18px;font-weight:700;padding:8px 16px">›</button>
-    <div style="display:flex;align-items:center;gap:6px;margin-left:auto;flex-wrap:wrap;">
+  <!-- Navigation bar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;background:var(--card);border-radius:var(--r);padding:10px 16px;margin-bottom:12px;box-shadow:var(--shadow-sm);border:1px solid var(--border);">
+    <div style="display:flex;align-items:center;gap:8px;">
+      <span class="clbl" id="i-filter-lbl">篩選</span>
+      <select id="hzone2" onchange="syncZoneFilter();renderHist()" style="width:150px"><option value="all">全部區域</option></select>
+      <select id="hperiod2" onchange="syncPeriodFilter();renderHist()" style="width:115px">
+        <option value="all">全部時段</option>
+        <option value="morning">早上</option>
+        <option value="afternoon">下午</option>
+      </select>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button class="btn bg sm" onclick="navHist(-1)" style="padding:6px 14px;font-size:16px;font-weight:700">‹</button>
+      <div id="h-nav-label" style="font-size:14px;font-weight:700;color:var(--text);min-width:140px;text-align:center;">--</div>
+      <button class="btn bg sm" onclick="navHist(1)" style="padding:6px 14px;font-size:16px;font-weight:700">›</button>
+    </div>
+    <div style="display:flex;align-items:center;gap:6px;">
       <input type="date" id="hfrom" onchange="renderHist()" style="width:130px">
       <span class="muted">→</span>
       <input type="date" id="hto" onchange="renderHist()" style="width:130px">
@@ -425,27 +361,6 @@ tbody tr:hover{background:var(--bg);}
   <div id="alert-list"></div>
 </div>
 
-<!-- ═══ SYNC LOG ═══ -->
-<div class="pnl" id="pnl-synclog">
-  <div class="flw" style="margin-bottom:14px">
-    <h2 style="font-size:15px;font-weight:700">☁️ Cloud Sync Log</h2>
-    <div style="display:flex;gap:8px;align-items:center;margin-left:auto">
-      <span id="last-up-time" class="sm-t muted">Last Upload: --</span>
-      <span id="last-dn-time" class="sm-t muted" style="margin-left:8px">Last Pull: --</span>
-      <span id="next-up-time" class="sm-t muted" style="margin-left:8px">Next Upload: --</span>
-      <button class="btn bg sm" onclick="clearSyncLog()">🗑 清除日誌</button>
-    </div>
-  </div>
-  <!-- Inline sync result -->
-  <div id="sync-log-inline" style="background:var(--bg);border-radius:8px;padding:11px 14px;font-size:12px;color:var(--text2);border:1px solid var(--border);margin-bottom:14px;min-height:36px;white-space:pre-wrap;font-family:monospace"></div>
-  <div class="twrap">
-    <table>
-      <thead><tr><th>Time</th><th>Action</th><th>Status</th><th>Detail</th><th>Count</th></tr></thead>
-      <tbody id="sl-table-body"></tbody>
-    </table>
-  </div>
-</div>
-
 <!-- ═══ SETTINGS ═══ -->
 <div class="pnl" id="pnl-set">
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
@@ -472,19 +387,24 @@ tbody tr:hover{background:var(--bg);}
       </div>
       <!-- Telegram -->
       <div class="card">
-        <div class="chd"><span class="ct">📱 Telegram</span></div>
+        <div class="chd"><span class="ct">📱 Telegram</span><span class="bdg b-ok" style="margin-left:auto">☁️ 由 GAS 自動發送</span></div>
         <div class="cb">
-          <div class="g2" style="margin-bottom:10px">
-            <div class="fg"><label>Bot Token</label><input type="password" id="tg-tok" placeholder="123456:ABC..." oninput="saveTGcfg()"></div>
-            <div class="fg"><label>Chat ID</label><input type="text" id="tg-chat" placeholder="-100..." oninput="saveTGcfg()"></div>
+          <div style="background:var(--pri-bg);border-radius:8px;padding:10px 13px;font-size:12px;color:var(--pri);margin-bottom:12px;border-left:3px solid var(--pri)">
+            💡 儲存記錄後，GAS 後端會自動推送 Telegram 通知至群組，無需在此設定 Bot Token。<br>
+            如需從瀏覽器手動發送報告，可在下方填入 Token（選填）。
           </div>
+          <div class="g2" style="margin-bottom:10px">
+            <div class="fg"><label>Bot Token（選填，備援用）</label><input type="password" id="tg-tok" placeholder="123456:ABC..." oninput="saveTGcfg()"></div>
+            <div class="fg"><label>Chat ID（選填）</label><input type="text" id="tg-chat" placeholder="-100..." oninput="saveTGcfg()"></div>
+          </div>
+          <div class="fg" style="margin-bottom:10px"><label>📊 Dashboard 網址（訊息底部按鈕連結）</label><input type="text" id="gas-dash-url" placeholder="https://saintdou-weng.github.io/vrt-temperature/" oninput="saveGAScfg()"></div>
           <div class="g2" style="margin-bottom:10px">
             <div class="fg"><label id="i-tgtype">報告類型</label><select id="tg-type"><option value="daily" id="i-tgd">每日摘要</option><option value="anomaly" id="i-tga">異常報告</option><option value="full" id="i-tgf">完整報告</option></select></div>
             <div class="fg"><label id="i-tgdate">日期</label><input type="date" id="tg-date"></div>
           </div>
           <div class="flw" style="gap:6px">
             <button class="btn bg sm" onclick="prevTG()" id="i-prev">👁 預覽</button>
-            <button class="btn bp sm" onclick="sendTG()" id="i-send">📤 發送</button>
+            <button class="btn bp sm" onclick="sendTG()" id="i-send">📤 手動發送</button>
           </div>
           <pre id="tg-prev" style="display:none;background:var(--bg);border-radius:8px;padding:11px;font-size:11px;margin-top:9px;white-space:pre-wrap;word-break:break-all;max-height:180px;overflow-y:auto;color:var(--text2)"></pre>
         </div>
@@ -496,34 +416,11 @@ tbody tr:hover{background:var(--bg);}
         <div class="chd"><span class="ct">☁️ Google Sheets 雲端同步</span></div>
         <div class="cb">
           <div class="fg" style="margin-bottom:10px"><label>GAS Web App URL</label><input type="text" id="gas-url" placeholder="https://script.google.com/macros/s/..." oninput="saveGAScfg()"></div>
-          <div class="fg" style="margin-bottom:10px"><label>Dashboard URL (for Telegram button)</label><input type="text" id="gas-dash-url" placeholder="https://yourname.github.io/vrt_temperature.html" oninput="saveGAScfg()"></div>
-          <div class="flw" style="gap:6px;margin-bottom:10px">
-            <div class="fl" style="gap:5px"><div class="syncdt sd-idle" id="sdot"></div><span class="sm-t muted" id="sstatus">未連接</span></div>
-            <button class="btn bg sm" onclick="testGAS()">🔗 測試</button>
-            <button class="btn bp sm" id="sync-up-btn" onclick="syncUp()">⬆ 上傳全部</button>
-            <button class="btn bg sm" id="sync-dn-btn" onclick="syncDown()">⬇ 拉取全部</button>
-          </div>
-          <div class="sep"></div>
-          <div class="sttit">⏰ 自動同步 Auto Sync</div>
-          <div class="g2" style="margin-bottom:8px">
-            <div class="fg"><label>上傳間隔 (分)</label><input type="number" id="as-up" min="5" max="120" value="15" style="width:80px"></div>
-            <div class="fg"><label>拉取間隔 (分)</label><input type="number" id="as-dn" min="15" max="240" value="60" style="width:80px"></div>
-          </div>
-          <div class="fl" style="gap:8px;margin-bottom:8px">
-            <input type="checkbox" id="as-enable" style="width:18px;height:18px">
-            <label style="margin:0;font-size:13px">啟用自動同步</label>
-            <button class="btn bp sm" onclick="saveASconfig()">套用</button>
-          </div>
-        </div>
-      </div>
-      <!-- Auto Weather -->
-      <div class="card" style="margin-bottom:16px">
-        <div class="chd"><span class="ct">🌍 自動天氣 (Open-Meteo · Sihanoukville)</span></div>
-        <div class="cb">
-          <p class="sm-t muted" style="margin-bottom:10px">免費 · 無需 API Key · 自動填入今日天氣</p>
           <div class="flw" style="gap:6px">
-            <button class="btn bp sm" onclick="fetchAutoWeather(today())">🌤️ 立即更新</button>
-            <span class="sm-t muted" id="aw-status">--</span>
+            <div class="fl" style="gap:5px"><div class="syncdt sd-idle" id="sdot"></div><span class="sm-t muted" id="sstatus" id="i-idle">未連接</span></div>
+            <button class="btn bg sm" onclick="testGAS()" id="i-testcon">🔗 測試</button>
+            <button class="btn bp sm" onclick="syncUp()" id="i-syncup">⬆ 上傳</button>
+            <button class="btn bg sm" onclick="syncDown()" id="i-pull">⬇ 拉取</button>
           </div>
         </div>
       </div>
@@ -664,9 +561,6 @@ zh:{
   an_cnt:'記錄',an_avgt:'均溫°C',an_maxt:'最高°C',an_mint:'最低°C',an_avgh:'均濕%',an_maxh:'最高%',an_minh:'最低%',an_anom:'異常',
   rplbl_note_ph:'備註（可選）',today_recs:'今日已記錄',
   view_day:'日',view_week:'週',view_month:'月',view_year:'年',
-  wx_label:'天氣',wx_none:'未記錄',
-  wx_sunny:'☀️ 晴天',wx_pcloudy:'⛅ 多雲',wx_cloudy:'☁️ 陰天',
-  wx_rainy:'🌧️ 雨天',wx_shower:'🌦️ 陣雨',wx_storm:'⛈️ 雷雨',
   months:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
 },
 en:{
@@ -701,9 +595,6 @@ en:{
   an_cnt:'Records',an_avgt:'Avg°C',an_maxt:'Max°C',an_mint:'Min°C',an_avgh:'Avg%',an_maxh:'Max%',an_minh:'Min%',an_anom:'Anomalies',
   rplbl_note_ph:'Optional notes',today_recs:"Today's Records",
   view_day:'Day',view_week:'Week',view_month:'Month',view_year:'Year',
-  wx_label:'Weather',wx_none:'Not recorded',
-  wx_sunny:'☀️ Sunny',wx_pcloudy:'⛅ Partly Cloudy',wx_cloudy:'☁️ Overcast',
-  wx_rainy:'🌧️ Rainy',wx_shower:'🌦️ Showers',wx_storm:'⛈️ Stormy',
   months:['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
 },
 km:{
@@ -738,9 +629,6 @@ km:{
   an_cnt:'កំណត់ត្រា',an_avgt:'មធ្យម°C',an_maxt:'ខ្ពស់°C',an_mint:'ទាប°C',an_avgh:'មធ្យម%',an_maxh:'ខ្ពស់%',an_minh:'ទាប%',an_anom:'ខុសប្រក្រតី',
   rplbl_note_ph:'កំណត់ចំណាំ',today_recs:'ការកត់ត្រាថ្ងៃនេះ',
   view_day:'ថ្ងៃ',view_week:'សប្តាហ៍',view_month:'ខែ',view_year:'ឆ្នាំ',
-  wx_label:'អាកាសធាតុ',wx_none:'មិនបានកត់ត្រា',
-  wx_sunny:'☀️ ថ្ងៃ​ច្បាស់',wx_pcloudy:'⛅ មានពពក',wx_cloudy:'☁️ 흐린',
-  wx_rainy:'🌧️ ភ្លៀង',wx_shower:'🌦️ ភ្លៀងខ្លះ',wx_storm:'⛈️ ព្យុះ',
   months:['មករា','កុម្ភៈ','មីនា','មេសា','ឧសភា','មិថុនា','កក្កដា','សីហា','កញ្ញា','តុលា','វិច្ឆិកា','ធ្នូ'],
 }};
 
@@ -750,8 +638,8 @@ km:{
 let LANG='zh', DP='morning', RP='morning', HV='month', AV='month', HP=1;
 const PER_PAGE=30;
 let editZID=null, cfCB=null;
-const LSZ='vrt_th_z', LSR='vrt_th_r', LSTH='vrt_th_th', LSTG='vrt_th_tg', LSGAS='vrt_th_gas', LSW='vrt_th_wx',
-      LSSL='vrt_th_sl', LSAW='vrt_th_aw', LSAS='vrt_th_as';
+const GAS_DEFAULT_URL='https://script.google.com/macros/s/AKfycbyRmex6EmpUKGEzrswyFwO_aySAFg2d7tJuUaFBKtlAuOEwVc2TRerP7zbFilitVvZ8Sg/exec';
+const LSZ='vrt_th_z', LSR='vrt_th_r', LSTH='vrt_th_th', LSTG='vrt_th_tg', LSGAS='vrt_th_gas';
 
 const DZ=[
   {id:'za',zh:'A廠車間',en:'Building A Workshop',km:'អគារ A (រោងចក្រ)',col:'#4f6ef7',desc:'',on:true},
@@ -769,31 +657,8 @@ const getTH=()=>{try{const d=localStorage.getItem(LSTH);return d?JSON.parse(d):J
 const setTH=t=>localStorage.setItem(LSTH,JSON.stringify(t));
 const getTG=()=>{try{const d=localStorage.getItem(LSTG);return d?JSON.parse(d):{tok:'',chat:''};}catch{return {tok:'',chat:''};}}
 const setTG=c=>localStorage.setItem(LSTG,JSON.stringify(c));
-const getGAS=()=>{try{const d=localStorage.getItem(LSGAS);return d?JSON.parse(d):{url:''};}catch{return {url:''};}}
+const getGAS=()=>{try{const d=localStorage.getItem(LSGAS);const p=d?JSON.parse(d):{url:''};return (p&&p.url)?p:{url:GAS_DEFAULT_URL};}catch{return {url:GAS_DEFAULT_URL};}}
 const setGAS=c=>localStorage.setItem(LSGAS,JSON.stringify(c));
-const getWX=()=>{try{const d=localStorage.getItem(LSW);return d?JSON.parse(d):{};} catch{return {};}}
-const setWX=w=>localStorage.setItem(LSW,JSON.stringify(w));
-const getSL=()=>{try{const d=localStorage.getItem(LSSL);return d?JSON.parse(d):[];}catch{return [];}}
-const setSL=l=>{const trimmed=l.slice(-100);localStorage.setItem(LSSL,JSON.stringify(trimmed));}
-const getAW=()=>{try{const d=localStorage.getItem(LSAW);return d?JSON.parse(d):{enabled:false,cache:{},lastFetch:''};}catch{return {enabled:false,cache:{},lastFetch:''};}}
-const setAW=a=>localStorage.setItem(LSAW,JSON.stringify(a));
-const getAS=()=>{try{const d=localStorage.getItem(LSAS);return d?JSON.parse(d):{upMin:15,dnMin:60,enabled:false};}catch{return {upMin:15,dnMin:60,enabled:false};}}
-const setAS=a=>localStorage.setItem(LSAS,JSON.stringify(a));
-const WX_KEYS=['sunny','pcloudy','cloudy','rainy','shower','storm'];
-const wxLabel=k=>k?T('wx_'+k):'';
-const wmoToWx=c=>{if(c<=1)return 'sunny';if(c===2)return 'pcloudy';if(c===3)return 'cloudy';if(c>=51&&c<=82)return c>=70?'rainy':'shower';if(c>=95)return 'storm';return 'cloudy';};
-const wxScore=k=>({sunny:5,pcloudy:4,cloudy:3,shower:2,rainy:2,storm:1}[k]||3);
-const wxScoreLabel=s=>s>=5?'☀️ Excellent':s>=4?'⛅ Good':s>=3?'🌦 Normal':s>=2?'🌧 Poor':'⛈ Severe';
-let autoSyncTimer=null;
-
-// Sync log helper
-function addSyncLog(action,status,detail='',count=''){
-  const log=getSL();
-  log.push({ts:new Date().toISOString(),action,status,detail,count});
-  setSL(log);
-  const el=document.getElementById('sl-badge');
-  if(el&&status==='err'){el.style.display='inline';el.textContent='!';}
-}
 
 // ══════════════════════════════════════════
 // STATUS HELPERS
@@ -914,79 +779,14 @@ function tick(){
 // ══════════════════════════════════════════
 // DATE UTILS
 // ══════════════════════════════════════════
-const today=()=>fmtDate(new Date());
+const today=()=>new Date().toISOString().slice(0,10);
 const wkKey=d=>{const dt=new Date(d),j1=new Date(dt.getFullYear(),0,1),w=Math.ceil(((dt-j1)/86400000+j1.getDay()+1)/7);return `${dt.getFullYear()}-W${String(w).padStart(2,'0')}`;};
 const moKey=d=>d.slice(0,7);
 const yrKey=d=>d.slice(0,4);
 
 // ══════════════════════════════════════════
-// DATE SELECT HELPERS (attendance-style)
+// TABS
 // ══════════════════════════════════════════
-function fmtDate(dt){
-  const y=dt.getFullYear(),m=String(dt.getMonth()+1).padStart(2,'0'),d=String(dt.getDate()).padStart(2,'0');
-  return `${y}-${m}-${d}`;
-}
-function parseLocalDate(s){
-  if(!s)return new Date();
-  const [y,m,d]=(s.replace(/\//g,'-')).split('-').map(Number);
-  return new Date(y,m-1,d);
-}
-function populateDateSel(selId, currentVal){
-  const sel=document.getElementById(selId);if(!sel)return;
-  const prev=currentVal||sel.value||today();
-
-  // All dates with records
-  const recDates=new Set(getR().map(r=>r.d));
-  // Last 60 days always visible
-  const allDates=new Set(recDates);
-  for(let i=0;i<60;i++){const dt=new Date();dt.setDate(dt.getDate()-i);allDates.add(fmtDate(dt));}
-  // Always include prev (in case older than 60 days)
-  if(prev)allDates.add(prev);
-
-  const sorted=[...allDates].sort((a,b)=>b.localeCompare(a));
-  const recMap={};getR().forEach(r=>{recMap[r.d]=(recMap[r.d]||0)+1;});
-
-  sel.innerHTML=sorted.map(d=>{
-    const cnt=recMap[d]||0;
-    const mark=cnt>0?` ✦${cnt}`:'';
-    const isToday=d===today();
-    const lbl=isToday?`${d}  ◆今天${mark}`:`${d}${mark}`;
-    return `<option value="${d}">${lbl}</option>`;
-  }).join('');
-
-  sel.value=sorted.includes(prev)?prev:sorted[0];
-}
-
-// updateDateLabel kept as no-op (select shows date itself now)
-function updateDateLabel(prefix){}
-
-function shiftDate(inputId,dir){
-  const sel=document.getElementById(inputId);if(!sel)return;
-  const opts=[...sel.options];
-  const idx=opts.findIndex(o=>o.value===sel.value);
-  // Options sorted descending: dir=-1 (back/older) → higher index; dir=+1 (forward/newer) → lower index
-  const newIdx=idx-dir;
-  if(newIdx<0||newIdx>=opts.length)return;
-  sel.value=opts[newIdx].value;
-  const prefix=inputId.replace('-date','');
-  if(prefix==='dash')renderDash();
-  else if(prefix==='rec'){loadWXforDate(sel.value);renderRec();}
-}
-
-// ══════════════════════════════════════════
-// SYNC CHIP UPDATER
-// ══════════════════════════════════════════
-function setSyncChip(type,state,text){
-  // type: 'up' | 'dn'  state: 'busy'|'ok'|'err'|'idle'
-  const ids=type==='up'?['sync-chip-up','sync-chip-up-rec','sync-chip-up-hist']:['sync-chip-dn','sync-chip-dn-rec','sync-chip-dn-hist'];
-  const icoIds=type==='up'?['sync-ico-up','sync-ico-up-rec','sync-ico-up-hist']:['sync-ico-dn','sync-ico-dn-rec','sync-ico-dn-hist'];
-  const infoIds=type==='up'?['sync-up-info','sync-up-info-rec','sync-up-info-hist']:['sync-dn-info','sync-dn-info-rec','sync-dn-info-hist'];
-  const ico=type==='up'?(state==='busy'?'🔄':state==='ok'?'✅':state==='err'?'❌':'⬆️'):(state==='busy'?'🔄':state==='ok'?'✅':state==='err'?'❌':'⬇️');
-  const cls='sync-chip sc-'+(state==='busy'?'busy':state==='ok'?'ok':state==='err'?'err':'idle');
-  ids.forEach(id=>{const el=document.getElementById(id);if(el){el.className=cls;}});
-  icoIds.forEach(id=>{const el=document.getElementById(id);if(el){el.textContent=ico;el.classList.toggle('spinning',state==='busy');}});
-  infoIds.forEach(id=>{const el=document.getElementById(id);if(el)el.textContent=text;});
-}
 function showTab(n){
   document.querySelectorAll('.pnl').forEach(p=>p.classList.remove('on'));
   document.querySelectorAll('.tab').forEach(b=>b.classList.remove('on'));
@@ -998,7 +798,6 @@ function showTab(n){
   if(n==='anal')renderAnal();
   if(n==='zones')renderZones();
   if(n==='alert')renderAlert();
-  if(n==='synclog')renderSyncLog();
   if(n==='set')renderSet();
 }
 
@@ -1014,12 +813,12 @@ function setDP(p){
 }
 
 function renderDash(){
-  populateDateSel('dash-date');
-  const sel=document.getElementById('dash-date');
-  const selDate=sel?sel.value:today();
+  const dd=document.getElementById('dash-date');
+  if(!dd.value)dd.value=today();
+  const sel=dd.value;
   const zones=getZ().filter(z=>z.on);
   const recs=getR();
-  const dr=recs.filter(r=>r.d===selDate);
+  const dr=recs.filter(r=>r.d===sel);
   const anom=dr.filter(r=>isAnom(r));
   const crit=dr.filter(r=>isCrit(r));
 
@@ -1033,14 +832,11 @@ function renderDash(){
   const tStat=at.length?tSt(avg(at)):null;
   const hStat=ah.length?hSt(avg(ah)):null;
 
-  const wxToday=getWX()[selDate]||'';
-  const wxIcons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
   document.getElementById('dash-stats').innerHTML=`
     <div class="scard" style="border-left-color:#4f6ef7"><div class="sl">${T('zone')}</div><div class="sv">${zones.length}</div><div class="ss">${T('tab-zones')}</div></div>
-    <div class="scard" style="border-left-color:${tStat?tStat.col:'#94a3b8'}"><div class="sl">🌡️ ${T('clbl_tmp')}</div><div class="sv">${avg(at)}${at.length?'°C':''}</div><div class="ss">${at.length?'Max '+Math.max(...at).toFixed(1)+'° · Min '+Math.min(...at).toFixed(1)+'°':selDate}</div></div>
-    <div class="scard" style="border-left-color:${hStat?hStat.col:'#94a3b8'}"><div class="sl">💧 ${T('clbl_hum')}</div><div class="sv">${avg(ah)}${ah.length?'%':''}</div><div class="ss">${ah.length?'Max '+Math.max(...ah).toFixed(1)+'% · Min '+Math.min(...ah).toFixed(1)+'%':selDate}</div></div>
+    <div class="scard" style="border-left-color:${tStat?tStat.col:'#94a3b8'}"><div class="sl">🌡️ ${T('clbl_tmp')}</div><div class="sv">${avg(at)}${at.length?'°C':''}</div><div class="ss">${at.length?'Max '+Math.max(...at).toFixed(1)+'° · Min '+Math.min(...at).toFixed(1)+'°':sel}</div></div>
+    <div class="scard" style="border-left-color:${hStat?hStat.col:'#94a3b8'}"><div class="sl">💧 ${T('clbl_hum')}</div><div class="sv">${avg(ah)}${ah.length?'%':''}</div><div class="ss">${ah.length?'Max '+Math.max(...ah).toFixed(1)+'% · Min '+Math.min(...ah).toFixed(1)+'%':sel}</div></div>
     <div class="scard" style="border-left-color:${crit.length?'var(--hot)':anom.length?'var(--warm)':'var(--ok)'}"><div class="sl">⚠️ ${T('tab-alert')}</div><div class="sv">${anom.length}</div><div class="ss">${crit.length?'🔴 '+T('crit')+': '+crit.length:'✅ '+T('ok')}</div></div>
-    <div class="scard" style="border-left-color:#06b6d4"><div class="sl">${T('wx_label')}</div><div class="sv" style="font-size:28px">${wxToday?(wxIcons[wxToday]||'🌤️'):'--'}</div><div class="ss">${wxToday?T('wx_'+wxToday):T('wx_none')}</div></div>
   `;
 
   const zhtml=zones.map(z=>{
@@ -1071,7 +867,7 @@ function renderDash(){
         <div class="zdot" style="background:${z.col}"></div>
         <div class="znm">${znm(z)}</div>
         ${za?`<span class="bdg b-hot" style="margin-left:auto">⚠️${za}</span>`:'<span class="bdg b-ok" style="margin-left:auto">✅</span>'}
-        <button class="btn bg xs" onclick="openREfromDash('${z.id}','${selDate}')">＋</button>
+        <button class="btn bg xs" onclick="openREfromDash('${z.id}','${sel}')">＋</button>
       </div>
       <div class="zper">
         ${sm?perH(mr,T('am')):''}${sa?perH(ar,T('pm')):''}
@@ -1083,7 +879,7 @@ function renderDash(){
   // Anomaly summary
   if(anom.length){
     const zones2=getZ();
-    document.getElementById('dash-anom').innerHTML=`<div class="card"><div class="chd"><span class="ct">⚠️ ${selDate} ${T('tab-alert')}</span><button class="btn bg sm" onclick="showTab('alert')">${T('tab-alert')} →</button></div><div class="cb">
+    document.getElementById('dash-anom').innerHTML=`<div class="card"><div class="chd"><span class="ct">⚠️ ${sel} ${T('tab-alert')}</span><button class="btn bg sm" onclick="showTab('alert')">${T('tab-alert')} →</button></div><div class="cb">
     ${anom.slice(0,6).map(r=>{const z=zones2.find(z=>z.id===r.z);const ts=tSt(r.t),hs=hSt(r.h);const c=isCrit(r);
     return `<div class="aitm ${c?'crit':'warn'}"><div class="aico">${c?'🔴':'⚠️'}</div><div class="atxt"><strong>${z?znm(z):'?'} · ${r.p==='morning'?T('am'):T('pm')}</strong>
     ${r.t!==''?`🌡️${r.t}°C <span class="bdg ${ts?ts.cls:''}">${ts?T(ts.k):''}</span>`:''} ${r.h!==''?`💧${r.h}% <span class="bdg ${hs?hs.cls:''}">${hs?T(hs.k):''}</span>`:''}</div></div>`;}).join('')}
@@ -1102,20 +898,10 @@ function setRP(p){
 }
 
 function renderRec(){
-  populateDateSel('rec-date');
-  const sel=document.getElementById('rec-date');
-  const selDate=sel?sel.value:today();
+  const rd=document.getElementById('rec-date');
+  if(!rd.value)rd.value=today();
   const zones=getZ().filter(z=>z.on);
-  document.getElementById('rec-plbl').textContent=`📅 ${selDate} · ${RP==='morning'?T('am'):T('pm')}`;
-  // Update weather select options text for current language
-  const wxSel=document.getElementById('rec-wx');
-  if(wxSel){
-    const prev=wxSel.value;
-    wxSel.innerHTML=`<option value="">── ${T('wx_none')} ──</option>`+
-      WX_KEYS.map(k=>`<option value="${k}">${T('wx_'+k)}</option>`).join('');
-    wxSel.value=prev;
-  }
-  loadWXforDate(selDate);
+  document.getElementById('rec-plbl').textContent=`📅 ${rd.value} · ${RP==='morning'?T('am'):T('pm')}`;
 
   document.getElementById('rec-zgrid').innerHTML=zones.map(z=>`
     <div class="rzcard">
@@ -1136,14 +922,14 @@ function renderRec(){
     </div>`).join('');
 
   // Pre-fill existing
-  const recs2=getR();
+  const recs=getR();const sel=rd.value;
   zones.forEach(z=>{
-    const ex=recs2.filter(r=>r.d===selDate&&r.p===RP&&r.z===z.id);
+    const ex=recs.filter(r=>r.d===sel&&r.p===RP&&r.z===z.id);
     if(ex.length){const r=ex[ex.length-1];
       const ti=document.getElementById('ri-t-'+z.id),hi=document.getElementById('ri-h-'+z.id);
       if(ti&&r.t!=='')ti.value=r.t;if(hi&&r.h!=='')hi.value=r.h;prvSt(z.id);}
   });
-  renderTodayCard(selDate);
+  renderTodayCard(sel);
 }
 
 function prvSt(zid){
@@ -1156,41 +942,24 @@ function prvSt(zid){
   el.innerHTML=html;
 }
 
-function saveWX(){
-  const date=document.getElementById('rec-date').value;if(!date)return;
-  const val=document.getElementById('rec-wx').value;
-  const wx=getWX();
-  if(val)wx[date]=val;else delete wx[date];
-  setWX(wx);
-  const icons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
-  document.getElementById('rec-wx-icon').textContent=val?(icons[val]||'🌤️'):'🌤️';
-  const sv=document.getElementById('rec-wx-saved');if(sv)sv.textContent=val?'✓ '+T('saved'):'';
-}
-
-function loadWXforDate(date){
-  const wx=getWX();const val=wx[date]||'';
-  const sel=document.getElementById('rec-wx');if(sel)sel.value=val;
-  const icons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
-  const ico=document.getElementById('rec-wx-icon');if(ico)ico.textContent=val?(icons[val]||'🌤️'):'🌤️';
-  const sv=document.getElementById('rec-wx-saved');if(sv)sv.textContent='';
-}
-
 function saveAllRec(){
   const rd=document.getElementById('rec-date');
-  const sel=rd?rd.value:'';if(!sel){toast('請選擇日期','err');return;}
+  const sel=rd.value;if(!sel){toast('請選擇日期','err');return;}
   const note=document.getElementById('rec-note').value;
   const zones=getZ().filter(z=>z.on);
-  let recs=getR();let saved=0;
+  let recs=getR();const newRecs=[];
   zones.forEach(z=>{
     const t=document.getElementById('ri-t-'+z.id)?.value;
     const h=document.getElementById('ri-h-'+z.id)?.value;
     if((t===''||t===undefined)&&(h===''||h===undefined))return;
     recs=recs.filter(r=>!(r.d===sel&&r.p===RP&&r.z===z.id));
-    recs.push({id:'r'+Date.now()+Math.random().toString(36).slice(2,5),z:z.id,d:sel,p:RP,
-      t:t!==''&&t!==undefined?parseFloat(t):'',h:h!==''&&h!==undefined?parseFloat(h):'',note,ts:new Date().toISOString()});
-    saved++;
+    const rec={id:'r'+Date.now()+Math.random().toString(36).slice(2,5),z:z.id,d:sel,p:RP,
+      t:t!==''&&t!==undefined?parseFloat(t):'',h:h!==''&&h!==undefined?parseFloat(h):'',note,ts:new Date().toISOString()};
+    recs.push(rec);newRecs.push(rec);
   });
   setR(recs);toast(T('saved'),'ok');renderTodayCard(sel);updBadge();
+  // 自動同步到雲端（非阻塞，GAS 會自動發 Telegram 通知）
+  if(newRecs.length>0) gasAutoSync(newRecs);
 }
 
 function renderTodayCard(date){
@@ -1198,11 +967,6 @@ function renderTodayCard(date){
   const tc=document.getElementById('rec-today'),tb=document.getElementById('rec-today-body');
   if(!recs.length){tc.style.display='none';return;}
   tc.style.display='block';
-  const wx=getWX();const w=wx[date]||'';
-  const wxIcons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
-  const wDisp=w?` ${wxIcons[w]} ${T('wx_'+w)}`:'';
-  const tHead=document.querySelector('#rec-today .chd .ct');
-  if(tHead)tHead.textContent=T('today_recs')+wDisp;
   const zones=getZ();
   tb.innerHTML=`<div class="twrap"><table><thead><tr><th>${T('clbl_zone')}</th><th>${T('per')}</th><th>${T('clbl_tmp')}</th><th>${T('clbl_hum')}</th><th>${T('clbl_stat')}</th></tr></thead>
   <tbody>${recs.map(r=>{const z=zones.find(z=>z.id===r.z);const ts=tSt(r.t),hs=hSt(r.h);
@@ -1223,10 +987,6 @@ function openREfromDash(zid,date){const r=getR().filter(r=>r.z===zid&&r.d===date
 // ══════════════════════════════════════════
 function setHV(v){
   HV=v;HP=1;
-  ['day','week','month','year'].forEach(x=>{
-    const el=document.getElementById('hv'+x[0]);
-    if(el)el.classList.toggle('on',x===v);
-  });
   const sel=document.getElementById('hview');if(sel)sel.value=v;
   renderHNavLabel();renderHist();
 }
@@ -1241,15 +1001,15 @@ function syncPeriodFilter(){
 }
 
 function navHist(dir){
+  // Shift hfrom/hto by one period in given direction (+1 forward, -1 back)
   const f=document.getElementById('hfrom'),t=document.getElementById('hto');
   if(!f.value||!t.value)return;
-  const shift=(dateStr,n)=>{
-    const dt=parseLocalDate(dateStr);
-    if(HV==='day')dt.setDate(dt.getDate()+n);
-    else if(HV==='week')dt.setDate(dt.getDate()+n*7);
-    else if(HV==='month')dt.setMonth(dt.getMonth()+n);
-    else if(HV==='year')dt.setFullYear(dt.getFullYear()+n);
-    return fmtDate(dt);
+  const shift=(d,n)=>{const dt=new Date(d);
+    if(HV==='day'){dt.setDate(dt.getDate()+n);}
+    else if(HV==='week'){dt.setDate(dt.getDate()+n*7);}
+    else if(HV==='month'){dt.setMonth(dt.getMonth()+n);}
+    else if(HV==='year'){dt.setFullYear(dt.getFullYear()+n);}
+    return dt.toISOString().slice(0,10);
   };
   f.value=shift(f.value,dir);
   t.value=shift(t.value,dir);
@@ -1304,16 +1064,12 @@ function renderHist(){
 
 function renderHistTbl(recs,zones){
   const total=recs.length,start=(HP-1)*PER_PAGE,page=recs.slice(start,start+PER_PAGE);
-  const wx=getWX();
-  const wxIcons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
-  document.getElementById('h-thead').innerHTML=`<tr><th>${T('clbl_date')}</th><th>${T('wx_label')}</th><th>${T('clbl_zone')}</th><th>${T('per')}</th><th>${T('clbl_tmp')}</th><th>${T('clbl_hum')}</th><th>${T('clbl_stat')}</th><th>${T('clbl_note')}</th><th>${T('act')}</th></tr>`;
-  if(!page.length){document.getElementById('h-tbody').innerHTML=`<tr class="nodata-row"><td colspan="9">${T('nodata')}</td></tr>`;document.getElementById('h-pagi').innerHTML='';return;}
+  document.getElementById('h-thead').innerHTML=`<tr><th>${T('clbl_date')}</th><th>${T('clbl_zone')}</th><th>${T('per')}</th><th>${T('clbl_tmp')}</th><th>${T('clbl_hum')}</th><th>${T('clbl_stat')}</th><th>${T('clbl_note')}</th><th>${T('act')}</th></tr>`;
+  if(!page.length){document.getElementById('h-tbody').innerHTML=`<tr class="nodata-row"><td colspan="8">${T('nodata')}</td></tr>`;document.getElementById('h-pagi').innerHTML='';return;}
   document.getElementById('h-tbody').innerHTML=page.map(r=>{
     const z=zones.find(z=>z.id===r.z),ts=tSt(r.t),hs=hSt(r.h),an=isAnom(r),cr=isCrit(r);
-    const w=wx[r.d]||'';
     return `<tr style="${cr?'background:var(--hot-bg)':an?'background:var(--warm-bg)':''}">
       <td style="white-space:nowrap">${r.d}</td>
-      <td style="text-align:center;font-size:16px" title="${w?T('wx_'+w):T('wx_none')}">${w?wxIcons[w]:'─'}</td>
       <td><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:7px;height:7px;border-radius:50%;background:${z?z.col:'#ccc'};display:inline-block"></span>${z?znm(z):'?'}</span></td>
       <td>${r.p==='morning'?T('am').slice(0,2):T('pm').slice(0,2)}</td>
       <td class="${ts?ts.tc:''}">${r.t!==''?r.t+'°C':'--'}</td>
@@ -1327,24 +1083,17 @@ function renderHistTbl(recs,zones){
 }
 
 function renderHistAgg(groups,zones){
-  document.getElementById('h-thead').innerHTML=`<tr><th>${HV}</th><th>${T('wx_label')}</th><th>${T('an_cnt')}</th><th>${T('an_avgt')}</th><th>${T('an_maxt')}</th><th>${T('an_mint')}</th><th>${T('an_avgh')}</th><th>${T('an_maxh')}</th><th>${T('an_minh')}</th><th>${T('an_anom')}</th></tr>`;
-  if(!groups.length){document.getElementById('h-tbody').innerHTML=`<tr class="nodata-row"><td colspan="10">${T('nodata')}</td></tr>`;document.getElementById('h-pagi').innerHTML='';return;}
+  const kLabel=HV==='week'?T('an_cnt')+'/W':HV==='month'?T('an_cnt')+'/M':T('an_cnt')+'/Y';
+  document.getElementById('h-thead').innerHTML=`<tr><th>${HV}</th><th>${T('an_cnt')}</th><th>${T('an_avgt')}</th><th>${T('an_maxt')}</th><th>${T('an_mint')}</th><th>${T('an_avgh')}</th><th>${T('an_maxh')}</th><th>${T('an_minh')}</th><th>${T('an_anom')}</th></tr>`;
+  if(!groups.length){document.getElementById('h-tbody').innerHTML=`<tr class="nodata-row"><td colspan="9">${T('nodata')}</td></tr>`;document.getElementById('h-pagi').innerHTML='';return;}
   const av=a=>a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):'--';
-  const wx=getWX();
-  const wxIcons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
   document.getElementById('h-tbody').innerHTML=groups.map(g=>{
     const ts2=g.recs.filter(r=>r.t!==''&&!isNaN(r.t)).map(r=>+r.t);
     const hs2=g.recs.filter(r=>r.h!==''&&!isNaN(r.h)).map(r=>+r.h);
     const an=g.recs.filter(r=>isAnom(r)).length;
     const tAvg=tSt(av(ts2)),hAvg=hSt(av(hs2));
-    // Weather: get unique dates in this group's records, count each weather type
-    const dates=[...new Set(g.recs.map(r=>r.d))];
-    const wxCounts={};dates.forEach(d=>{if(wx[d]){wxCounts[wx[d]]=(wxCounts[wx[d]]||0)+1;}});
-    const wxSummary=Object.entries(wxCounts).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([k])=>wxIcons[k]||'').join(' ');
     return `<tr>
-      <td class="fw7">${g.k}</td>
-      <td style="font-size:15px;letter-spacing:2px">${wxSummary||'─'}</td>
-      <td>${g.recs.length}</td>
+      <td class="fw7">${g.k}</td><td>${g.recs.length}</td>
       <td class="${tAvg?tAvg.tc:''}">${av(ts2)}${ts2.length?'°C':''}</td>
       <td style="color:var(--hot)">${ts2.length?Math.max(...ts2).toFixed(1)+'°C':'--'}</td>
       <td style="color:var(--cold)">${ts2.length?Math.min(...ts2).toFixed(1)+'°C':'--'}</td>
@@ -1535,12 +1284,8 @@ function renderSet(){
   renderThLegend();
   const tg=getTG();document.getElementById('tg-tok').value=tg.tok||'';document.getElementById('tg-chat').value=tg.chat||'';
   document.getElementById('tg-date').value=today();
-  document.getElementById('gas-url').value=getGAS().url||'';
-  const dashUrlEl=document.getElementById('gas-dash-url');if(dashUrlEl)dashUrlEl.value=getGAS().dashUrl||'';
-  const as=getAS();
-  const ase=document.getElementById('as-enable');if(ase)ase.checked=as.enabled;
-  const asu=document.getElementById('as-up');if(asu)asu.value=as.upMin;
-  const asd=document.getElementById('as-dn');if(asd)asd.value=as.dnMin;
+  document.getElementById('gas-url').value=getGAS().url||GAS_DEFAULT_URL||'';
+  const _du=document.getElementById('gas-dash-url');if(_du)_du.value=getGAS().dashUrl||'https://saintdou-weng.github.io/vrt-temperature/';
   const recs=getR();const dates=recs.map(r=>r.d).sort();
   document.getElementById('inf-rc').textContent=recs.length;
   document.getElementById('inf-zn').textContent=getZ().filter(z=>z.on).length;
@@ -1614,9 +1359,12 @@ function saveREedit(){
     recs.push({id:'r'+Date.now()+Math.random().toString(36).slice(2,5),d:document.getElementById('re-date').value,p:document.getElementById('re-per').value,z:document.getElementById('re-zon').value,t:t!==''?parseFloat(t):'',h:h!==''?parseFloat(h):'',note:document.getElementById('re-note').value,ts:new Date().toISOString()});
   }
   setR(recs);closeMod('re-over');toast(T('saved'),'ok');renderAll();updBadge();
+  // 雲端同步
+  const syncRec=recs.find(r=>r.id===(id||recs[recs.length-1]?.id));
+  if(syncRec) gasAutoSync([syncRec]);
 }
 
-function delRec(id){confirmAction(T('cdelrec'),()=>{setR(getR().filter(r=>r.id!==id));toast(T('deleted'),'inf');renderAll();updBadge();});}
+function delRec(id){confirmAction(T('cdelrec'),()=>{setR(getR().filter(r=>r.id!==id));toast(T('deleted'),'inf');renderAll();updBadge();gasDelete(id);});}
 
 // ══════════════════════════════════════════
 // IMPORT / EXPORT
@@ -1662,6 +1410,7 @@ function importXL(evt){
       const wb=XLSX.read(e.target.result,{type:'binary',cellDates:false,raw:true});
       const mnMap={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};
       let recs=getR();const existIds=new Set(recs.map(r=>r.d+'|'+r.p+'|'+r.z));
+      const newRecs=[];
       let added=0,skipped=0;
       const zones=getZ();
       // Helper: safely parse a numeric value from a cell (number or string)
@@ -1697,7 +1446,8 @@ function importXL(evt){
               if(tv===''&&hv==='')return;
               const key=ds+'|'+p+'|'+z.id;
               if(existIds.has(key)){skipped++;return;}
-              recs.push({id:'r'+Date.now()+Math.random().toString(36).slice(2,6),z:z.id,d:ds,p,t:tv,h:hv,note:'',ts:new Date().toISOString()});
+              const nrec={id:'r'+Date.now()+Math.random().toString(36).slice(2,6),z:z.id,d:ds,p,t:tv,h:hv,note:'',ts:new Date().toISOString()};
+              recs.push(nrec);newRecs.push(nrec);
               existIds.add(key);added++;
             });
           });
@@ -1705,6 +1455,8 @@ function importXL(evt){
       });
       setR(recs);log.textContent=`✅ 完成：新增 ${added} 筆，跳過重複 ${skipped} 筆`;
       toast(T('impok')+' ('+added+'筆)','ok');renderAll();updBadge();
+      // 批量同步歷史資料到雲端
+      if(newRecs.length>0) gasBulkSync(newRecs);
     }catch(ex){log.textContent='❌ 匯入失敗: '+ex.message+' | '+ex.stack;toast('匯入失敗','err');}
   };
   reader.readAsBinaryString(file);evt.target.value='';
@@ -1725,159 +1477,270 @@ function importJSON(evt){
 // ══════════════════════════════════════════
 // TELEGRAM
 // ══════════════════════════════════════════
+function tWarn(t){const n=parseFloat(t);if(isNaN(n))return'';if(n>=35)return'[HIGH/高溫]';if(n<18)return'[LOW/低溫]';if(n>=32)return'[WARM/偏熱]';return'';}
+function hWarn(h){const n=parseFloat(h);if(isNaN(n))return'';if(n>90)return'[V.HUMID/過濕]';if(n<40)return'[DRY/過乾]';if(n>80)return'[HUMID/偏濕]';return'';}
 function buildTGmsg(type,date){
-  const recs=getR().filter(r=>r.d===date),zones=getZ();
-  const wxMap=getWX();const w=wxMap[date]||'';
-  const wxIcons={'sunny':'☀️','pcloudy':'⛅','cloudy':'☁️','rainy':'🌧️','shower':'🌦️','storm':'⛈️'};
-  const now=new Date();
-  const nowStr=now.toLocaleString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  const azone=zones.filter(z=>z.on&&recs.some(r=>r.z===z.id&&isAnom(r)));
-
-  if(type==='daily'||type==='full'){
-    let m=`📊 VRT Daily Report / 溫濕度日報\nDate / 日期: ${date}`;
-    if(w)m+=`\n${wxIcons[w]||'🌤️'} Weather / 天氣: ${T('wx_'+w)} · ${wxScoreLabel(wxScore(w))}`;
-    m+='\n'+('─'.repeat(30))+'\n';
+  const d2=date.replace(/\//g,'-');
+  const recs=getR().filter(r=>r.d===d2);
+  const zones=getZ(),now=new Date().toLocaleString();
+  if(!recs.length)return 'VRT Temp & Humidity / 溫濕度\nDate: '+d2+'\n\nNo records for this date. / 此日期無記錄。';
+  const LINE='─'.repeat(26);
+  if(type==='daily'){
+    let m='VRT Daily Report / 溫濕度日報\n';
+    m+='Date / 日期: '+d2+'\n'+LINE+'\n';
+    let anom=0;
     zones.filter(z=>z.on).forEach(z=>{
-      const zr=recs.filter(r=>r.z===z.id);
-      const mr=zr.find(r=>r.p==='morning'),ar=zr.find(r=>r.p==='afternoon');
-      m+=`\n[${z.en} / ${z.zh}]\n`;
-      if(mr){
-        const ts=tSt(mr.t),hs=hSt(mr.h);
-        const ta=ts&&ts.k!=='ok'?`[${ts.k.toUpperCase()}/${T(ts.k)}]`:'';
-        const ha=hs&&hs.k!=='ok'?`[${hs.k.toUpperCase()}/${T(hs.k)}]`:'';
-        m+=`  AM/早: ${mr.t!==''?mr.t+'C':'--'}  ${mr.h!==''?mr.h+'%':'--'}${ta}${ha}\n`;
-      }
-      if(ar){
-        const ts=tSt(ar.t),hs=hSt(ar.h);
-        const ta=ts&&ts.k!=='ok'?`[${ts.k.toUpperCase()}/${T(ts.k)}]`:'';
-        const ha=hs&&hs.k!=='ok'?`[${hs.k.toUpperCase()}/${T(hs.k)}]`:'';
-        m+=`  PM/午: ${ar.t!==''?ar.t+'C':'--'}  ${ar.h!==''?ar.h+'%':'--'}${ta}${ha}\n`;
-      }
-      if(!mr&&!ar)m+=`  ─ No record / 無記錄\n`;
+      const zr=recs.filter(r=>r.z===z.id),mr=zr.find(r=>r.p==='morning'),ar=zr.find(r=>r.p==='afternoon');
+      const lbl=(z.en?z.en+' / ':'')+z.zh;
+      m+='['+lbl+']\n';
+      if(mr){const tw=tWarn(mr.t),hw=hWarn(mr.h);if(tw||hw)anom++;m+='  AM/早: '+( mr.t!==''?mr.t+'C':'--')+tw+'  '+(mr.h!==''?mr.h+'%':'--')+hw+'\n';}
+      if(ar){const tw=tWarn(ar.t),hw=hWarn(ar.h);if(tw||hw)anom++;m+='  PM/午: '+(ar.t!==''?ar.t+'C':'--')+tw+'  '+(ar.h!==''?ar.h+'%':'--')+hw+'\n';}
     });
-    m+='\n'+('─'.repeat(30))+'\n';
-    const anomCnt=azone.length;
-    m+=`Anomaly/異常: ${anomCnt} zone(s)\n${nowStr}`;
-    return m;
+    m+=LINE+'\n';
+    m+=anom>0?'Anomaly/異常: '+anom+' zone(s)\n':'All Normal / 全部正常\n';
+    m+=now;return m;
   }else if(type==='anomaly'){
     const an=recs.filter(r=>isAnom(r));
-    if(!an.length)return `✅ VRT No Anomaly / 無異常\nDate: ${date}\n${nowStr}`;
-    let m=`⚠️ VRT Anomaly Report / 異常報告\nDate / 日期: ${date}\n${'─'.repeat(30)}\n`;
+    if(!an.length)return 'VRT Anomaly Report / 異常報告\nDate: '+d2+'\n\nAll Normal / 無異常\n'+now;
+    let m='VRT Anomaly Report / 異常報告\nDate / 日期: '+d2+'\n'+LINE+'\n';
     an.forEach(r=>{
       const z=zones.find(z=>z.id===r.z);
-      const ts=tSt(r.t),hs=hSt(r.h);
-      m+=`${isCrit(r)?'🔴':'⚠️'} [${z?z.en:'?'}] ${r.p==='morning'?'AM':'PM'}: `;
-      if(r.t!=='')m+=`${r.t}C${ts&&ts.k!=='ok'?' ['+T(ts.k)+']':''}  `;
-      if(r.h!=='')m+=`${r.h}%${hs&&hs.k!=='ok'?' ['+T(hs.k)+']':''}`;
-      m+='\n';
+      const lbl=z?((z.en?z.en+'/':'')+z.zh):'?';
+      const per=r.p==='morning'?'Morning/早':'Afternoon/午';
+      const tw=tWarn(r.t),hw=hWarn(r.h);
+      m+=(isCrit(r)?'[CRITICAL/高危] ':'[WARNING/警告] ')+lbl+'\n';
+      m+='  '+per+': Temp '+(r.t!==''?r.t+'C':'--')+tw+'  Hum '+(r.h!==''?r.h+'%':'--')+hw+'\n';
     });
-    m+=`\n${nowStr}`;return m;
+    m+=LINE+'\n'+now;return m;
+  }else{
+    let m='VRT Full Records / 完整記錄\nDate / 日期: '+d2+'\n'+LINE+'\n';
+    m+='Date | Zone | Period | Temp | Hum\n';
+    recs.forEach(r=>{
+      const z=zones.find(z=>z.id===r.z);
+      const lbl=z?(z.en||z.zh):'?';
+      m+=r.d+' | '+lbl+' | '+(r.p==='morning'?'AM':'PM')+' | '+(r.t!==''?r.t+'C':'--')+' | '+(r.h!==''?r.h+'%':'--')+'\n';
+    });
+    m+=now;return m;
   }
-  return buildTGmsg('daily',date);
 }
-
-function prevTG(){
-  const msg=buildTGmsg(document.getElementById('tg-type').value,document.getElementById('tg-date').value||today());
-  const p=document.getElementById('tg-prev');p.textContent=msg;p.style.display='block';
-}
-
+function prevTG(){const msg=buildTGmsg(document.getElementById('tg-type').value,document.getElementById('tg-date').value||today());const p=document.getElementById('tg-prev');p.textContent=msg;p.style.display='block';}
 async function sendTG(){
-  const cfg=getTG();if(!cfg.tok||!cfg.chat){toast('請設定 Bot Token 和 Chat ID','err');return;}
-  const type=document.getElementById('tg-type').value;
   const date=document.getElementById('tg-date').value||today();
-  const msg=buildTGmsg(type,date);
-  const dashUrl=getGAS().dashUrl||'';
-  // Build inline keyboard if dashboard URL is configured
-  const ikb=dashUrl?{inline_keyboard:[[{text:'📊 開啟 Dashboard / Open Dashboard',url:dashUrl}]]}:undefined;
+  const url=getGAS().url;
+  // 優先走 GAS（Token 留在後端 + 自動附帶 Dashboard 按鈕）
+  if(url){
+    toast('發送中...','inf');
+    try{
+      const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
+        redirect:'follow',
+        body:JSON.stringify({type:'tempReport',date:date})});
+      const txt=await r.text();
+      let d;try{d=JSON.parse(txt);}catch{throw new Error('GAS 回傳非 JSON: '+txt.slice(0,120));}
+      if(d.ok){toast('Telegram 發送成功 ✅ (含 Dashboard 連結)','ok');return;}
+      throw new Error(d.error||'GAS 回應 ok=false');
+    }catch(ex){
+      console.warn('[GAS send failed]',ex.message);
+      toast('GAS 發送失敗: '+ex.message,'err');
+      // 有填 Token 才降級為瀏覽器直送
+      const cfg=getTG();
+      if(!cfg.tok||!cfg.chat)return;
+      toast('改用瀏覽器直送...','inf');
+    }
+  }
+  // 備援：瀏覽器直接呼叫 Telegram API
+  const cfg=getTG();
+  if(!cfg.tok||!cfg.chat){toast('請先設定 GAS URL，或填入 Bot Token 與 Chat ID','err');return;}
+  const msg=buildTGmsg(document.getElementById('tg-type').value,date);
+  if(!msg||!msg.trim()){toast('訊息內容為空，請確認日期有記錄','err');return;}
+  const dashUrl=(getGAS().dashUrl||'').trim();
+  const body={chat_id:cfg.chat,text:msg,disable_web_page_preview:true};
+  if(dashUrl&&dashUrl.indexOf('http')===0){
+    body.reply_markup={inline_keyboard:[[{text:'📊 開啟 Dashboard / Open Dashboard',url:dashUrl}]]};
+  }
   try{
-    const body={chat_id:cfg.chat,text:msg};
-    if(ikb)body.reply_markup=ikb;
-    const r=await fetch(`https://api.telegram.org/bot${cfg.tok}/sendMessage`,{
+    const r=await fetch('https://api.telegram.org/bot'+cfg.tok+'/sendMessage',{
       method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const d=await r.json();
-    d.ok?toast('Telegram 發送成功','ok'):toast('Telegram 錯誤: '+(d.description||''),'err');
-  }catch{toast('網路錯誤','err');}
+    d.ok?toast('Telegram 發送成功 ✅','ok'):toast('Telegram 錯誤: '+(d.description||''),'err');
+  }catch(ex){toast('網路錯誤: '+ex.message,'err');}
 }
 
 // ══════════════════════════════════════════
-// GAS SYNC
+// GAS CLOUD SYNC (v3 — POST-only)
 // ══════════════════════════════════════════
+
+// 把 HTML 短欄位（z,d,p,t,h）轉成 GAS 長欄位，並夾入 zone 名稱
+function enrichRec(r){
+  const z=getZ().find(zz=>zz.id===r.z)||{zh:'',en:''};
+  return {
+    id:          r.id,
+    date:        r.d,
+    period:      r.p,
+    zoneId:      r.z,
+    zoneName:    z.zh,
+    zoneEn:      z.en,
+    temperature: r.t!==''&&r.t!==undefined?r.t:'',
+    humidity:    r.h!==''&&r.h!==undefined?r.h:'',
+    note:        r.note||'',
+    submittedAt: r.ts||new Date().toISOString()
+  };
+}
+
+// 把 GAS 長欄位回傳的記錄正規化成 HTML 內部格式
+function normalizeRec(r){
+  const t=r.temperature!==undefined&&r.temperature!==''?parseFloat(r.temperature):'';
+  const h=r.humidity   !==undefined&&r.humidity   !==''?parseFloat(r.humidity)   :'';
+  return {
+    id:   r.id||'',
+    z:    r.zoneId||'',
+    d:    (r.date||'').slice(0,10),
+    p:    r.period||'',
+    t:    isNaN(t)?'':t,
+    h:    isNaN(h)?'':h,
+    note: r.note||'',
+    ts:   r.submittedAt||''
+  };
+}
+
+// 測試 GAS 連線
+// GAS Web App 的 CORS 限制：用 no-cors 送出後無法讀回應
+// 改用 doGet (GET request) 做 ping，GET 不受 CORS preflight 影響
 async function testGAS(){
-  const url=document.getElementById('gas-url').value.trim();if(!url){toast('請輸入 GAS URL','err');return;}
-  document.getElementById('sdot').className='syncdt sd-idle';document.getElementById('sstatus').textContent='測試中...';
+  const url=document.getElementById('gas-url').value.trim();
+  if(!url){toast('請輸入 GAS URL','err');return;}
+  document.getElementById('sdot').className='syncdt sd-idle';
+  document.getElementById('sstatus').textContent='測試中...';
   try{
-    const r=await fetch(url+'?action=ping',{redirect:'follow'});
-    const text=await r.text();
-    let d;try{d=JSON.parse(text);}catch{d={ok:false,msg:'非 JSON 回應: '+text.slice(0,80)};}
-    if(d.ok){document.getElementById('sdot').className='syncdt sd-ok';document.getElementById('sstatus').textContent='✅ 已連接 v'+(d.version||'?');toast('GAS 連接成功','ok');}
-    else throw new Error(d.msg||'GAS 回應 ok=false');
-  }catch(ex){document.getElementById('sdot').className='syncdt sd-err';document.getElementById('sstatus').textContent='❌ 失敗';toast('連接失敗: '+ex.message,'err');}
+    // GET request：GAS doGet 回傳 JSON，瀏覽器可以直接讀
+    const r=await fetch(url+'?ping=1',{method:'GET',redirect:'follow'});
+    if(r.ok){
+      document.getElementById('sdot').className='syncdt sd-ok';
+      document.getElementById('sstatus').textContent='✅ 已連接';
+      toast('GAS 連接成功 ✅','ok');
+    } else {
+      throw new Error('HTTP '+r.status);
+    }
+  }catch(ex){
+    document.getElementById('sdot').className='syncdt sd-err';
+    document.getElementById('sstatus').textContent='❌ 連接失敗';
+    toast('連接失敗: '+ex.message,'err');
+  }
 }
 
+// 全量上傳（手動，不觸發 TG 通知）
 async function syncUp(){
   const url=getGAS().url;if(!url){toast('請設定 GAS URL','err');return;}
-  const payload={records:getR(),zones:getZ(),weather:getWX(),thresholds:getTH(),tg:getTG()};
-  setSyncChip('up','busy','上傳中…');
-  const btnEl=document.getElementById('sync-up-btn');if(btnEl)btnEl.disabled=true;
+  const recs=getR();
+  document.getElementById('sdot').className='syncdt sd-idle';
+  document.getElementById('sstatus').textContent='上傳中...';
   try{
-    const r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},
-      body:JSON.stringify({action:'syncAll',payload})});
-    const text=await r.text();
-    let d;try{d=JSON.parse(text);}catch{throw new Error('非 JSON: '+text.slice(0,120));}
-    if(d.ok){
-      const cnt=payload.records.length;const t=new Date().toLocaleTimeString();
-      setSyncChip('up','ok',`✓ ${cnt}筆 ${t}`);
-      toast(`上傳成功 ${cnt}筆記錄`,'ok');
-      addSyncLog('upload','ok',`Records:${cnt} Zones:${payload.zones.length}`,cnt);
-      const lut=document.getElementById('last-up-time');if(lut)lut.textContent='Last Upload: '+t;
-    }else throw new Error(d.msg||'GAS 回應 ok=false');
+    await fetch(url,{method:'POST',mode:'no-cors',
+      body:JSON.stringify({type:'tempSync',records:recs.map(enrichRec),zones:getZ(),full:true})});
+    document.getElementById('sdot').className='syncdt sd-ok';
+    document.getElementById('sstatus').textContent='✅ 已連接';
+    toast('✅ 已送出 '+recs.length+' 筆（no-cors模式，資料已送達GAS）','ok');
   }catch(ex){
-    setSyncChip('up','err',ex.message.slice(0,30));
+    document.getElementById('sdot').className='syncdt sd-err';
+    document.getElementById('sstatus').textContent='❌ 同步失敗';
     toast('上傳失敗: '+ex.message,'err');
-    addSyncLog('upload','err',ex.message);
-  }finally{if(btnEl)btnEl.disabled=false;}
+  }
 }
 
+// 從雲端拉取記錄（合併到本機，雲端為主）
 async function syncDown(){
   const url=getGAS().url;if(!url){toast('請設定 GAS URL','err');return;}
-  const logEl=document.getElementById('sync-log-inline');
-  if(logEl)logEl.textContent='⏳ 拉取中...';
-  const btnEl=document.getElementById('sync-dn-btn');if(btnEl)btnEl.disabled=true;
+  document.getElementById('sdot').className='syncdt sd-idle';
+  document.getElementById('sstatus').textContent='拉取中...';
   try{
-    const r=await fetch(url+'?action=pullAll',{redirect:'follow'});
-    const text=await r.text();
-    console.log('[VRT GAS Pull raw]',text.slice(0,500));
-    let d;
-    try{d=JSON.parse(text);}
-    catch(e){throw new Error('GAS 回傳非 JSON。原始內容: '+text.slice(0,200));}
-    if(!d.ok)throw new Error('GAS ok=false。msg: '+(d.msg||'無說明')+'。raw: '+JSON.stringify(d).slice(0,200));
-    // Restore all data
-    let restored=[];
-    if(d.records&&Array.isArray(d.records)){setR(d.records);restored.push(`Records: ${d.records.length}`);}
-    if(d.zones&&Array.isArray(d.zones)&&d.zones.length){setZ(d.zones);restored.push(`Zones: ${d.zones.length}`);}
-    if(d.weather&&typeof d.weather==='object'){setWX(d.weather);restored.push(`Weather: ${Object.keys(d.weather).length}`);}
-    if(d.thresholds&&d.thresholds.t){setTH(d.thresholds);restored.push('Thresholds: ✓');}
-    if(d.tg&&d.tg.tok){setTG(d.tg);restored.push('Telegram: ✓');}
-    // Sync verification
-    const localCnt=getR().length;const cloudCnt=d.records?.length||0;
-    const syncOk=localCnt===cloudCnt;
-    const detail=restored.join(' | ');
-    const verifyMsg=syncOk?`✓ Synced (${localCnt}筆)`:`⚠ Diff local ${localCnt} ≠ cloud ${cloudCnt}`;
-    const t=new Date().toLocaleTimeString();
-    setSyncChip('dn',syncOk?'ok':'err',verifyMsg+' '+t);
-    toast('拉取成功 · '+verifyMsg,'ok');
-    addSyncLog('download',syncOk?'ok':'warn',detail+' · '+verifyMsg,cloudCnt);
-    if(logEl)logEl.textContent='✅ '+detail+'\n'+verifyMsg;
-    const ldt=document.getElementById('last-dn-time');if(ldt)ldt.textContent='Last Pull: '+t;
-    renderAll();
+    // Pull 用 GET + query param，避免 CORS 問題
+    const r=await fetch(url+'?type=tempList',{method:'GET',redirect:'follow'});
+    const d=await r.json();
+    if(d.ok&&d.records){
+      const cloudRecs=d.records.map(normalizeRec);
+      const cloudIds=new Set(cloudRecs.map(r=>r.id));
+      const onlyLocal=getR().filter(r=>!cloudIds.has(r.id));
+      const merged=[...cloudRecs,...onlyLocal];
+      setR(merged);
+      document.getElementById('sdot').className='syncdt sd-ok';
+      document.getElementById('sstatus').textContent='✅ 已連接';
+      toast(`拉取成功：雲端 ${cloudRecs.length} 筆，本機獨有 ${onlyLocal.length} 筆`,'ok');
+      renderAll();
+    } else throw new Error(d.error||'fail');
   }catch(ex){
-    const msg=ex.message;
-    setSyncChip('dn','err',msg.slice(0,35));
-    toast('拉取失敗: '+msg,'err');
-    addSyncLog('download','err',msg);
-    if(logEl)logEl.textContent='❌ '+msg;
-    console.error('[VRT syncDown]',ex);
-  }finally{if(btnEl)btnEl.disabled=false;}
+    document.getElementById('sdot').className='syncdt sd-err';
+    document.getElementById('sstatus').textContent='❌ 拉取失敗';
+    toast('拉取失敗: '+ex.message,'err');
+  }
+}
+
+// 自動同步（儲存時靜默觸發，不阻塞 UI）
+async function gasAutoSync(newRecs){
+  const url=getGAS().url;if(!url)return;
+  try{
+    // no-cors: GAS CORS 限制，用 fire-and-forget 模式
+    await fetch(url,{method:'POST',mode:'no-cors',
+      body:JSON.stringify({type:'tempSync',records:newRecs.map(enrichRec),zones:getZ()})});
+    document.getElementById('sdot').className='syncdt sd-ok';
+    document.getElementById('sstatus').textContent='✅ 已同步';
+  }catch(ex){
+    document.getElementById('sdot').className='syncdt sd-err';
+    console.warn('gasAutoSync failed:',ex.message);
+  }
+}
+
+// 批量匯入到雲端（Excel 歷史資料匯入時使用）
+async function gasBulkSync(newRecs){
+  const url=getGAS().url;if(!url)return;
+  try{
+    await fetch(url,{method:'POST',mode:'no-cors',
+      body:JSON.stringify({type:'tempImport',records:newRecs.map(enrichRec),zones:getZ()})});
+    if(true){
+      document.getElementById('sdot').className='syncdt sd-ok';
+      document.getElementById('sstatus').textContent='✅ 已同步';
+      toast(`☁️ 雲端匯入完成：新增 ${d.added} 筆，跳過重複 ${d.skipped} 筆`,'ok');
+    } else {
+      document.getElementById('sdot').className='syncdt sd-err';
+      toast('☁️ 雲端匯入失敗: '+(d.error||''),'err');
+    }
+  }catch(ex){
+    document.getElementById('sdot').className='syncdt sd-err';
+    console.warn('gasBulkSync failed:',ex.message);
+    toast('☁️ 雲端網路錯誤','err');
+  }
+}
+
+// 刪除雲端記錄（靜默）
+async function gasDelete(id){
+  const url=getGAS().url;if(!url)return;
+  try{
+    await fetch(url,{method:'POST',mode:'no-cors',
+      body:JSON.stringify({type:'tempDelete',id})});
+  }catch(ex){console.warn('gasDelete failed:',ex.message);}
+}
+
+// 啟動時從雲端拉取（靜默合併）
+async function gasPullOnInit(){
+  const url=getGAS().url;if(!url)return;
+  try{
+    const r=await fetch(url+'?type=tempList',{method:'GET',redirect:'follow'});
+    const d=await r.json();
+    if(d.ok&&d.records&&d.records.length>0){
+      const cloudRecs=d.records.map(normalizeRec);
+      const cloudIds=new Set(cloudRecs.map(r=>r.id));
+      const local=getR();
+      const onlyLocal=local.filter(r=>!cloudIds.has(r.id));
+      const merged=[...cloudRecs,...onlyLocal];
+      if(merged.length!==local.length){
+        setR(merged);
+        renderAll();
+        toast(`☁️ 已從雲端同步 ${cloudRecs.length} 筆記錄`,'inf');
+      }
+      document.getElementById('sdot').className='syncdt sd-ok';
+      document.getElementById('sstatus').textContent='✅ 已連接';
+    }
+  }catch(ex){
+    console.warn('gasPullOnInit failed:',ex.message);
+  }
 }
 
 // ══════════════════════════════════════════
@@ -1926,8 +1789,6 @@ function updBadge(){
 }
 
 function renderAll(){
-  populateDateSel('dash-date');
-  populateDateSel('rec-date');
   popSelects();
   const active=document.querySelector('.tab.on')?.id?.replace('tab-','');
   if(active==='dash')renderDash();
@@ -1941,96 +1802,49 @@ function renderAll(){
 }
 
 // ══════════════════════════════════════════
-// AUTO WEATHER (Open-Meteo, free, no key)
+// INIT
 // ══════════════════════════════════════════
-async function fetchAutoWeather(dateStr){
-  try{
-    const url='https://api.open-meteo.com/v1/forecast?latitude=10.6236&longitude=103.5228&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FPhnom_Penh&forecast_days=3';
-    const r=await fetch(url);const d=await r.json();
-    const aw=getAW();
-    if(d.daily&&d.daily.time){
-      d.daily.time.forEach((dt,i)=>{
-        const code=d.daily.weather_code[i];
-        aw.cache[dt]={wx:wmoToWx(code),code,tMax:d.daily.temperature_2m_max[i],tMin:d.daily.temperature_2m_min[i],rain:d.daily.precipitation_probability_max[i]};
-      });
-    }
-    aw.lastFetch=new Date().toISOString();
-    // Apply today's weather if not already set
-    const wx=getWX();
-    if(d.daily&&d.daily.time){
-      d.daily.time.forEach((dt,i)=>{
-        if(!wx[dt]){wx[dt]=aw.cache[dt]?.wx||'cloudy';}
-      });
-      setWX(wx);
-    }
-    setAW(aw);
-    const ael=document.getElementById('aw-status');if(ael)ael.textContent='✅ Updated: '+new Date().toLocaleTimeString();
-    toast('天氣自動更新完成','ok');
-  }catch(ex){
-    const ael=document.getElementById('aw-status');if(ael)ael.textContent='❌ '+ex.message;
-    toast('天氣更新失敗: '+ex.message,'err');
-  }
-}
-
-// ══════════════════════════════════════════
-// AUTO SYNC SCHEDULER
-// ══════════════════════════════════════════
-function startAutoSync(){
-  if(autoSyncTimer)clearInterval(autoSyncTimer);
-  const as=getAS();if(!as.enabled)return;
-  const upMs=as.upMin*60*1000,dnMs=as.dnMin*60*1000;
-  let lastUp=Date.now(),lastDn=Date.now();
-  autoSyncTimer=setInterval(()=>{
-    const now=Date.now();
-    if(now-lastUp>=upMs){syncUp();lastUp=now;document.getElementById('next-up-time').textContent='Next Upload: '+new Date(now+upMs).toLocaleTimeString();}
-    if(now-lastDn>=dnMs){syncDown();lastDn=now;document.getElementById('next-dn-time').textContent='Next Pull: '+new Date(now+dnMs).toLocaleTimeString();}
-  },60000);
-  toast('自動同步已啟動','ok');
-}
-
-function saveASconfig(){
-  const as={enabled:document.getElementById('as-enable').checked,upMin:+(document.getElementById('as-up').value||15),dnMin:+(document.getElementById('as-dn').value||60)};
-  setAS(as);
-  if(as.enabled)startAutoSync();else{if(autoSyncTimer)clearInterval(autoSyncTimer);autoSyncTimer=null;}
-  toast('自動同步設定已儲存','ok');
-}
-
-// ══════════════════════════════════════════
-// SYNC LOG RENDER
-// ══════════════════════════════════════════
-function renderSyncLog(){
-  const logs=getSL().slice().reverse();
-  const el=document.getElementById('sl-table-body');if(!el)return;
-  if(!logs.length){el.innerHTML=`<tr class="nodata-row"><td colspan="5">No sync logs</td></tr>`;return;}
-  const icons={'ok':'✅','err':'❌','warn':'⚠️'};
-  el.innerHTML=logs.map(l=>{
-    const dt=new Date(l.ts).toLocaleString('en-GB',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    return `<tr>
-      <td style="white-space:nowrap;font-size:12px">${dt}</td>
-      <td><span class="bdg ${l.action==='upload'?'b-cool':'b-ok'}">${l.action==='upload'?'⬆ Up':'⬇ Down'}</span></td>
-      <td>${icons[l.status]||'?'} ${l.status}</td>
-      <td style="font-size:12px;color:var(--text2)">${l.detail||''}</td>
-      <td style="font-size:12px">${l.count||''}</td>
-    </tr>`;
-  }).join('');
-  document.getElementById('sl-badge').style.display='none';
-}
-
-function clearSyncLog(){setSL([]);renderSyncLog();}
-
-// Update settings render to load new fields
-const _origRenderSet=typeof renderSet==='function'?renderSet:null;
 function init(){
   const td=today();
-  ['tg-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
-  populateDateSel('dash-date',td);
-  populateDateSel('rec-date',td);
-  const d30=new Date();d30.setDate(d30.getDate()-30);const d30s=fmtDate(d30);
+  ['dash-date','rec-date','tg-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
+  const d30=new Date();d30.setDate(d30.getDate()-30);const d30s=d30.toISOString().slice(0,10);
   ['hfrom','afrom','alfrom'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=d30s;});
   ['hto','ato','alto'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
   popSelects();applyI18n();renderDash();updBadge();renderHNavLabel();
-  startAutoSync();
   setInterval(tick,1000);tick();
+  // 啟動時靜默從雲端拉取最新資料
+  setTimeout(gasPullOnInit, 800);
 }
 window.addEventListener('load',init);
-</script></body></html>
+</script><script>
+// AC_GASCHECK Platform TG Defaults
+var AC_TG_TOKEN_DEFAULT = '8673221735:AAH0KoC89DPLNu4D70inRfkY2xwedLkXjnw';
+var AC_TG_CHAT_DEFAULT  = '-5113064563';
+
+(function(){
+  var INIT_NAV = function(){
+    try {
+      if(typeof AC_NAV==='undefined') return;
+      AC_NAV.inject('temperature',{
+        getRecords: function(){
+          try{
+            var mods = (typeof AC_CFG!=='undefined') ? AC_CFG.MODULES : [];
+            var mod  = mods.find(function(m){return m.id==='temperature';}) || {};
+            var raw  = localStorage.getItem(mod.lsKey||'');
+            if(!raw) return [];
+            var d = JSON.parse(raw);
+            if(Array.isArray(d)) return d;
+            if(d.records) return d.records;
+            return Object.values(d).filter(Array.isArray).reduce(function(a,b){return a.concat(b);}, []);
+          }catch(e){return [];}
+        },
+        onPull: function(recs){ console.log('Pulled temperature:', recs.length); }
+      });
+      if(typeof AC_CLOUD!=='undefined') setTimeout(function(){AC_CLOUD.updateBar();}, 500);
+    } catch(e) { console.warn('AC_NAV init failed:', e); }
+  };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', INIT_NAV);
+  else INIT_NAV();
+})();
+</script>
+</body></html>
