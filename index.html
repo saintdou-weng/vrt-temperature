@@ -447,6 +447,7 @@ tbody tr:hover{background:var(--bg);}
         <div class="chd" style="background:#fff5f5"><span class="ct" style="color:#dc2626" id="i-danger">⚠️ 危險操作</span></div>
         <div class="cb">
           <div class="flw" style="gap:6px">
+            <button class="btn bd sm" onclick="trimOldRecords()">✂️ 只保留最近 1 年</button>
             <button class="btn bd sm" onclick="clearAll()" id="i-clrall">🗑 清除所有記錄</button>
             <button class="btn bd sm" onclick="resetZones()" id="i-rstzone">🔄 重置區域</button>
           </div>
@@ -651,8 +652,127 @@ const DTH={t:{cold:18,cool:23,warm:32,hot:35},h:{dry:40,humid:80,vhum:90}};
 const T=k=>(D[LANG]||D.zh)[k]||(D.zh[k]||k);
 const getZ=()=>{try{const d=localStorage.getItem(LSZ);return d?JSON.parse(d):JSON.parse(JSON.stringify(DZ));}catch{return JSON.parse(JSON.stringify(DZ));}};
 const setZ=z=>localStorage.setItem(LSZ,JSON.stringify(z));
-const getR=()=>{try{const d=localStorage.getItem(LSR);return d?JSON.parse(d):[];}catch{return [];}};
-const setR=r=>localStorage.setItem(LSR,JSON.stringify(r));
+// ══════════════════════════════════════════
+// [IDB] IndexedDB 儲存層 — 與 sewing_v5 相同架構
+// localStorage 上限 5MB；IndexedDB 可用數百 MB ~ GB
+// 記憶體快取 + 非同步落盤，所有既有同步呼叫端不需改動
+// ══════════════════════════════════════════
+const IDB_NAME='VRT_TempHumidity', IDB_VER=1, IDB_STORE='records';
+let _idb=null;
+let REC_CACHE=null;          // 記憶體工作副本
+let _idbReady=false;
+
+function openIDB(){
+  if(_idb)return Promise.resolve(_idb);
+  return new Promise((res,rej)=>{
+    const req=indexedDB.open(IDB_NAME,IDB_VER);
+    // [必要] onupgradeneeded 必須建立所有 store，否則跨裝置開啟會拿到空 DB
+    req.onupgradeneeded=e=>{
+      const db=e.target.result;
+      if(!db.objectStoreNames.contains(IDB_STORE))
+        db.createObjectStore(IDB_STORE,{keyPath:'id'});
+      if(!db.objectStoreNames.contains('meta'))
+        db.createObjectStore('meta',{keyPath:'key'});
+    };
+    req.onsuccess=e=>{_idb=e.target.result;res(_idb);};
+    req.onerror=()=>rej(req.error);
+  });
+}
+
+// 自我修復：store 缺失時砍掉重建（跨裝置/舊版遺留問題）
+async function openIDBSafe(){
+  try{
+    const db=await openIDB();
+    if(!db.objectStoreNames.contains(IDB_STORE)){
+      db.close();_idb=null;
+      await new Promise(r=>{const d=indexedDB.deleteDatabase(IDB_NAME);d.onsuccess=r;d.onerror=r;d.onblocked=r;});
+      return await openIDB();
+    }
+    return db;
+  }catch(e){
+    console.warn('[IDB] open failed, rebuilding:',e);
+    _idb=null;
+    await new Promise(r=>{const d=indexedDB.deleteDatabase(IDB_NAME);d.onsuccess=r;d.onerror=r;d.onblocked=r;});
+    return await openIDB();
+  }
+}
+
+async function idbLoadAll(){
+  try{
+    const db=await openIDBSafe();
+    const tx=db.transaction(IDB_STORE,'readonly');
+    return await new Promise(res=>{
+      const q=tx.objectStore(IDB_STORE).getAll();
+      q.onsuccess=()=>res(q.result||[]);
+      q.onerror=()=>res([]);
+    });
+  }catch(e){console.warn('[IDB] load failed:',e);return [];}
+}
+
+async function idbSaveAll(arr){
+  try{
+    const db=await openIDBSafe();
+    const tx=db.transaction([IDB_STORE,'meta'],'readwrite');
+    const os=tx.objectStore(IDB_STORE);
+    os.clear();
+    arr.forEach(r=>{if(r&&r.id)os.put(r);});
+    tx.objectStore('meta').put({key:'summary',count:arr.length,savedAt:new Date().toISOString()});
+    await new Promise((r,j)=>{tx.oncomplete=r;tx.onerror=()=>j(tx.error);});
+    return {ok:true,kept:arr.length};
+  }catch(e){
+    console.error('[IDB] save failed:',e);
+    return {ok:false,error:e.message||'IDB write failed'};
+  }
+}
+
+// 一次性遷移：把舊 localStorage 記錄搬進 IndexedDB
+async function migrateFromLS(){
+  try{
+    const raw=localStorage.getItem(LSR);
+    if(!raw)return 0;
+    const old=JSON.parse(raw);
+    if(!Array.isArray(old)||!old.length)return 0;
+    const existing=await idbLoadAll();
+    const byKey={};
+    existing.forEach(r=>{if(r&&r.d&&r.z)byKey[r.d+'|'+r.p+'|'+r.z]=r;});
+    old.forEach(r=>{if(r&&r.d&&r.z)byKey[r.d+'|'+r.p+'|'+r.z]=r;});
+    const merged=Object.values(byKey);
+    await idbSaveAll(merged);
+    localStorage.removeItem(LSR);      // 釋放 localStorage 空間
+    console.log('[IDB] migrated '+old.length+' records from localStorage');
+    return old.length;
+  }catch(e){console.warn('[IDB] migrate failed:',e);return 0;}
+}
+
+// ── 對外 API：維持同步介面，呼叫端完全不用改 ──
+const getR=()=>{
+  if(REC_CACHE)return REC_CACHE;
+  // IDB 尚未載入完成時的保底（僅開機瞬間會走到）
+  try{const d=localStorage.getItem(LSR);REC_CACHE=d?JSON.parse(d):[];}catch{REC_CACHE=[];}
+  return REC_CACHE;
+};
+
+function setR(r){
+  const arr=Array.isArray(r)?r:[];
+  REC_CACHE=arr;                       // 立即更新記憶體，UI 馬上反映
+  if(_idbReady){
+    idbSaveAll(arr).then(res=>{
+      if(!res.ok)toast('儲存失敗: '+(res.error||''),'err');
+    });
+  }
+  return {ok:true,kept:arr.length};
+}
+
+// 相容保留（舊程式碼可能呼叫）
+function compactRec(r){
+  const o={id:r.id,z:r.z,d:r.d,p:r.p};
+  if(r.t!==''&&r.t!==undefined&&r.t!==null)o.t=Math.round(parseFloat(r.t)*10)/10;
+  if(r.h!==''&&r.h!==undefined&&r.h!==null)o.h=Math.round(parseFloat(r.h)*10)/10;
+  if(r.note)o.note=String(r.note).slice(0,120);
+  if(r.ts)o.ts=String(r.ts).slice(0,19);
+  return o;
+}
+
 const getTH=()=>{try{const d=localStorage.getItem(LSTH);return d?JSON.parse(d):JSON.parse(JSON.stringify(DTH));}catch{return JSON.parse(JSON.stringify(DTH));}};
 const setTH=t=>localStorage.setItem(LSTH,JSON.stringify(t));
 const getTG=()=>{try{const d=localStorage.getItem(LSTG);return d?JSON.parse(d):{tok:'',chat:''};}catch{return {tok:'',chat:''};}}
@@ -1291,8 +1411,11 @@ function renderSet(){
   document.getElementById('inf-zn').textContent=getZ().filter(z=>z.on).length;
   document.getElementById('inf-fc').textContent=dates.length?dates[0]:'--';
   document.getElementById('inf-lc').textContent=dates.length?dates[dates.length-1]:'--';
-  const sz=new Blob([localStorage.getItem(LSR)||'']).size;
-  document.getElementById('inf-st').textContent=sz<1024?sz+'B':(sz/1024).toFixed(1)+'KB';
+  storageInfo().then(si=>{
+    const el=document.getElementById('inf-st');if(!el)return;
+    el.innerHTML=`<span style="color:var(--ok)">⚡ ${si.engine}</span> · ${si.records.toLocaleString()} 筆 (${si.approxMB} MB)`+
+      (si.quotaMB!=='—'?`<br><span style="font-size:11px;color:var(--text3)">瀏覽器配額 ${si.usedMB} MB / ${si.quotaMB} MB (${si.pct}%)</span>`:'');
+  });
 }
 
 function renderThLegend(){
@@ -1317,6 +1440,36 @@ function updateThV(id,v,u){document.getElementById(id).textContent=v+u;}
 function saveTH(){setTH({t:{cold:+document.getElementById('th-tc').value,cool:+document.getElementById('th-tl').value,warm:+document.getElementById('th-tw').value,hot:+document.getElementById('th-th').value},h:{dry:+document.getElementById('th-hd').value,humid:+document.getElementById('th-hh').value,vhum:+document.getElementById('th-hv').value}});renderThLegend();}
 function saveTGcfg(){setTG({tok:document.getElementById('tg-tok').value,chat:document.getElementById('tg-chat').value});}
 function saveGAScfg(){setGAS({url:document.getElementById('gas-url').value,dashUrl:(document.getElementById('gas-dash-url')?.value||'')});}
+// [QUOTA] 只保留最近一年的記錄（雲端資料不受影響）
+function trimOldRecords(){
+  const cutoff=new Date();cutoff.setFullYear(cutoff.getFullYear()-1);
+  const cut=cutoff.toISOString().slice(0,10);
+  const all=getR();
+  const keep=all.filter(r=>(r.d||'')>=cut);
+  const removed=all.length-keep.length;
+  if(!removed){toast('沒有超過一年的記錄','inf');return;}
+  confirmAction(`確認刪除 ${removed} 筆一年前的本機記錄？\n（Google Sheet 雲端資料不會被刪除，隨時可重新拉取）`,()=>{
+    setR(keep);
+    toast(`已清除 ${removed} 筆舊記錄，剩餘 ${keep.length} 筆`,'ok');renderAll();renderSet();
+  });
+}
+
+// [IDB] 儲存用量（IndexedDB 配額由瀏覽器動態分配，通常為磁碟空間的 10~60%）
+async function storageInfo(){
+  const recs=getR().length;
+  const approxMB=(JSON.stringify(getR()).length*2/1048576).toFixed(2);
+  let quotaMB='—', usedMB='—', pct=0;
+  try{
+    if(navigator.storage&&navigator.storage.estimate){
+      const est=await navigator.storage.estimate();
+      quotaMB=(est.quota/1048576).toFixed(0);
+      usedMB=(est.usage/1048576).toFixed(1);
+      pct=Math.round(est.usage/est.quota*100);
+    }
+  }catch(e){}
+  return {records:recs,approxMB,quotaMB,usedMB,pct,engine:_idbReady?'IndexedDB':'localStorage'};
+}
+
 function clearAll(){confirmAction(T('cclrall'),()=>{setR([]);toast(T('deleted'),'inf');renderAll();updBadge();});}
 
 // ══════════════════════════════════════════
@@ -1590,16 +1743,17 @@ function enrichRec(r){
 function normalizeRec(r){
   const t=r.temperature!==undefined&&r.temperature!==''?parseFloat(r.temperature):'';
   const h=r.humidity   !==undefined&&r.humidity   !==''?parseFloat(r.humidity)   :'';
-  return {
-    id:   r.id||'',
-    z:    r.zoneId||'',
-    d:    (r.date||'').slice(0,10),
-    p:    r.period||'',
-    t:    isNaN(t)?'':t,
-    h:    isNaN(h)?'':h,
-    note: r.note||'',
-    ts:   r.submittedAt||''
+  const o={
+    id: r.id||'',
+    z:  r.zoneId||'',
+    d:  String(r.date||'').slice(0,10),
+    p:  r.period||''
   };
+  if(!isNaN(t)&&t!=='')o.t=Math.round(t*10)/10;
+  if(!isNaN(h)&&h!=='')o.h=Math.round(h*10)/10;
+  if(r.note)o.note=String(r.note).slice(0,80);
+  if(r.submittedAt)o.ts=String(r.submittedAt).slice(0,16);
+  return o;
 }
 
 // 測試 GAS 連線
@@ -1656,16 +1810,26 @@ async function syncDown(){
     const r=await fetch(url+'?type=tempList',{method:'GET',redirect:'follow'});
     const d=await r.json();
     if(d.ok&&d.records){
-      const cloudRecs=d.records.map(normalizeRec);
-      const cloudIds=new Set(cloudRecs.map(r=>r.id));
-      const onlyLocal=getR().filter(r=>!cloudIds.has(r.id));
+      // 依 date|period|zone 去重（同一格只留最後一筆），避免雲端重複列灌爆本機
+      const byKey={};
+      d.records.map(normalizeRec).forEach(r=>{
+        if(!r.d||!r.z)return;
+        byKey[r.d+'|'+r.p+'|'+r.z]=r;
+      });
+      const cloudRecs=Object.values(byKey);
+      const cloudKeys=new Set(Object.keys(byKey));
+      const onlyLocal=getR().filter(r=>!cloudKeys.has(r.d+'|'+r.p+'|'+r.z));
       const merged=[...cloudRecs,...onlyLocal];
       setR(merged);
       document.getElementById('sdot').className='syncdt sd-ok';
       document.getElementById('sstatus').textContent='✅ 已連接';
-      toast(`拉取成功：雲端 ${cloudRecs.length} 筆，本機獨有 ${onlyLocal.length} 筆`,'ok');
+      const dupes=d.records.length-cloudRecs.length;
+      let msg=`拉取成功：雲端 ${cloudRecs.length} 筆`;
+      if(dupes>0)msg+=`（已去除 ${dupes} 筆重複）`;
+      if(onlyLocal.length)msg+=`，本機獨有 ${onlyLocal.length} 筆`;
+      toast(msg,'ok');
       renderAll();
-    } else throw new Error(d.error||'fail');
+    } else throw new Error(d.error||'GAS 回應 ok=false');
   }catch(ex){
     document.getElementById('sdot').className='syncdt sd-err';
     document.getElementById('sstatus').textContent='❌ 拉取失敗';
@@ -1725,15 +1889,19 @@ async function gasPullOnInit(){
     const r=await fetch(url+'?type=tempList',{method:'GET',redirect:'follow'});
     const d=await r.json();
     if(d.ok&&d.records&&d.records.length>0){
-      const cloudRecs=d.records.map(normalizeRec);
-      const cloudIds=new Set(cloudRecs.map(r=>r.id));
+      const byKey={};
+      d.records.map(normalizeRec).forEach(r=>{
+        if(!r.d||!r.z)return;
+        byKey[r.d+'|'+r.p+'|'+r.z]=r;
+      });
+      const cloudRecs=Object.values(byKey);
+      const cloudKeys=new Set(Object.keys(byKey));
       const local=getR();
-      const onlyLocal=local.filter(r=>!cloudIds.has(r.id));
+      const onlyLocal=local.filter(r=>!cloudKeys.has(r.d+'|'+r.p+'|'+r.z));
       const merged=[...cloudRecs,...onlyLocal];
       if(merged.length!==local.length){
         setR(merged);
-        renderAll();
-        toast(`☁️ 已從雲端同步 ${cloudRecs.length} 筆記錄`,'inf');
+        renderAll();toast(`☁️ 已從雲端同步 ${cloudRecs.length} 筆記錄`,'inf');
       }
       document.getElementById('sdot').className='syncdt sd-ok';
       document.getElementById('sstatus').textContent='✅ 已連接';
@@ -1804,15 +1972,29 @@ function renderAll(){
 // ══════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════
-function init(){
+async function init(){
   const td=today();
   ['dash-date','rec-date','tg-date'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
   const d30=new Date();d30.setDate(d30.getDate()-30);const d30s=d30.toISOString().slice(0,10);
   ['hfrom','afrom','alfrom'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=d30s;});
   ['hto','ato','alto'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=td;});
+
+  // [IDB] 先把資料從 IndexedDB 載入記憶體，之後所有同步呼叫才拿得到完整資料
+  try{
+    const migrated=await migrateFromLS();       // 舊 localStorage 資料一次性搬移
+    REC_CACHE=await idbLoadAll();
+    _idbReady=true;
+    console.log('[IDB] loaded '+REC_CACHE.length+' records'+(migrated?' (migrated '+migrated+')':''));
+    if(migrated)toast('已將 '+migrated+' 筆舊記錄移轉至 IndexedDB','ok');
+  }catch(e){
+    console.error('[IDB] init failed:',e);
+    _idbReady=false;
+    REC_CACHE=getR();
+    toast('IndexedDB 初始化失敗，暫用本機儲存','err');
+  }
+
   popSelects();applyI18n();renderDash();updBadge();renderHNavLabel();
   setInterval(tick,1000);tick();
-  // 啟動時靜默從雲端拉取最新資料
   setTimeout(gasPullOnInit, 800);
 }
 window.addEventListener('load',init);
